@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles for the entire Angular application */
+
+/* Import Bootstrap if using CDN alternative */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
+
+/* Global font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global CSS variables */
+:root {
+  --primary-green: #28a745;
+  --secondary-blue: #007bff;
+  --info-light: #cfe2ff;
+  --warning-light: #fff3cd;
+}
+
+/* Global body styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Global utility classes */
+.btn-primary-green {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: white;
+}
+
+.btn-secondary-blue {
+  background-color: var(--secondary-blue);
+  border-color: var(--secondary-blue);
+  color: white;
+}
+
+.text-primary-green {
+  color: var(--primary-green) !important;
+}
+
+.text-secondary-blue {
+  color: var(--secondary-blue) !important;
+}
