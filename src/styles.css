@@ -1,10 +1,9 @@
 /* Global styles for the entire Angular application */
 
 /* Global font */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
 
-/* Global CSS variables */
-/* CSS Variables for Theming */
+/* CSS Variables */
 :root {
   /* Colors */
   --primary-green: #28a745;
@@ -56,71 +55,7 @@ body {
   background-color: var(--body-bg);
 }
 
-/* Main Section Styling */
-.homepage-main-section {
-  border-radius: var(--border-radius-xl);
-  border-color: var(--main-border-color) !important;
-}
-
-/* Custom Border Radius Classes */
-.rounded-xl {
-  border-radius: var(--border-radius-xl) !important;
-}
-
-.rounded-lg-custom {
-  border-radius: var(--border-radius-lg) !important;
-}
-
-.rounded-md-custom {
-  border-radius: var(--border-radius-md) !important;
-}
-
-/* Custom Button Colors */
-.btn-primary-green {
-  background-color: var(--primary-green);
-  border-color: var(--primary-green);
-  color: #fff;
-}
-
-.btn-primary-green:hover {
-  background-color: var(--primary-green-hover);
-  border-color: var(--primary-green-border-hover);
-}
-
-.btn-secondary-blue {
-  background-color: var(--secondary-blue);
-  border-color: var(--secondary-blue);
-  color: #fff;
-}
-
-.btn-secondary-blue:hover {
-  background-color: var(--secondary-blue-hover);
-  border-color: var(--secondary-blue-border-hover);
-}
-
-.btn-info-light {
-  background-color: var(--info-light);
-  border-color: var(--info-light);
-  color: var(--info-light-text);
-}
-
-.btn-info-light:hover {
-  background-color: var(--info-light-hover);
-  border-color: var(--info-light-hover);
-}
-
-.btn-warning-light {
-  background-color: var(--warning-light);
-  border-color: var(--warning-light);
-  color: var(--warning-light-text);
-}
-
-.btn-warning-light:hover {
-  background-color: var(--warning-light-hover);
-  border-color: var(--warning-light-hover);
-}
-
-/* Text Colors */
+/* Essential global utilities only */
 .text-primary-green {
   color: var(--primary-green) !important;
 }
