@@ -1,0 +1,58 @@
+.job-openings-container {
+  max-width: 960px; /* Adjust as needed */
+  margin: 5rem auto; /* Top/bottom margin, auto for horizontal centering */
+  padding: 3rem; /* Padding inside the container */
+  background-color: var(--body-bg); /* Use theme variable */
+  border-radius: var(--border-radius-xl); /* Use theme variable */
+  box-shadow: var(--shadow-lg); /* Use theme variable */
+}
+
+/* Custom styles for Bootstrap elements using theme variables */
+.display-3 {
+  color: var(--text-dark); /* Use theme variable */
+}
+
+.lead {
+  color: var(--text-muted); /* Use theme variable */
+  max-width: 600px; /* Limit width of description text */
+}
+
+.form-label {
+  font-weight: 600; /* fw-semibold equivalent */
+}
+
+.form-select.rounded-md-custom,
+.form-control.rounded-md-custom {
+  border-radius: var(--border-radius-md) !important; /* Use theme variable */
+  box-shadow: var(--shadow-sm); /* Use theme variable */
+}
+
+/* Specific styling for the job results section */
+.rounded-xl {
+  border-radius: var(--border-radius-xl) !important;
+}
+
+.list-group-item {
+  border-color: #e9ecef; /* Light border for list items */
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .job-openings-container {
+    padding: 1.5rem; /* Reduce padding on small screens */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  .col-auto {
+    width: 100%; /* Make dropdowns full width on small screens */
+  }
+  .col-auto .form-label {
+    width: auto; /* Allow label to take natural width */
+  }
+  .ms-md-4 {
+    margin-left: 0 !important; /* Remove horizontal margin on small screens */
+  }
+  .mt-3.mt-md-0 {
+    margin-top: 1rem !important; /* Add top margin between dropdowns on small screens */
+  }
+}

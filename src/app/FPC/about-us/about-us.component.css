@@ -1,0 +1,155 @@
+/* src/app/about-us/about-us.component.css */
+
+/* CSS Variables for Theming */
+:host {
+  --team-section-bg: #1a2a4b; /* Dark blue background from the image */
+  --team-card-bg: #2d456a; /* Slightly lighter blue for cards */
+  --text-light: #ffffff; /* White text */
+  --text-member-info: #b0c4de; /* Lighter text for roles/experience */
+  --border-radius-card: 0.75rem; /* Rounded corners for member cards */
+  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for cards */
+
+  /* Contact Info Section Colors */
+  --contact-light-bg: #f0f4f0; /* Light background for the first contact item */
+  --contact-red-bg: #dc3545; /* Red background for the second contact item */
+  --contact-blue-bg: #007bff; /* Blue background for the third contact item */
+  --contact-text-dark: #212529; /* Dark text for light background */
+}
+
+/* Base styling for the about us section */
+.about-us-section {
+  background-color: var(--team-section-bg);
+  padding: 4rem 0; /* Vertical padding */
+  font-family: "Inter", sans-serif; /* Consistent font */
+}
+
+.section-title {
+  font-size: 2.5rem; /* Larger font size for the title */
+  font-weight: 700; /* Bold */
+  color: var(--text-light); /* White text */
+  letter-spacing: 0.1em; /* Slight letter spacing */
+}
+
+/* Team member card styling */
+.team-member-card {
+  background-color: var(--team-card-bg);
+  border-radius: var(--border-radius-card);
+  padding: 1.5rem;
+  color: var(--text-light);
+  height: 100%; /* Ensure cards are same height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+}
+
+.team-member-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+}
+
+.team-member-img {
+  width: 120px; /* Fixed width for circular images */
+  height: 120px; /* Fixed height for circular images */
+  object-fit: cover; /* Ensure image covers the area */
+  border: 3px solid rgba(255, 255, 255, 0.5); /* White border around image */
+}
+
+.member-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.member-role {
+  font-size: 0.95rem;
+  color: var(--text-member-info);
+  margin-bottom: 0.1rem;
+}
+
+.member-experience {
+  font-size: 0.85rem;
+  color: var(--text-member-info);
+}
+
+/* Contact Info Section Styling */
+.contact-info-section {
+  min-height: 150px; /* Minimum height for the section */
+  display: flex;
+  align-items: stretch; /* Stretch items to fill height */
+}
+
+.contact-item {
+  padding: 2rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.contact-item-light {
+  background-color: var(--contact-light-bg);
+  color: var(--contact-text-dark);
+}
+
+.contact-item-red {
+  background-color: var(--contact-red-bg);
+  color: var(--text-light);
+}
+
+.contact-item-blue {
+  background-color: var(--contact-blue-bg);
+  color: var(--text-light);
+}
+
+.contact-item i {
+  margin-bottom: 0.5rem;
+}
+
+.contact-item p {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 991.98px) {
+  /* Medium devices and down */
+  .section-title {
+    font-size: 2rem;
+  }
+  .team-member-card {
+    padding: 1rem;
+  }
+  .team-member-img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Small devices and down */
+  .about-us-section {
+    padding: 2rem 0;
+  }
+  .section-title {
+    font-size: 1.8rem;
+  }
+  .contact-info-section .row.g-0 > div {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Add border between stacked items */
+  }
+  .contact-info-section .row.g-0 > div:last-child {
+    border-bottom: none; /* No border on the last item */
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Extra small devices */
+  .team-member-card {
+    margin: 0 auto; /* Center cards if they don't fill row */
+    max-width: 250px; /* Constrain width on very small screens */
+  }
+  .contact-item p {
+    font-size: 1rem;
+  }
+}

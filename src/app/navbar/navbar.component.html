@@ -1,0 +1,75 @@
+<!-- Navbar Section -->
+<div class="row">
+    <div class="col-12">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-lg-custom shadow-sm p-3">
+            <div class="container-fluid">
+                <!-- Navbar Brand/Logo -->
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="assets/images/logo.png" alt="FoodCops Logo" class="navbar-logo logo-height">
+                </a>
+                <!-- Navbar Toggler for small screens -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
+                    aria-controls="homepageNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navigation items -->
+                <div class="collapse navbar-collapse" id="homepageNavbar">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
+                                href="#">Home</a>
+                        </li>
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
+                                [routerLink]="['/career']">We Hire</a>
+                        </li>
+                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2 dropdown-toggle"
+                                href="#" id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Crops
+                            </a>
+                            <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
+                                <li><a class="dropdown-item" href="#">Cereals</a></li>
+                                <li><a class="dropdown-item" href="#">Pulses</a></li>
+                                <li><a class="dropdown-item" href="#">Oilseeds</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Vegetables</a></li>
+                                <li><a class="dropdown-item" href="#">Fruits</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a [routerLink]="['/about']"
+                                class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
+                                href="#">About Us</a>
+                        </li>
+                        <li class="nav-item dropdown me-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2 dropdown-toggle"
+                                href="#" id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Book
+                            </a>
+                            <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
+                                <li><a class="dropdown-item" [routerLink]="['/booksoil']">Book A Soil Test</a></li>
+                                <li><a class="dropdown-item" href="#">Book A Field Visit</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item me-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
+                                [routerLink]="['/contact']" href=" #">Contact Us</a>
+                        </li>
+                        <li class="nav-item d-none" id="logoutNavItem">
+                            <button class="nav-link btn btn-danger rounded-lg-custom px-4 py-2"
+                                id="logoutBtn">Logout</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

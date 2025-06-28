@@ -1,0 +1,79 @@
+<div class="job-openings-container">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h1 class="display-3 fw-bold text-dark mb-3">Current Job Openings</h1>
+            <p class="lead text-muted mx-auto max-w-lg">Explore various fields with our current job openings, offering
+                growth opportunities in every role.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center align-items-center mb-4">
+        <div class="col-auto d-flex align-items-center">
+            <label for="locationSelect" class="form-label mb-0 me-2 fw-semibold">Location:</label>
+            <select class="form-select rounded-md-custom shadow-sm" id="locationSelect" [(ngModel)]="selectedLocation">
+                <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+            </select>
+        </div>
+        <div class="col-auto d-flex align-items-center ms-md-4 mt-3 mt-md-0">
+            <label for="domainSelect" class="form-label mb-0 me-2 fw-semibold">Domain:</label>
+            <select class="form-select rounded-md-custom shadow-sm" id="domainSelect" [(ngModel)]="selectedDomain">
+                <option *ngFor="let dom of domains" [value]="dom">{{ dom }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary btn-lg rounded-md-custom shadow-sm px-5 py-3"
+                (click)="searchJobs()">Search Jobs</button>
+
+        </div>
+
+        <div class="col-12">
+            <p class="text-muted mt-4">Are you passionate about transforming
+                agriculture and uplifting farmers' livelihoods?
+                We’re on the lookout for driven individuals like you to join our mission and reshape the future of
+                farming!
+                Our innovative approach centers on value-added dehydrated products, enabling farmers to diversify their
+                income, reduce post-harvest losses, and access new markets. By turning fresh produce into shelf-stable,
+                high-quality dehydrated goods, we empower farming communities to achieve greater financial stability and
+                resilience.
+                As a member of our team, you’ll work with cutting-edge processing technology, helping refine and expand
+                our product offerings. Your creativity and expertise will directly contribute to boosting farmer
+                incomes, enhancing food preservation, and promoting sustainable agricultural practices.
+                But that’s just the beginning! As our organization grows, so do your opportunities. We’re committed to
+                your professional development through training programs, mentorship, and a collaborative environment
+                that values innovation and impact.
+                Joining us means becoming part of a passionate, inclusive community working toward a shared goal: a more
+                secure, sustainable, and prosperous future for farmers. Together, we’ll create solutions that improve
+                rural livelihoods, reduce food waste, and bring nutritious, long-lasting products to consumers
+                everywhere.
+                We offer competitive compensation, comprehensive benefits, and a flexible work culture that supports
+                your well-being and growth.
+                🌟 Don’t miss the chance to be part of this exciting journey.
+                Apply now and help us revolutionize agriculture through innovation in dehydrated products.
+                Let’s build a better future—one harvest at a time.
+                #JoinOurTeam #FarmerIncomeStability #DehydratedInnovation #SustainableAgriculture</p>
+        </div>
+    </div>
+
+    <!-- Job search results (initially hidden, can be displayed based on searchJobs logic) -->
+    <div *ngIf="showSearchResults" class="mt-5 p-4 border rounded-xl shadow-lg bg-white">
+        <h3 class="text-primary-green mb-3">Search Results:</h3>
+        <p class="mb-4">Searching for jobs with Location: <strong>{{ selectedLocation }}</strong> and Domain: <strong>{{
+                selectedDomain }}</strong></p>
+
+        <div *ngIf="foundJobs.length > 0">
+            <ul class="list-group">
+                <li *ngFor="let job of foundJobs"
+                    class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ job.title }} - {{ job.location }} ({{ job.domain }})
+                    <button class="badge bg-primary rounded-pill border-0 py-2 px-3">Apply</button>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="foundJobs.length === 0" class="alert alert-info mt-3" role="alert">
+            No jobs found for the selected criteria.
+        </div>
+    </div>
+</div>
