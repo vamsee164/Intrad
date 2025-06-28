@@ -1,0 +1,153 @@
+/* CSS Variables for Theming */
+:host {
+  /* Form background color */
+  /* A light green for the container background */
+  --benefits-bg-green: #28a745; /* A distinct green for the benefits section */
+
+  /* Text Colors */
+  --text-dark-green: #2e7d32; /* A darker green for titles */
+  --text-muted-dark: #424242; /* Darker muted text for descriptions */
+  --text-dark-green-label: #388e3c; /* Green for form labels */
+
+  /* Input/Button Colors */
+  --input-bg-color: #f0f4f0; /* Slightly off-white for input fields */
+  --input-border-color: #a5d6a7; /* Light green border for inputs */
+  --button-submit-bg: #4caf50; /* A pleasant green for the submit button */
+  --button-submit-hover: #218838; /* Darker green on hover */
+
+  /* Border Radii */
+  --border-radius-form-field: 1.5rem; /* More rounded corners for input fields */
+  --border-radius-button: 2rem; /* Even more rounded for the button (pill-like) */
+  --border-radius-container: 1.5rem; /* Rounded corners for the main container */
+  --border-radius-benefits: 1rem; /* Rounded corners for the benefits section */
+
+  /* Shadows */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Main container styling for the form and benefits section */
+.soil-test-container {
+  max-width: 1000px;
+  margin: 3rem auto; /* Centering with margin */
+  padding: 2.5rem 3rem; /* Adjusted padding */
+  border-radius: var(--border-radius-container);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+}
+.bookSoilForm {
+  border-radius: var(--border-radius-container);
+  box-shadow: var(--shadow-md);
+  max-width: 800px;
+  margin: 3rem auto; /* Centering with margin */
+  padding: 2.5rem 3rem; /* Adjusted padding */
+}
+/* Header and descriptive text styling */
+.display-5 {
+  color: var(--text-dark-green);
+}
+
+.max-w-lg-description {
+  max-width: 500px; /* Adjusted width for the descriptive text */
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--text-muted-dark);
+}
+
+/* Benefits Section Styling */
+.benefits-section {
+  background-color: var(--benefits-bg-green);
+  border-radius: var(--border-radius-benefits);
+  color: white; /* Default text color for this section */
+}
+
+.benefits-section .display-6 {
+  color: white; /* Ensure heading is white */
+}
+
+.benefit-item h3 {
+  color: white; /* Ensure numbers are white */
+}
+
+.benefit-item p {
+  color: white; /* Ensure benefit descriptions are white */
+  font-size: 0.95rem; /* Slightly adjust font size */
+}
+
+/* Form label styling */
+.text-dark-green-label {
+  color: var(--text-dark-green-label);
+  text-align: left; /* Ensure labels align left */
+  display: block; /* Make sure it takes its own line */
+  margin-bottom: 0.5rem; /* Space below label */
+}
+
+/* Custom styling for form input fields and select elements */
+.form-control-custom,
+.form-select.form-control-custom {
+  border-radius: var(--border-radius-form-field) !important;
+  padding: 0.75rem 1.25rem; /* Increase padding for better visual */
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control-custom:focus,
+.form-select.form-control-custom:focus {
+  border-color: var(
+    --button-submit-bg
+  ); /* Highlight with main green on focus */
+  box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25); /* Focus ring with green tint */
+  background-color: #ffffff; /* White background on focus */
+}
+
+/* Specific styling for the textarea */
+.form-control-custom-textarea {
+  border-radius: 1rem !important; /* Slightly less rounded than inputs */
+  padding: 1rem 1.25rem;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+  resize: vertical; /* Allow vertical resizing */
+}
+.form-control-custom-textarea:focus {
+  border-color: var(--button-submit-bg);
+  box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
+  background-color: #ffffff;
+}
+
+/* Submit button styling */
+.btn-submit-green {
+  background-color: var(--button-submit-bg);
+  border-color: var(--button-submit-bg);
+  color: #fff;
+  border-radius: var(
+    --border-radius-button
+  ) !important; /* Rounded pill shape */
+  padding: 0.75rem 2.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-submit-green:hover:not(:disabled) {
+  background-color: var(--button-submit-hover);
+  border-color: var(--button-submit-hover);
+}
+
+.btn-submit-green:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .soil-test-container {
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+  .col-md-6 {
+    width: 100%; /* Stack columns on small screens */
+  }
+}

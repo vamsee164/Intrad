@@ -1,0 +1,31 @@
+/* Conforming Packages Styling */
+.package-card {
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.package-card .card-header {
+  background-color: var(--navbar-bg);
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+}
+
+.package-card .list-group-item {
+  border: none;
+  padding: 0.75rem 1.25rem;
+}
+
+.package-card .list-group-item:last-child {
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}

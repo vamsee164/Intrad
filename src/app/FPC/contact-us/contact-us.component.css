@@ -1,0 +1,139 @@
+/* src/app/contact-form/contact-form.component.css */
+
+/* CSS Variables for Theming */
+:host {
+  /* Container background */
+  --contact-form-bg: #e0e9d9; /* A light, slightly desaturated green */
+  --contact-form-border: #aed581; /* A matching border color */
+
+  /* Text Colors */
+  --text-dark-green-title: #436e4b; /* Dark green for "Get in touch" title */
+  --text-label: #333; /* Darker text for labels */
+
+  /* Input/Button Colors */
+  --input-bg-color: #f7fcf5; /* Very light, almost white green for inputs */
+  --input-border-color: #c5e1a5; /* Light green border for inputs */
+  --input-focus-shadow: rgba(
+    102,
+    187,
+    106,
+    0.4
+  ); /* Green tint for focus shadow */
+  --button-submit-bg: #4caf50; /* A pleasant green for the submit button */
+  --button-submit-hover: #43a047; /* Darker green on hover */
+
+  /* Border Radii */
+  --border-radius-container: 1.5rem; /* Rounded corners for the main container */
+  --border-radius-field: 0.75rem; /* Rounded corners for input fields */
+  --border-radius-button: 2rem; /* Even more rounded for the button (pill-like) */
+
+  /* Shadows */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Overall body font for consistency */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f8f9fa; /* Light background for the whole page */
+}
+
+/* Main container styling for the contact form */
+.contact-form-container {
+  max-width: 600px; /* Max width for the form */
+  margin: 3rem auto; /* Centering with margin */
+  padding: 3rem; /* Padding inside the container */
+  background-color: var(--contact-form-bg);
+  border-radius: var(--border-radius-container);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--contact-form-border);
+}
+
+/* "Get in touch" title styling */
+.get-in-touch-title {
+  font-family: "Georgia", serif; /* Use a serif font for a distinct look */
+  font-size: 3rem; /* Larger font size */
+  font-weight: 700; /* Bold */
+  color: var(--text-dark-green-title);
+  border-bottom: 3px solid var(--text-dark-green-title); /* Underline effect */
+  display: inline-block; /* Shrink underline to text width */
+  padding-bottom: 0.5rem; /* Space between text and underline */
+  margin-bottom: 2rem; /* Space below title */
+}
+
+/* Form label styling */
+.form-label {
+  color: var(--text-label);
+  font-weight: 500;
+  margin-bottom: 0.5rem; /* Space between label and input */
+}
+
+/* Custom styling for form input fields and textarea */
+.form-control-custom,
+.form-control-custom-textarea {
+  border-radius: var(--border-radius-field) !important;
+  padding: 0.75rem 1rem; /* Adjust padding for a compact look */
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control-custom:focus,
+.form-control-custom-textarea:focus {
+  border-color: var(
+    --button-submit-bg
+  ); /* Highlight with main green on focus */
+  box-shadow: 0 0 0 0.25rem var(--input-focus-shadow); /* Focus ring with green tint */
+  background-color: #ffffff; /* White background on focus */
+}
+
+.form-control-custom-textarea {
+  resize: vertical; /* Allow vertical resizing for textarea */
+}
+
+/* Submit button styling */
+.btn-submit-green {
+  background-color: var(--button-submit-bg);
+  border-color: var(--button-submit-bg);
+  color: #fff;
+  border-radius: var(
+    --border-radius-button
+  ) !important; /* Rounded pill shape */
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-submit-green:hover:not(:disabled) {
+  background-color: var(--button-submit-hover);
+  border-color: var(--button-submit-hover);
+}
+
+.btn-submit-green:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .contact-form-container {
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+  .get-in-touch-title {
+    font-size: 2.2rem; /* Adjust title size for smaller screens */
+  }
+}
+
+@media (max-width: 575.98px) {
+  .get-in-touch-title {
+    font-size: 1.8rem;
+  }
+  .form-control-custom,
+  .form-control-custom-textarea {
+    padding: 0.6rem 0.8rem; /* Further reduce padding for very small screens */
+  }
+  .btn-submit-green {
+    padding: 0.6rem 2rem;
+  }
+}

@@ -1,0 +1,46 @@
+<!-- src/app/about-us/about-us.component.html -->
+<div class="about-us-section">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title text-white mb-4">THE TEAM</h2>
+            </div>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" *ngFor="let member of teamMembers">
+                <div class="team-member-card text-center shadow-sm">
+                    <img [src]="member.imageUrl" alt="{{ member.name }}"
+                        class="img-fluid rounded-circle mb-3 team-member-img">
+                    <h5 class="member-name">{{ member.name }}</h5>
+                    <p class="member-role">{{ member.role }}</p>
+                    <p class="member-experience">{{ member.experience }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Info Section (from image_75d219.jpg) -->
+<div class="contact-info-section mt-5 py-5">
+    <div class="container-fluid h-100">
+        <div class="row h-100 g-0">
+            <div
+                class="col-md-4 contact-item contact-item-light d-flex flex-column justify-content-center align-items-center">
+                <i class="fas fa-paper-plane fa-2x mb-3 text-dark"></i>
+                <p class="mb-0 text-dark">info&#64;foodcops.com</p> <!-- Changed @ to &#64; -->
+            </div>
+            <div
+                class="col-md-4 contact-item contact-item-red d-flex flex-column justify-content-center align-items-center">
+                <i class="fas fa-mobile-alt fa-2x mb-3 text-white"></i>
+                <p class="mb-0 text-white">022-56234567</p>
+            </div>
+            <div
+                class="col-md-4 contact-item contact-item-blue d-flex flex-column justify-content-center align-items-center">
+                <i class="fab fa-linkedin-in fa-2x me-2 text-white"></i>
+                <i class="fab fa-instagram fa-2x me-2 text-white"></i>
+                <i class="fab fa-facebook-f fa-2x text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+<!-- src/app/contact-form/contact-form.component.html -->
+<div class="contact-form-container my-5">
+    <div class="row text-center mb-4">
+        <div class="col-12">
+            <h1 class="get-in-touch-title mb-4">Get in touch</h1>
+        </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #contactForm="ngForm">
+        <div class="row g-4">
+            <!-- First Name -->
+            <div class="col-md-6">
+                <label for="firstName" class="form-label">First name</label>
+                <input type="text" class="form-control form-control-custom" id="firstName"
+                    [(ngModel)]="formData.firstName" name="firstName" required>
+            </div>
+            <!-- Last Name -->
+            <div class="col-md-6">
+                <label for="lastName" class="form-label">Last name</label>
+                <input type="text" class="form-control form-control-custom" id="lastName"
+                    [(ngModel)]="formData.lastName" name="lastName" required>
+            </div>
+            <!-- Email -->
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" class="form-control form-control-custom" id="email" [(ngModel)]="formData.email"
+                    name="email" required email>
+            </div>
+            <!-- Message -->
+            <div class="col-md-6">
+                <label for="message" class="form-label">Message</label>
+                <textarea class="form-control form-control-custom-textarea" id="message" [(ngModel)]="formData.message"
+                    name="message" rows="4"></textarea>
+            </div>
+            <!-- Phone -->
+            <div class="col-md-6">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="tel" class="form-control form-control-custom" id="phone" [(ngModel)]="formData.phone"
+                    name="phone">
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-submit-green btn-lg px-5 py-3 rounded-pill shadow-sm"
+                    [disabled]="!contactForm.valid">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
