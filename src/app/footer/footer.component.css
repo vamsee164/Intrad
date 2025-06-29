@@ -1,0 +1,194 @@
+/* src/app/footer/footer.component.css */
+
+/* CSS Variables for Theming */
+:host {
+  --footer-bg: #70543e; /* Black background */
+  --footer-text-color: #ffffff; /* White text color */
+  --footer-link-color: #cccccc; /* Light gray for links */
+  --footer-link-hover-color: #ffffff; /* White on link hover */
+  --footer-heading-color: #ffffff; /* White for headings */
+  --footer-divider-color: #444444; /* Dark gray for divider */
+  --social-icon-bg: #336699; /* Light blue/teal for social icons */
+  --social-icon-hover-bg: #4a90d9; /* Slightly brighter blue on hover */
+  --button-gift-bg: #666666; /* Gray for "MAKE A GIFT" button */
+  --button-gift-hover-bg: #888888; /* Lighter gray on hover */
+  --button-gift-border: #999999; /* Border for the gift button */
+}
+
+/* Overall Footer Styling */
+.app-footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text-color);
+  font-family: "Inter", sans-serif; /* Consistent font */
+  padding-top: 3rem; /* Increase padding for better visual spacing */
+  padding-bottom: 3rem;
+}
+
+/* University Logo and Name */
+.footer-logo {
+  width: 60px; /* Adjust size as needed */
+  height: 60px;
+  object-fit: contain; /* Ensure logo scales properly */
+}
+
+.university-name {
+  color: var(--footer-heading-color);
+  font-weight: 700;
+  font-size: 1.5rem; /* Larger font size */
+  margin-bottom: 0.5rem;
+}
+
+.university-address {
+  font-size: 0.9rem;
+  color: var(--footer-link-color); /* Lighter color for address */
+  line-height: 1.4;
+}
+
+.footer-divider {
+  border-top: 1px solid var(--footer-divider-color);
+  opacity: 1; /* Ensure visibility */
+}
+
+/* Footer Navigation Links */
+.footer-nav .list-inline-item {
+  margin-right: 1.5rem; /* Space out inline links */
+}
+
+.footer-nav .list-inline-item:last-child {
+  margin-right: 0;
+}
+
+.footer-link {
+  color: var(--footer-link-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-link:hover {
+  color: var(--footer-link-hover-color);
+  text-decoration: underline;
+}
+
+/* Headings in Footer Sections */
+.footer-heading {
+  color: var(--footer-heading-color);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Social Icons */
+.social-icons .social-icon {
+  display: inline-flex; /* Use flex to center icon */
+  align-items: center;
+  justify-content: center;
+  width: 38px; /* Fixed size for circular icons */
+  height: 38px;
+  border-radius: 50%; /* Circular shape */
+  background-color: var(--social-icon-bg);
+  color: var(--footer-text-color);
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.social-icons .social-icon:hover {
+  background-color: var(--social-icon-hover-bg);
+}
+
+/* "MAKE A GIFT" Button */
+.btn-make-gift {
+  background-color: var(--button-gift-bg);
+  border: 1px solid var(--button-gift-border);
+  color: var(--footer-text-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 0.25rem; /* Slightly rounded corners */
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.btn-make-gift:hover {
+  background-color: var(--button-gift-hover-bg);
+  border-color: var(--button-gift-hover-bg);
+}
+
+/* Unstyled Lists in Footer */
+.footer-list li a {
+  color: var(--footer-link-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.8; /* Space out list items */
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-list li a:hover {
+  color: var(--footer-link-hover-color);
+  text-decoration: underline;
+}
+.navbar-logo {
+  height: 40px;
+  margin-right: 16px;
+}
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+  /* Medium devices (tablets) and down */
+  .app-footer .row > div {
+    text-align: center; /* Center align all columns */
+  }
+  .footer-logo {
+    margin-right: 0 !important; /* Remove margin right */
+    margin-bottom: 1rem; /* Add some space below logo */
+  }
+  .d-flex.align-items-start {
+    flex-direction: column;
+    align-items: center !important; /* Center logo and text vertically */
+  }
+  .university-name,
+  .university-address,
+  .footer-heading {
+    text-align: center; /* Ensure text is centered */
+  }
+  .footer-nav .list-inline {
+    padding-left: 0;
+  }
+  .footer-nav .list-inline-item {
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem; /* Add vertical spacing */
+    display: inline-block; /* Ensure they wrap correctly */
+  }
+  .social-icons {
+    justify-content: center; /* Center social icons */
+    display: flex;
+  }
+  .footer-list {
+    padding-left: 0; /* Remove default list padding */
+  }
+  .footer-list li {
+    text-align: center; /* Center list items */
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Small devices (phones) and down */
+  .app-footer {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .university-name {
+    font-size: 1.3rem;
+  }
+  .footer-heading {
+    font-size: 0.9rem;
+  }
+  .social-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  .btn-make-gift {
+    padding: 0.6rem 1.2rem;
+  }
+}

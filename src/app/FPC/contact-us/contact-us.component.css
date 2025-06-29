@@ -32,17 +32,11 @@
   --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
-/* Overall body font for consistency */
-body {
-  font-family: "Inter", sans-serif;
-  background-color: #f8f9fa; /* Light background for the whole page */
-}
-
 /* Main container styling for the contact form */
 .contact-form-container {
-  max-width: 600px; /* Max width for the form */
-  margin: 3rem auto; /* Centering with margin */
-  padding: 3rem; /* Padding inside the container */
+  max-width: 800px; /* Max width for the form */
+  margin-inline: auto; /* Centering with margin */
+  padding: 1rem 2rem; /* Padding inside the container */
   background-color: var(--contact-form-bg);
   border-radius: var(--border-radius-container);
   box-shadow: var(--shadow-md);

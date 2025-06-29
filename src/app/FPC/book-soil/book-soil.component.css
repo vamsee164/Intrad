@@ -26,32 +26,12 @@
   --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
-/* Main container styling for the form and benefits section */
-.soil-test-container {
-  max-width: 1000px;
-  margin: 3rem auto; /* Centering with margin */
-  padding: 2.5rem 3rem; /* Adjusted padding */
-  border-radius: var(--border-radius-container);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
-}
 .bookSoilForm {
   border-radius: var(--border-radius-container);
   box-shadow: var(--shadow-md);
   max-width: 800px;
-  margin: 3rem auto; /* Centering with margin */
-  padding: 2.5rem 3rem; /* Adjusted padding */
-}
-/* Header and descriptive text styling */
-.display-5 {
-  color: var(--text-dark-green);
-}
-
-.max-w-lg-description {
-  max-width: 500px; /* Adjusted width for the descriptive text */
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--text-muted-dark);
+  margin: 1rem auto; /* Centering with margin */
+  padding: 2rem 3rem; /* Adjusted padding */
 }
 
 /* Benefits Section Styling */

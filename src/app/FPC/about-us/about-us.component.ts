@@ -41,42 +41,6 @@ export class AboutUsComponent {
       experience: 'Experience 33+ Years',
       imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=KV+K', // Dummy image
     },
-    {
-      name: 'M. Ali',
-      role: 'Director Strategic Alliance',
-      experience: 'Experience 20+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=MA', // Dummy image
-    },
-    {
-      name: 'Aditya Modi',
-      role: 'Director',
-      experience: 'Experience 20+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=AM', // Dummy image
-    },
-    {
-      name: 'Abhijeet Deshpande',
-      role: 'Project Coordinator',
-      experience: 'Experience 10+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=AD', // Dummy image
-    },
-    {
-      name: 'Wakal Langote',
-      role: 'Director Agronomy',
-      experience: 'Experience 15+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=WL', // Dummy image
-    },
-    {
-      name: 'CA Deepak Zhavar',
-      role: 'Director RFO & Carbon Credit',
-      experience: 'Experience 15+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=DZ', // Dummy image
-    },
-    {
-      name: 'Niranjan Reddy',
-      role: 'Regional Director (South Zone Operations)',
-      experience: 'Experience 20+ Years',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=NR', // Dummy image
-    },
   ];
 
   constructor() {}
