@@ -1,17 +1,3 @@
-.job-openings-container {
-  max-width: 960px; /* Adjust as needed */
-  margin: 5rem auto; /* Top/bottom margin, auto for horizontal centering */
-  padding: 3rem; /* Padding inside the container */
-  background-color: var(--body-bg); /* Use theme variable */
-  border-radius: var(--border-radius-xl); /* Use theme variable */
-  box-shadow: var(--shadow-lg); /* Use theme variable */
-}
-
-/* Custom styles for Bootstrap elements using theme variables */
-.display-3 {
-  color: var(--text-dark); /* Use theme variable */
-}
-
 .lead {
   color: var(--text-muted); /* Use theme variable */
   max-width: 600px; /* Limit width of description text */
@@ -34,6 +20,12 @@
 
 .list-group-item {
   border-color: #e9ecef; /* Light border for list items */
+}
+
+.job-openings-text {
+  font-size: 20px;
+  text-align: center;
+  padding-inline: 10%;
 }
 
 /* Responsive adjustments */

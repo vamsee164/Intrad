@@ -2,10 +2,10 @@
 
 /* CSS Variables for Theming */
 :host {
-  --team-section-bg: #1a2a4b; /* Dark blue background from the image */
-  --team-card-bg: #2d456a; /* Slightly lighter blue for cards */
+  --team-section-bg: #4e3f2bd1; /* Dark blue background from the image */
+  --team-card-bg: #edd172c2; /* Slightly lighter blue for cards */
   --text-light: #ffffff; /* White text */
-  --text-member-info: #b0c4de; /* Lighter text for roles/experience */
+  --text-member-info: #fff; /* Lighter text for roles/experience */
   --border-radius-card: 0.75rem; /* Rounded corners for member cards */
   --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for cards */
 

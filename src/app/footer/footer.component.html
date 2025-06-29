@@ -1,1 +1,57 @@
-<p>footer works!</p>
+<footer class="app-footer py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 col-lg-4 mb-4 mb-md-0">
+                <div class="d-flex align-items-start">
+                    <img src="assets/images/logo.png" alt="FoodCops Logo" class="navbar-logo logo-height">
+                    <div>
+                        <h4 class="university-name">INTRA-D</h4>
+                        <p class="university-address mb-1">175 FOREST STREET</p>
+                        <p class="university-address mb-1">WALTHAM, MASSACHUSETTS 02452</p>
+                        <p class="university-address mb-0">+1.781.891.2000</p>
+                    </div>
+                </div>
+                <hr class="footer-divider my-3">
+                <nav class="footer-nav">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="#" class="footer-link">Copyright</a></li>
+                        <li class="list-inline-item"><a [routerLink]="['/contact']" href="#"
+                                class="footer-link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Follow Us Section -->
+            <div class="col-md-3 col-lg-2 mb-4 mb-md-0 text-md-center">
+                <h5 class="footer-heading mb-3">FOLLOW US:</h5>
+                <div class="social-icons">
+                    <a href="#" class="social-icon me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Support Us Section -->
+            <!-- <div class="col-md-4 col-lg-2 mb-4 mb-lg-0 text-md-center">
+                <h5 class="footer-heading mb-3">SUPPORT US:</h5>
+                <button class="btn btn-make-gift py-2 px-4">MAKE A GIFT</button>
+            </div> -->
+
+            <!-- Visit Us Section -->
+            <div class="col-md-6 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
+                <h5 class="footer-heading mb-3">VISIT US:</h5>
+                <ul class="list-unstyled footer-list">
+                    <li><a href="#" class="footer-link">Map & Directions</a></li>
+                    <li><a href="#" class="footer-link">Virtual Tour</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 col-lg-2 text-md-center text-lg-start">
+                <h5 class="footer-heading mb-3">WORK WITH US:</h5>
+                <ul class="list-unstyled footer-list">
+                    <li><a href="#" [routerLink]="['/career']" class="footer-link">View Jobs</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>

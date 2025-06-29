@@ -1,58 +1,122 @@
+/* src/app/navbar/navbar.component.css */
+
+/* CSS Variables for Navbar Theming */
+:host {
+  --navbar-bg-color: #f8f9fa; /* Light background for navbar */
+  --navbar-brand-color: #28a745; /* Green for FoodCops brand name */
+  --nav-link-color: #007bff; /* Secondary blue for nav links */
+  --nav-link-hover-bg: #e2e6ea; /* Light gray on hover */
+  --nav-link-active-color: #0056b3; /* Darker blue for active links */
+  --nav-link-active-bg: #eaf2fa; /* Light blue background for active links */
+  --dropdown-item-hover-bg: #f8f9fa; /* Light hover for dropdown items */
+  --dropdown-border-radius: 0.75rem; /* Rounded corners for dropdown */
+  --btn-outline-secondary-blue-border: #007bff;
+  --btn-outline-secondary-blue-hover-bg: #007bff;
+  --btn-outline-secondary-blue-hover-color: #fff;
+}
+
+.navbar {
+  border-radius: 0.75rem; /* rounded-lg-custom equivalent */
+  font-family: "Inter", sans-serif;
+}
+
 .navbar-logo {
-  height: 40px;
-  margin-right: 15px;
+  height: 40px; /* Adjust logo size */
+  margin-right: 0.75rem; /* Space between logo and brand text */
+}
+
+.navbar-brand .fw-bold {
+  color: var(--navbar-brand-color); /* FoodCops brand color */
 }
 
 .navbar-nav .nav-link {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Vertical Tabs Custom Styles */
-.nav-pills.vertical .nav-link {
-  text-align: left;
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  color: var(--text-muted);
-  /* Inactive tabs */
-  background-color: #e9ecef;
-  /* Light background */
-  transition: all 0.3s ease;
-}
-
-.nav-pills.vertical .nav-link.active {
-  background-color: var(--secondary-blue);
-  /* Active tab color */
-  color: #fff;
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-pills.vertical .nav-link:hover:not(.active) {
-  background-color: #dee2e6;
-  color: var(--text-dark);
-}
-
-/* Icon styling for tabs */
-.nav-pills.vertical .nav-link i {
-  margin-right: 0.75rem;
-  width: 20px;
+  color: var(--nav-link-color);
+  transition: all 0.2s ease-in-out;
+  /* Custom button-like styles from previous HTML */
+  border: 1px solid var(--btn-outline-secondary-blue-border);
+  padding: 0.5rem 1rem; /* Adjust padding */
+  border-radius: 0.75rem; /* rounded-lg-custom */
   text-align: center;
 }
-.logo-height {
-  height: 50px;
-} /* You can add global styles to this file, and also import other style files */
-/* Login Button Shadow */
-#simulate-login-btn {
-  box-shadow: var(--shadow-sm);
+
+.navbar-nav .nav-link:hover {
+  background-color: var(--btn-outline-secondary-blue-hover-bg);
+  color: var(--btn-outline-secondary-blue-hover-color);
+  border-color: var(--btn-outline-secondary-blue-hover-bg);
 }
 
-/* Dropdown Menu Positioning (for hover) */
+/* Active state for navigation items */
+.navbar-nav .nav-item.active > .nav-link {
+  background-color: var(--nav-link-active-bg); /* Highlight background */
+  color: var(--nav-link-active-color) !important; /* Darker text */
+  font-weight: 600; /* Make text bolder */
+  border-color: var(--nav-link-active-color);
+}
+
+/* Active state for dropdown parent (if any child is active) */
+.navbar-nav .nav-item.dropdown.active .dropdown-toggle {
+  background-color: var(--nav-link-active-bg);
+  color: var(--nav-link-active-color) !important;
+  font-weight: 600;
+  border-color: var(--nav-link-active-color);
+}
+
+/* Dropdown specific styles */
 .navbar-nav .nav-item.dropdown .dropdown-menu {
-  margin-top: 0;
+  border-radius: var(--dropdown-border-radius);
+  margin-top: 0.5rem; /* Space below toggle */
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* shadow-sm */
 }
 
+.navbar-nav .dropdown-item {
+  color: var(--text-dark); /* Bootstrap's default dark text */
+  padding: 0.5rem 1rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.navbar-nav .dropdown-item:hover,
+.navbar-nav .dropdown-item:focus {
+  background-color: var(--dropdown-item-hover-bg);
+  color: var(--nav-link-active-color); /* Match active link color */
+}
+
+/* Active state for dropdown items */
+.navbar-nav .dropdown-item.active {
+  background-color: var(--nav-link-active-bg);
+  color: var(--nav-link-active-color) !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
 @media (min-width: 992px) {
   .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
-    display: block;
+    display: block; /* Show dropdown on hover for desktop */
+  }
+}
+
+@media (max-width: 991.98px) {
+  /* Adjust for smaller screens */
+  .navbar-toggler {
+    margin-left: auto; /* Push toggler to the right */
+  }
+  .navbar-collapse {
+    text-align: center; /* Center items when collapsed */
+  }
+  .navbar-nav .nav-item {
+    margin-right: 0 !important; /* Remove horizontal margin */
+    margin-left: 0 !important;
+    margin-bottom: 0.5rem !important; /* Add vertical spacing */
+  }
+  .navbar-nav .nav-link {
+    width: 100%; /* Make links full width when stacked */
+  }
+  .navbar-nav .nav-item.dropdown .dropdown-menu {
+    width: 100%; /* Make dropdown menu full width */
+    text-align: center; /* Center dropdown items */
+  }
+  .navbar-nav .dropdown-item {
+    padding-left: 0; /* Adjust padding for stacked items */
+    padding-right: 0;
   }
 }
