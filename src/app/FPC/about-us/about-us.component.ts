@@ -14,7 +14,7 @@ export class AboutUsComponent {
     {
       name: 'D Uday Kumar',
       role: 'Founder',
-      imageUrl: 'https://placehold.co/150x150/1a2a4b/ffffff?text=CEO', // Dummy image
+      imageUrl: 'assets/images/uday.png', // Dummy image
     },
    
   ];

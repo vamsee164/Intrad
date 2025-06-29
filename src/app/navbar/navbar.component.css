@@ -21,13 +21,20 @@
 }
 
 .navbar-logo {
-  height: 40px; /* Adjust logo size */
+  height: 80px; /* Adjust logo size */
   margin-right: 0.75rem; /* Space between logo and brand text */
 }
 
 .navbar-brand .fw-bold {
   color: var(--navbar-brand-color); /* FoodCops brand color */
 }
+.nav-background{
+  background-color:#00807633 !important;
+}
+.rounded-circle {
+    border-radius: 15% !important;
+}
+
 
 .navbar-nav .nav-link {
   color: var(--nav-link-color);
