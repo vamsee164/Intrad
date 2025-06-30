@@ -1,6 +1,4 @@
-<!-- Post-Login Content: Services & Packages Section -->
-<div id="services-packages-section" class="d-none"> <!-- Initially hidden -->
-    <hr class="my-5">
+<div id="services-packages-section">
     <h2 class="text-primary-green mb-4 display-5 fw-bold text-center">Services & Packages</h2>
     <!-- Vertical Tabs Section -->
     <div class="row mt-4 mb-5">
@@ -28,13 +26,14 @@
                 <div class="tab-pane fade show active p-4 border rounded-xl shadow-sm" id="v-pills-lease"
                     role="tabpanel" aria-labelledby="v-pills-lease-tab">
                     <h3 class="text-secondary-blue mb-4">Lease Application Form</h3>
-                    <form id="lease-form">
+                    <form (ngSubmit)="handleLeaseSubmission()" #leaseForm="ngForm">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="leaseLandType" class="form-label fw-semibold">What is the type of
                                     land?</label>
                                 <select class="form-select rounded-md-custom" id="leaseLandType"
-                                    aria-label="Type of Land" required>
+                                    [(ngModel)]="leaseData.landType" name="leaseLandType" aria-label="Type of Land"
+                                    required>
                                     <option selected disabled value="">Select land type</option>
                                     <option value="agricultural">Agricultural</option>
                                     <option value="commercial">Commercial</option>
@@ -43,29 +42,31 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="leaseSoilType" class="form-label fw-semibold">What is the soil
-                                    type?</label>
-                                <select class="form-select rounded-md-custom" id="leaseSoilType" aria-label="Soil Type"
+                                <label for="leaseSoilType" class="form-label fw-semibold">What is the soil type?</label>
+                                <select class="form-select rounded-md-custom" id="leaseSoilType"
+                                    [(ngModel)]="leaseData.soilType" name="leaseSoilType" aria-label="Soil Type"
                                     required>
                                     <option selected disabled value="">Select soil type</option>
-                                    <option value="sandy">Red</option>
-                                    <option value="clay">Black</option>
+                                    <option value="red">Red</option>
+                                    <option value="black">Black</option>
                                     <option value="loamy">Loamy</option>
-                                    <option value="silty">Laterite</option>
+                                    <option value="laterite">Laterite</option>
                                     <option value="alluvial">Alluvial</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="leaseAreaAcres" class="form-label fw-semibold">Area of
-                                    the land for lease (In Acres)?</label>
+                                <label for="leaseAreaAcres" class="form-label fw-semibold">Area of the land for lease
+                                    (In Acres)?</label>
                                 <input type="number" class="form-control rounded-md-custom" id="leaseAreaAcres"
+                                    [(ngModel)]="leaseData.areaAcres" name="leaseAreaAcres"
                                     placeholder="Enter area in acres" min="1" step="any" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="leaseWaterSource" class="form-label fw-semibold">What is source of
                                     Water?</label>
                                 <select class="form-select rounded-md-custom" id="leaseWaterSource"
-                                    aria-label="Water Source" required>
+                                    [(ngModel)]="leaseData.waterSource" name="leaseWaterSource"
+                                    (change)="toggleLeaseWaterSourceQuestions()" aria-label="Water Source" required>
                                     <option selected disabled value="">Select water source</option>
                                     <option value="well">Well</option>
                                     <option value="borewell">Borewell</option>
@@ -75,40 +76,44 @@
                                 </select>
                             </div>
                             <!-- Dynamic water source related questions -->
-                            <div class="col-md-6" id="leaseBorewellQuestion" style="display:none;">
-                                <label for="leaseBorewellCount" class="form-label fw-semibold">Total no of
-                                    Borewells in the land?</label>
+                            <div class="col-md-6" *ngIf="leaseData.waterSource === 'borewell'">
+                                <label for="leaseBorewellCount" class="form-label fw-semibold">Total no of Borewells in
+                                    the land?</label>
                                 <input type="number" class="form-control rounded-md-custom" id="leaseBorewellCount"
+                                    [(ngModel)]="leaseData.borewellCount" name="leaseBorewellCount"
                                     placeholder="Number of borewells" min="0">
                             </div>
-                            <div class="col-md-6" id="leaseCanalQuestion" style="display:none;">
-                                <label for="leaseCanalWaterDuration" class="form-label fw-semibold">Duration of
-                                    Canal Water available:</label>
+                            <div class="col-md-6" *ngIf="leaseData.waterSource === 'canal'">
+                                <label for="leaseCanalWaterDuration" class="form-label fw-semibold">Duration of Canal
+                                    Water available:</label>
                                 <input type="text" class="form-control rounded-md-custom" id="leaseCanalWaterDuration"
+                                    [(ngModel)]="leaseData.canalWaterDuration" name="leaseCanalWaterDuration"
                                     placeholder="e.g., 6 months/year">
                             </div>
-                            <div class="col-md-6" id="leaseWellQuestion" style="display:none;">
-                                <label for="leaseWellWaterAcres" class="form-label fw-semibold">How many acres
-                                    water can be supplied using Well?</label>
+                            <div class="col-md-6" *ngIf="leaseData.waterSource === 'well'">
+                                <label for="leaseWellWaterAcres" class="form-label fw-semibold">How many acres water can
+                                    be supplied using Well?</label>
                                 <input type="number" class="form-control rounded-md-custom" id="leaseWellWaterAcres"
+                                    [(ngModel)]="leaseData.wellWaterAcres" name="leaseWellWaterAcres"
                                     placeholder="Acres supplied" min="0" step="any">
                             </div>
                             <div class="col-md-6">
-                                <label for="leaseTotalYears" class="form-label fw-semibold">Total No. of Years
-                                    (Willing to Lease)?</label>
+                                <label for="leaseTotalYears" class="form-label fw-semibold">Total No. of Years (Willing
+                                    to Lease)?</label>
                                 <input type="number" class="form-control rounded-md-custom" id="leaseTotalYears"
+                                    [(ngModel)]="leaseData.totalYears" name="leaseTotalYears"
                                     placeholder="Enter total years" min="5" max="99" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="leaseRoadDistance" class="form-label fw-semibold">How far from main
-                                    Road in meters?</label>
+                                <label for="leaseRoadDistance" class="form-label fw-semibold">How far from main Road in
+                                    meters?</label>
                                 <input type="number" class="form-control rounded-md-custom" id="leaseRoadDistance"
+                                    [(ngModel)]="leaseData.roadDistance" name="leaseRoadDistance"
                                     placeholder="Distance in meters (e.g., 500)" min="0" required>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3">Submit
-                                    Lease
-                                    Inquiry</button>
+                                <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3"
+                                    [disabled]="!leaseForm.valid">Submit Lease Inquiry</button>
                             </div>
                         </div>
                     </form>
@@ -118,11 +123,12 @@
                 <div class="tab-pane fade p-4 border rounded-xl shadow-sm" id="v-pills-rent" role="tabpanel"
                     aria-labelledby="v-pills-rent-tab">
                     <h3 class="text-secondary-blue mb-4">Rent Equipment/Machinery Form</h3>
-                    <form id="rent-form">
+                    <form (ngSubmit)="handleRentSubmission()" #rentForm="ngForm">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="rentEquipmentType" class="form-label fw-semibold">Equipment Type</label>
-                                <select class="form-select rounded-md-custom" id="rentEquipmentType" required>
+                                <select class="form-select rounded-md-custom" id="rentEquipmentType"
+                                    [(ngModel)]="rentData.equipmentType" name="rentEquipmentType" required>
                                     <option selected disabled value="">Select equipment type</option>
                                     <option value="tractor">Tractor</option>
                                     <option value="harvester">Harvester</option>
@@ -134,18 +140,18 @@
                             <div class="col-md-6">
                                 <label for="rentDuration" class="form-label fw-semibold">Rent Duration</label>
                                 <input type="text" class="form-control rounded-md-custom" id="rentDuration"
-                                    placeholder="e.g., 1 hour " required>
+                                    [(ngModel)]="rentData.duration" name="rentDuration" placeholder="e.g., 1 hour "
+                                    required>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3">Submit
-                                    Rent
-                                    Inquiry</button>
+                                <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3"
+                                    [disabled]="!rentForm.valid">Submit Rent Inquiry</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Conforming Packages Tab Content -->
+                <!-- Co-farming Packages Tab Content -->
                 <div class="tab-pane fade p-4 border rounded-xl shadow-sm" id="v-pills-conforming" role="tabpanel"
                     aria-labelledby="v-pills-conforming-tab">
                     <h3 class="text-secondary-blue mb-4">Our Co-farming Packages</h3>
@@ -153,79 +159,91 @@
                         <!-- Package 1: Basic Plan -->
                         <div class="col">
                             <div class="package-card h-100">
-                                <div class="card-header text-primary-green text-center fs-5">Basic Plan</div>
+                                <div class="card-header bp text-center fs-5">Basic Plan</div>
                                 <div class="card-body">
-                                    <!-- <h5 class="card-title text-center mb-3">₹5,000/month</h5> -->
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Soil testing</li>
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Seed provision</li>
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Fertilize guidance
-                                        </li>
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Crop Monitoring</li>
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Marketing support
-                                        </li>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
+                                            testing</li>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Seed
+                                            provision</li>
+                                        <li class="list-group-item"><i
+                                                class="fas fa-check text-success me-2"></i>Fertilize guidance</li>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Crop
+                                            Monitoring</li>
+                                        <li class="list-group-item"><i
+                                                class="fas fa-check text-success me-2"></i>Marketing support</li>
                                     </ul>
                                     <div class="text-center mt-3">
-                                        <button class="btn btn-primary-green rounded-md-custom">Select
-                                            Plan</button>
+                                        <button class="btn bp-btn rounded-md-custom">Select Plan</button>
                                     </div>
                                 </div>
-                                <div class="card-footer text-muted text-center small">Terms: Monthly
-                                    subscription. Initial soil test & first batch of seeds included. Basic
-                                    monitoring.</div>
+                                <div class="card-footer text-muted text-center small py-2">Terms: Monthly subscription.
+                                    Initial soil test & first batch of seeds included. Basic monitoring.</div>
                             </div>
                         </div>
                         <!-- Package 2: Premium Plan -->
                         <div class="col">
                             <div class="package-card h-100 border-primary-green border-2">
-                                <div class="card-header bg-primary-green text-white text-center fs-5">Premium
-                                    Plan</div>
+                                <div class="card-header bg-primary-green text-white text-center fs-5">Premium Plan</div>
                                 <div class="card-body">
-                                    <!-- <h5 class="card-title text-center mb-3">₹12,000/month</h5> -->
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Soil testing</li>
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Seed provision</li>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
+                                            testing</li>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Seed
+                                            provision</li>
                                     </ul>
                                     <div class="text-center mt-3">
-                                        <button class="btn btn-secondary-blue rounded-md-custom">Select
+                                        <button class="btn btn-primary-green  text-white rounded-md-custom">Select
                                             Plan</button>
                                     </div>
                                 </div>
-                                <div class="card-footer text-muted text-center small">Terms: Monthly
-                                    subscription. Includes advanced soil analysis and premium seed varieties.
-                                </div>
+                                <div class="card-footer text-muted text-center small py-2">Terms: Monthly subscription.
+                                    Includes advanced soil analysis and premium seed varieties.</div>
                             </div>
                         </div>
                         <!-- Package 3: Enterprise Plan -->
                         <div class="col">
                             <div class="package-card h-100">
-                                <div class="card-header text-secondary-blue text-center fs-5">Marketing Plan
-                                </div>
+                                <div class="card-header btn-secondary-blue text-center fs-5">Marketing Plan</div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-center mb-3">Contact Us</h5>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>
-                                            Only marketing
-                                            support</li>
+                                        <h5 class="card-title text-center my-2">Contact Us</h5>
+                                        <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Only
+                                            marketing support</li>
                                     </ul>
                                     <div class="text-center mt-3">
-                                        <button class="btn btn-info-light rounded-md-custom">Inquire
-                                            Now</button>
+                                        <button [routerLink]="['/contact']"
+                                            class="btn btn-secondary-blue rounded-md-custom">Inquire Now</button>
                                     </div>
                                 </div>
-                                <div class="card-footer text-muted text-center small">Terms: Custom pricing
-                                    based on market outreach and produce volume.</div>
+                                <div class="card-footer text-muted text-center small py-2">Terms: Custom pricing based
+                                    on
+                                    market outreach and produce volume.</div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dummy Success Modal for DashboardComponent to use -->
+<!-- In a real app, you might have a shared modal service or define this once at AppComponent level -->
+<div class="modal fade" id="successModalDashboard" tabindex="-1" aria-labelledby="successModalLabelDashboard"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg-custom shadow-lg">
+            <div class="modal-header bg-success text-white p-3 rounded-top-custom">
+                <h5 class="modal-title h5" id="successModalLabelDashboard">Form Submission</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-secondary">
+                Form submitted successfully! Check the console for details.
+            </div>
+            <div class="modal-footer p-3 border-top border-gray-200 d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
