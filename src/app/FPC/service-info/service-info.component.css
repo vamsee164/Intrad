@@ -1,0 +1,221 @@
+/* src/app/dashboard/dashboard.component.css */
+
+/* CSS Variables for Theming (re-defined or imported from global styles) */
+:host {
+  /* Colors */
+  --primary-green: #28a745;
+  --primary-green-hover: #218838;
+  --primary-green-border-hover: #1e7e34;
+
+  --secondary-blue: #007bff;
+  --secondary-blue-hover: #0069d9;
+  --secondary-blue-border-hover: #0062cc;
+
+  --info-light: #cfe2ff; /* Bootstrap's info background */
+  --info-light-text: #0c4187; /* Darker blue for contrast on info-light */
+  --info-light-hover: #b0cced;
+
+  --warning-light: #fff3cd; /* Bootstrap's warning background */
+  --warning-light-text: #664d03; /* Darker yellow for contrast on warning-light */
+  --warning-light-hover: #e0d0b0;
+
+  --body-bg: #f8f9fa; /* Light gray background */
+  --main-border-color: #6c757d; /* border-secondary equivalent */
+  --text-dark: #212529; /* Bootstrap's dark text */
+  --text-muted: #6c757d; /* Bootstrap's muted text */
+  --navbar-bg: #f8f9fa; /* Bootstrap's light background */
+  --modal-header-bg-success: #198754; /* Bootstrap's success background for modal header */
+
+  /* Border Radii */
+  --border-radius-xl: 1rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-md: 0.375rem;
+
+  /* Shadows */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Styles specific to the Services & Packages section */
+
+h2.text-primary-green {
+  color: var(--primary-green) !important;
+}
+
+h3.text-secondary-blue {
+  color: var(--secondary-blue) !important;
+}
+
+/* Vertical Tabs Custom Styles */
+.nav-pills.vertical .nav-link {
+  text-align: left;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-muted); /* Inactive tabs */
+  background-color: #e9ecef; /* Light background */
+  transition: all 0.3s ease;
+}
+
+.nav-pills.vertical .nav-link.active {
+  background-color: var(--secondary-blue); /* Active tab color */
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-pills.vertical .nav-link:hover:not(.active) {
+  background-color: #dee2e6;
+  color: var(--text-dark);
+}
+
+/* Icon styling for tabs */
+.nav-pills.vertical .nav-link i {
+  margin-right: 0.75rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* Form controls within tabs */
+.form-select.rounded-md-custom,
+.form-control.rounded-md-custom {
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Custom Button Colors */
+.btn-primary-green {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #fff;
+}
+.btn-primary-green:hover {
+  background-color: var(--primary-green-hover);
+  border-color: var(--primary-green-border-hover);
+}
+
+.btn-secondary-blue {
+  background-color: var(--secondary-blue);
+  border-color: var(--secondary-blue);
+  color: #fff;
+}
+.btn-secondary-blue:hover {
+  background-color: var(--secondary-blue-hover);
+  border-color: var(--secondary-blue-border-hover);
+}
+
+.btn-info-light {
+  background-color: var(--info-light);
+  border-color: var(--info-light);
+  color: var(--info-light-text);
+}
+.btn-info-light:hover {
+  background-color: var(--info-light-hover);
+  border-color: var(--info-light-hover);
+}
+
+.btn-warning-light {
+  background-color: var(--warning-light);
+  border-color: var(--warning-light);
+  color: var(--warning-light-text);
+}
+.btn-warning-light:hover {
+  background-color: var(--warning-light-hover);
+  border-color: var(--warning-light-hover);
+}
+
+/* Conforming Packages Styling */
+.package-card {
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.package-card .card-header {
+  /* Use navbar bg for headers */
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+}
+.package-card .list-group-item {
+  border: none;
+  padding: 12px 18px;
+}
+.package-card .list-group-item:last-child {
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
+
+/* Specific styling for the Premium Plan card header to match image */
+.package-card.border-primary-green .card-header {
+  background-color: var(--primary-green);
+  color: #fff;
+  border-color: var(--primary-green); /* Match border color */
+}
+
+/* Styling for the success modal (if using a local copy in this component) */
+.modal-header.bg-success {
+  background-color: var(--modal-header-bg-success) !important;
+}
+
+.package-card {
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* Make the card a flex container */
+  flex-direction: column; /* Stack children vertically */
+}
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.package-card .card-header {
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+}
+.package-card .card-body {
+  display: flex; /* Make card-body a flex container */
+  flex-direction: column; /* Stack its children vertically */
+  flex-grow: 1; /* Allow card-body to grow and fill available space */
+  justify-content: space-between; /* Distribute space between list and button */
+}
+
+.package-card .list-group-item:last-child {
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
+
+/* Specific styling for the Premium Plan card header to match image */
+.package-card.border-primary-green .card-header {
+  background-color: var(--primary-green);
+  color: #fff;
+  border-color: var(--primary-green); /* Match border color */
+}
+
+.card-header.bp.text-center.fs-5,
+.btn.bp-btn.rounded-md-custom {
+  background-color: #c54021;
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  /* Adjustments for smaller screens within the dashboard content */
+  .nav-pills.vertical .nav-link {
+    text-align: center; /* Center tabs when stacked */
+  }
+  .nav-pills.vertical .nav-link i {
+    margin-right: 0;
+    display: block; /* Make icon take full width */
+    margin-bottom: 0.5rem; /* Space below icon */
+  }
+}
