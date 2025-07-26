@@ -1,0 +1,73 @@
+<!-- src/app/buyer/buyer.component.html -->
+<div class="buyer-form-container my-5 p-4 rounded-xl shadow-lg">
+    <div class="row text-center mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold text-primary-green mb-3">Buyer Form</h1>
+            <p class="lead text-muted">Select your desired product specifications.</p>
+        </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #buyerForm="ngForm">
+        <!-- Level 1: Main Category Dropdown -->
+        <div class="mb-4">
+            <label for="mainCategory" class="form-label fw-semibold">Main Category:</label>
+            <select class="form-select form-control-custom shadow-sm" id="mainCategory"
+                [(ngModel)]="selectedMainCategory" name="mainCategory" (change)="onMainCategoryChange()" required>
+                <option value="" disabled selected>Select a category</option>
+                <option *ngFor="let category of mainCategories" [value]="category.value">{{ category.label }}</option>
+            </select>
+        </div>
+
+        <!-- Level 2: Sub-Category Dropdown (conditionally displayed) -->
+        <div class="mb-4" *ngIf="subCategories.length > 0">
+            <label for="subCategory" class="form-label fw-semibold">Sub-Category:</label>
+            <select class="form-select form-control-custom shadow-sm" id="subCategory" [(ngModel)]="selectedSubCategory"
+                name="subCategory" (change)="onSubCategoryChange()" required>
+                <option value="" disabled selected>Select a sub-category</option>
+                <option *ngFor="let subCategory of subCategories" [value]="subCategory.value">{{ subCategory.label }}
+                </option>
+            </select>
+        </div>
+
+        <!-- Level 3: Product Type Dropdown (conditionally displayed) -->
+        <div class="mb-4" *ngIf="productTypes.length > 0">
+            <label for="productType" class="form-label fw-semibold">Product Type:</label>
+            <select class="form-select form-control-custom shadow-sm" id="productType" [(ngModel)]="selectedProductType"
+                name="productType" (change)="onProductTypeChange()" required>
+                <option value="" disabled selected>Select a product type</option>
+                <option *ngFor="let type of productTypes" [value]="type.value">{{ type.label }}</option>
+            </select>
+        </div>
+
+        <!-- Level 4: Details Dropdown (Quality/Quantity - conditionally displayed) -->
+        <div class="mb-4" *ngIf="detailsOptions.length > 0">
+            <label for="details" class="form-label fw-semibold">Details:</label>
+            <select class="form-select form-control-custom shadow-sm" id="details" [(ngModel)]="selectedDetails"
+                name="details" required>
+                <option value="" disabled selected>Select details</option>
+                <option *ngFor="let detail of detailsOptions" [value]="detail.value">{{ detail.label }}</option>
+            </select>
+        </div>
+
+        <!-- Display Selected Values -->
+        <div *ngIf="selectedMainCategory || selectedSubCategory || selectedProductType || selectedDetails"
+            class="mt-5 p-4 border rounded-lg-custom bg-light-green shadow-sm">
+            <h4 class="text-primary-green mb-3">Your Selections:</h4>
+            <p *ngIf="selectedMainCategory"><strong>Main Category:</strong> {{ getLabel(mainCategories,
+                selectedMainCategory) }}</p>
+            <p *ngIf="selectedSubCategory"><strong>Sub-Category:</strong> {{ getLabel(subCategories,
+                selectedSubCategory) }}</p>
+            <p *ngIf="selectedProductType"><strong>Product Type:</strong> {{ getLabel(productTypes, selectedProductType)
+                }}</p>
+            <p *ngIf="selectedDetails"><strong>Details:</strong> {{ getLabel(detailsOptions, selectedDetails) }}</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary-green btn-lg px-5 py-3 rounded-pill shadow-sm"
+                    [disabled]="!buyerForm.valid">Submit Inquiry</button>
+            </div>
+        </div>
+    </form>
+</div>

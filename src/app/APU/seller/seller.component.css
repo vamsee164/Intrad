@@ -1,0 +1,85 @@
+/* src/app/seller/seller.component.css */
+
+/* CSS Variables for Theming */
+:host {
+  --primary-green: #28a745;
+  --primary-green-hover: #218838;
+  --primary-green-border-hover: #1e7e34;
+  --text-muted: #6c757d;
+  --form-bg: #f8f9fa; /* Light background for the form container */
+  --border-color: #dee2e6; /* Light border for form container */
+  --input-bg: #ffffff; /* White background for inputs */
+  --input-border: #ced4da; /* Light gray border for inputs */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --border-radius-xl: 1rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-md: 0.375rem;
+}
+
+.seller-form-container {
+  max-width: 600px; /* Adjust max-width as needed */
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background-color: var(--form-bg);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  font-family: "Inter", sans-serif;
+}
+
+.display-5 {
+  color: var(--primary-green);
+}
+
+.lead {
+  color: var(--text-muted);
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(
+    --text-dark
+  ); /* Assuming text-dark is defined in a global scope or here */
+  margin-bottom: 0.5rem;
+  display: block; /* Ensure label is on its own line */
+}
+
+.form-control-custom {
+  border-radius: var(--border-radius-md) !important;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 1rem;
+}
+
+.form-control-custom:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25); /* Green focus ring */
+}
+
+.btn-primary-green {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #fff;
+  border-radius: var(--border-radius-lg) !important; /* Pill-like shape */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary-green:hover:not(:disabled) {
+  background-color: var(--primary-green-hover);
+  border-color: var(--primary-green-border-hover);
+}
+
+.btn-primary-green:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .seller-form-container {
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+}

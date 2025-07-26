@@ -1,0 +1,52 @@
+<!-- src/app/seller/seller.component.html -->
+<div class="seller-form-container my-5 p-4 rounded-xl shadow-lg">
+    <div class="row text-center mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold text-primary-green mb-3">Seller Form</h1>
+            <p class="lead text-muted">Register your raw materials for sale.</p>
+        </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #sellerForm="ngForm">
+        <div class="mb-4">
+            <label for="sellerName" class="form-label fw-semibold">Name of Seller:</label>
+            <input type="text" class="form-control form-control-custom shadow-sm" id="sellerName"
+                [(ngModel)]="formData.sellerName" name="sellerName" placeholder="Enter your name" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="contactNo" class="form-label fw-semibold">Contact No:</label>
+            <input type="tel" class="form-control form-control-custom shadow-sm" id="contactNo"
+                [(ngModel)]="formData.contactNo" name="contactNo" placeholder="Enter your mobile number" required
+                pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+        </div>
+
+        <div class="mb-4">
+            <label for="rawMaterialType" class="form-label fw-semibold">Raw Material Type:</label>
+            <input type="text" class="form-control form-control-custom shadow-sm" id="rawMaterialType"
+                [(ngModel)]="formData.rawMaterialType" name="rawMaterialType" placeholder="e.g., Wheat, Mango, Onion"
+                required>
+        </div>
+
+        <div class="mb-4">
+            <label for="quantity" class="form-label fw-semibold">Quantity:</label>
+            <input type="text" class="form-control form-control-custom shadow-sm" id="quantity"
+                [(ngModel)]="formData.quantity" name="quantity" placeholder="e.g., 1000 kg, 50 quintals" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="location" class="form-label fw-semibold">Location:</label>
+            <input type="text" class="form-control form-control-custom shadow-sm" id="location"
+                [(ngModel)]="formData.location" name="location" placeholder="Enter your location (village/city)"
+                required>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary-green btn-lg px-5 py-3 rounded-pill shadow-sm"
+                    [disabled]="!sellerForm.valid">Submit Offer</button>
+            </div>
+        </div>
+    </form>
+</div>
