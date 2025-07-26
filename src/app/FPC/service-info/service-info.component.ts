@@ -1,7 +1,8 @@
 import { isPlatformBrowser, CommonModule, DOCUMENT } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, ViewChild, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService, User } from '../../services/auth.service';
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
 
@@ -28,7 +29,8 @@ interface RentData {
   templateUrl: './service-info.component.html',
   styleUrl: './service-info.component.css',
 })
-export class ServiceInfoComponent {
+export class ServiceInfoComponent implements OnInit {
+  currentUser: User | null = null;
   // Lease form data
   leaseData: LeaseData = {
     landType: '',
@@ -50,10 +52,15 @@ export class ServiceInfoComponent {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+    
     if (isPlatformBrowser(this.platformId)) {
       // Re-initialize Bootstrap's tab functionality if needed
       const firstTabEl = this.document.querySelector(
@@ -95,7 +102,14 @@ export class ServiceInfoComponent {
    * Handles Lease Application Form submission.
    */
   handleLeaseSubmission(): void {
-    console.log('Lease Form Submitted:', this.leaseData);
+    if (!this.currentUser) return;
+    
+    const submissionData = {
+      ...this.leaseData,
+      userId: this.currentUser.id,
+      email: this.currentUser.email
+    };
+    console.log('Lease Form Submitted:', submissionData);
     // In a real application, send this.leaseData to your backend API.
 
     // Show success modal
@@ -122,7 +136,14 @@ export class ServiceInfoComponent {
    * Handles Rent Equipment/Machinery Form submission.
    */
   handleRentSubmission(): void {
-    console.log('Rent Form Submitted:', this.rentData);
+    if (!this.currentUser) return;
+    
+    const submissionData = {
+      ...this.rentData,
+      userId: this.currentUser.id,
+      email: this.currentUser.email
+    };
+    console.log('Rent Form Submitted:', submissionData);
     // In a real application, send this.rentData to your backend API.
 
     // Show success modal
@@ -143,5 +164,9 @@ export class ServiceInfoComponent {
       successModal.show();
     }
     this.rentHtmlForm.resetForm(); // Reset the form using NgForm reference
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

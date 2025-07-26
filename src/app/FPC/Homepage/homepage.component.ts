@@ -2,10 +2,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule } from '@angular/router'; // Only if homepage.html uses routerLink directly
+import { RouterModule } from '@angular/router';
 
-// Import the new DashboardComponent
+// Import components and services
 import { ServiceInfoComponent } from '../service-info/service-info.component';
+import { LoginComponent } from '../login/login.component';
+import { AuthService, User } from '../../services/auth.service';
 
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
@@ -32,16 +34,14 @@ interface SignupFormData {
     FormsModule,
     RouterModule, // Include RouterModule if you use routerLink in homepage.html
     ServiceInfoComponent, // Import DashboardComponent here
+    LoginComponent, // Import LoginComponent here
   ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css'],
 })
 export class HomepageComponent implements OnInit {
-  // Login state variables
   isLoggedIn: boolean = false;
-  loginData = { username: '', password: '' };
-  loginMessage: string = '';
-  loginMessageType: 'success' | 'danger' | '' = '';
+  currentUser: User | null = null;
 
   // Signup form data
   signupData: SignupFormData = {
@@ -57,56 +57,24 @@ export class HomepageComponent implements OnInit {
     fertilizers: '',
   };
 
-  // ViewChild to get a reference to the NgForm directive instance for forms
-  @ViewChild('loginForm') loginHtmlForm!: NgForm;
+  // ViewChild to get a reference to the NgForm directive instance for signup form
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    // Initial UI state on page load (starts in logged-out state)
-    // You might want to check localStorage or a service for actual login status
-    this.updateUIForLoginState(false);
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.isLoggedIn = !!user;
+    });
   }
 
-  /**
-   * Updates UI visibility based on login status.
-   * This is called by login/logout actions.
-   * @param isLoggedIn Boolean indicating current login status.
-   */
-  updateUIForLoginState(loggedIn: boolean): void {
-    this.isLoggedIn = loggedIn;
-    this.loginMessage = ''; // Clear login message on state change
+  onLoginSuccess(): void {
+    // Login state is handled by the auth service subscription
   }
 
-  /**
-   * Handles the login attempt.
-   * Simulates authentication and updates the login state.
-   */
-  handleLogin(): void {
-    const { username, password } = this.loginData;
-    console.log('Simulating Login...');
-    console.log(`Username: ${username}, Password: ${password}`);
-
-    if (username === 'user' && password === 'pass') {
-      // Simple hardcoded check
-      this.loginMessage = 'Login successful!';
-      this.loginMessageType = 'success';
-      this.loginHtmlForm.resetForm(); // Reset the form using NgForm reference
-      this.updateUIForLoginState(true);
-    } else {
-      this.loginMessage = 'Invalid username or password.';
-      this.loginMessageType = 'danger';
-      this.updateUIForLoginState(false);
-    }
-  }
-
-  /**
-   * Handles logout action.
-   */
   handleLogout(): void {
-    this.updateUIForLoginState(false);
-    console.log('Logged out.');
+    this.authService.logout();
   }
 
   /**

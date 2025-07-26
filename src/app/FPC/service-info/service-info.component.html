@@ -1,5 +1,11 @@
 <div id="services-packages-section">
-    <h2 class="text-primary-green mb-4 display-5 fw-bold text-center">Services & Packages</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary-green display-5 fw-bold">Services & Packages</h2>
+        <div *ngIf="currentUser" class="d-flex align-items-center gap-3">
+            <span class="text-muted">Welcome, <strong>{{currentUser.email}}</strong> ({{currentUser.role}})</span>
+            <button class="btn btn-outline-secondary btn-sm" (click)="logout()">Logout</button>
+        </div>
+    </div>
     <!-- Vertical Tabs Section -->
     <div class="row mt-4 mb-5">
         <div class="col-md-3">

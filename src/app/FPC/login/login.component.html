@@ -1,0 +1,27 @@
+<section id="login-page" class="p-4 bg-white rounded-xl shadow-lg">
+    <h2 class="h5 mb-3 text-dark">Welcome! Please Log In</h2>
+    <form (ngSubmit)="handleLogin()" #loginForm="ngForm">
+        <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">Email</label>
+            <input type="email" id="email" [(ngModel)]="loginData.email" name="email" placeholder="Enter your email"
+                aria-label="Email" class="form-control rounded-md-custom" required>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="form-label fw-semibold">Password</label>
+            <input type="password" id="password" [(ngModel)]="loginData.password" name="password"
+                placeholder="Enter your password" aria-label="Password" class="form-control rounded-md-custom" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 rounded-md-custom shadow-sm"
+            [disabled]="!loginForm.valid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Logging in...' : 'Login' }}
+        </button>
+    </form>
+    <!-- Login message display -->
+    <div *ngIf="loginMessage"
+        [ngClass]="{'alert-success': loginMessageType === 'success', 'alert-danger': loginMessageType === 'danger'}"
+        class="alert mt-3 rounded-md-custom" role="alert">{{loginMessage}}</div>
+    <a href="#" class="d-block text-primary text-center mt-3 small">Forgot Password?</a>
+    <p class="text-center small mt-2 text-muted">Don't have an account? <a href="#" class="text-primary"
+            data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a></p>
+</section>
