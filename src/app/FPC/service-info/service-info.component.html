@@ -1,38 +1,48 @@
 <div id="services-packages-section">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary-green display-5 fw-bold">Services & Packages</h2>
-        <div *ngIf="currentUser" class="d-flex align-items-center gap-3">
-            <span class="text-muted">Welcome, <strong>{{currentUser.email}}</strong> ({{currentUser.role}})</span>
-            <button class="btn btn-outline-secondary btn-sm" (click)="logout()">Logout</button>
+    <div class="card-modern p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="text-primary-green h3 fw-bold mb-1">Services & Packages</h2>
+                <p class="text-muted mb-0">Manage your agricultural services and subscriptions</p>
+            </div>
+            <div *ngIf="currentUser" class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="fw-semibold text-dark">{{currentUser.email}}</div>
+                    <small class="text-muted">{{currentUser.role | titlecase}} Account</small>
+                </div>
+                <button class="btn btn-outline-danger btn-sm rounded-modern" (click)="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </button>
+            </div>
         </div>
     </div>
     <!-- Vertical Tabs Section -->
     <div class="row mt-4 mb-5">
         <div class="col-md-3">
-            <div class="nav flex-column nav-pills vertical" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <button class="nav-link active" id="v-pills-lease-tab" data-bs-toggle="pill"
+            <div class="nav flex-column nav-pills vertical card-modern p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active rounded-modern mb-2 fw-medium" id="v-pills-lease-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-lease" type="button" role="tab" aria-controls="v-pills-lease"
                     aria-selected="true">
-                    <i class="fas fa-handshake"></i> Lease
+                    <i class="fas fa-handshake me-2"></i>Land Lease
                 </button>
-                <button class="nav-link" id="v-pills-rent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-rent"
+                <button class="nav-link rounded-modern mb-2 fw-medium" id="v-pills-rent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-rent"
                     type="button" role="tab" aria-controls="v-pills-rent" aria-selected="false">
-                    <i class="fas fa-dollar-sign"></i> Rent
+                    <i class="fas fa-tractor me-2"></i>Equipment Rent
                 </button>
-                <button class="nav-link" id="v-pills-conforming-tab" data-bs-toggle="pill"
+                <button class="nav-link rounded-modern fw-medium" id="v-pills-conforming-tab" data-bs-toggle="pill"
                     data-bs-target="#v-pills-conforming" type="button" role="tab" aria-controls="v-pills-conforming"
                     aria-selected="false">
-                    <i class="fas fa-check-circle"></i> Co-farming Packages
+                    <i class="fas fa-users me-2"></i>Co-farming Plans
                 </button>
             </div>
         </div>
         <div class="col-md-9">
             <div class="tab-content" id="v-pills-tabContent">
                 <!-- Lease Tab Content -->
-                <div class="tab-pane fade show active p-4 border rounded-xl shadow-sm" id="v-pills-lease"
+                <div class="tab-pane fade show active card-modern p-4" id="v-pills-lease"
                     role="tabpanel" aria-labelledby="v-pills-lease-tab">
                     <h3 class="text-secondary-blue mb-4">Lease Application Form</h3>
-                    <form (ngSubmit)="handleLeaseSubmission()" #leaseForm="ngForm">
+                    <form (ngSubmit)="handleLeaseSubmission()" #leaseForm="ngForm" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="leaseLandType" class="form-label fw-semibold">What is the type of
@@ -126,10 +136,10 @@
                 </div>
 
                 <!-- Rent Tab Content -->
-                <div class="tab-pane fade p-4 border rounded-xl shadow-sm" id="v-pills-rent" role="tabpanel"
+                <div class="tab-pane fade card-modern p-4" id="v-pills-rent" role="tabpanel"
                     aria-labelledby="v-pills-rent-tab">
                     <h3 class="text-secondary-blue mb-4">Rent Equipment/Machinery Form</h3>
-                    <form (ngSubmit)="handleRentSubmission()" #rentForm="ngForm">
+                    <form (ngSubmit)="handleRentSubmission()" #rentForm="ngForm" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="rentEquipmentType" class="form-label fw-semibold">Equipment Type</label>
@@ -158,14 +168,14 @@
                 </div>
 
                 <!-- Co-farming Packages Tab Content -->
-                <div class="tab-pane fade p-4 border rounded-xl shadow-sm" id="v-pills-conforming" role="tabpanel"
+                <div class="tab-pane fade card-modern p-4" id="v-pills-conforming" role="tabpanel"
                     aria-labelledby="v-pills-conforming-tab">
                     <h3 class="text-secondary-blue mb-4">Our Co-farming Packages</h3>
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <!-- Package 1: Basic Plan -->
                         <div class="col">
-                            <div class="package-card h-100">
-                                <div class="card-header bp text-center fs-5">Basic Plan</div>
+                            <div class="card-modern h-100">
+                                <div class="card-header bg-primary-green text-white text-center fs-5 rounded-top">Basic Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
@@ -189,8 +199,8 @@
                         </div>
                         <!-- Package 2: Premium Plan -->
                         <div class="col">
-                            <div class="package-card h-100 border-primary-green border-2">
-                                <div class="card-header bg-primary-green text-white text-center fs-5">Premium Plan</div>
+                            <div class="card-modern h-100 border-primary border-3">
+                                <div class="card-header bg-secondary-blue text-white text-center fs-5 rounded-top">Premium Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
@@ -209,8 +219,8 @@
                         </div>
                         <!-- Package 3: Enterprise Plan -->
                         <div class="col">
-                            <div class="package-card h-100">
-                                <div class="card-header btn-secondary-blue text-center fs-5">Marketing Plan</div>
+                            <div class="card-modern h-100">
+                                <div class="card-header bg-warning text-dark text-center fs-5 rounded-top">Marketing Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <h5 class="card-title text-center my-2">Contact Us</h5>

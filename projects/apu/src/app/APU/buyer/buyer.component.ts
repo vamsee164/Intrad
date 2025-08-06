@@ -140,14 +140,6 @@ export class BuyerComponent implements OnInit {
   selectedProductType: string = '';
   selectedDetails: string = '';
 
-  // Buyer data for database/API
-  buyerData = {
-    name: '',
-    email: '',
-    phone: '',
-    quantity: ''
-  };
-
   constructor() {}
 
   ngOnInit(): void {
@@ -251,19 +243,25 @@ export class BuyerComponent implements OnInit {
    * Logs all selected values.
    */
   onSubmit(): void {
-    const submissionData = {
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      mainCategory: this.selectedMainCategory,
-      subCategory: this.selectedSubCategory,
-      productType: this.selectedProductType,
-      details: this.selectedDetails,
-      buyer: this.buyerData,
-      status: 'pending'
-    };
-    
-    console.log('Buyer Inquiry Submitted:', submissionData);
-    // In a real application, send submissionData to your backend API
+    console.log('Buyer Inquiry Submitted!');
+    console.log(
+      'Main Category:',
+      this.getLabel(this.mainCategories, this.selectedMainCategory)
+    );
+    console.log(
+      'Sub-Category:',
+      this.getLabel(this.subCategories, this.selectedSubCategory)
+    );
+    console.log(
+      'Product Type:',
+      this.getLabel(this.productTypes, this.selectedProductType)
+    );
+    console.log(
+      'Details:',
+      this.getLabel(this.detailsOptions, this.selectedDetails)
+    );
+
+    // In a real application, you would send this data to a backend.
     alert('Your buyer inquiry has been submitted! Check console for details.');
     this.resetForm();
   }
@@ -276,7 +274,6 @@ export class BuyerComponent implements OnInit {
     this.selectedSubCategory = '';
     this.selectedProductType = '';
     this.selectedDetails = '';
-    this.buyerData = { name: '', email: '', phone: '', quantity: '' };
     this.subCategories = [];
     this.productTypes = [];
     this.detailsOptions = [];

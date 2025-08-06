@@ -1,6 +1,7 @@
 import { Component, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class LoginComponent {
   @Output() loginSuccess = new EventEmitter<void>();
   @ViewChild('loginForm') loginHtmlForm!: NgForm;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   handleLogin(): void {
     if (!this.loginHtmlForm.valid) return;
@@ -36,6 +37,7 @@ export class LoginComponent {
             this.loginMessageType = 'success';
             this.loginHtmlForm.resetForm();
             this.loginSuccess.emit();
+            this.router.navigate(['/control']);
           } else {
             this.loginMessage = 'Invalid username or password.';
             this.loginMessageType = 'danger';

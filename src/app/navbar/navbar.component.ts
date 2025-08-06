@@ -6,6 +6,9 @@ import {
   RouterModule,
 } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthService } from '../services/auth.service';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +18,7 @@ import { filter } from 'rxjs';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit(): void {
     // Optional: Subscribe to router events to perform actions on navigation changes
@@ -39,5 +42,36 @@ export class NavbarComponent {
       return prefix.some((p) => currentUrl.startsWith(p));
     }
     return currentUrl.startsWith(prefix);
+  }
+
+  onHomeClick(event: Event): void {
+    event.preventDefault();
+    
+    if (this.authService.isAuthenticated()) {
+      // Show confirmation modal if user is logged in
+      const modal = document.getElementById('homeConfirmModal');
+      if (modal) {
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+      }
+    } else {
+      // Navigate directly if not logged in
+      this.router.navigate(['/homepage']);
+    }
+  }
+
+  confirmHome(): void {
+    // Close modal
+    const modal = document.getElementById('homeConfirmModal');
+    if (modal) {
+      const bootstrapModal = bootstrap.Modal.getInstance(modal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+    }
+    
+    // Logout and navigate to homepage
+    this.authService.logout();
+    this.router.navigate(['/homepage']);
   }
 }

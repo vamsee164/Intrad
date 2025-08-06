@@ -4,10 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+
 // Import components and services
 import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
+
+
 
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
@@ -32,9 +35,10 @@ interface SignupFormData {
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule, // Include RouterModule if you use routerLink in homepage.html
-    ServiceInfoComponent, // Import DashboardComponent here
-    LoginComponent, // Import LoginComponent here
+    RouterModule,
+
+    ServiceInfoComponent,
+    LoginComponent,
   ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css'],
@@ -75,6 +79,44 @@ export class HomepageComponent implements OnInit {
 
   handleLogout(): void {
     this.authService.logout();
+  }
+
+  selectedFeature = '';
+  weatherData: any = null;
+  farmersData = {
+    totalFarmers: 1250,
+    activeFarmers: 980,
+    newThisMonth: 45
+  };
+
+  setComingSoonFeature(feature: string): void {
+    this.selectedFeature = feature;
+  }
+
+  showWeather(): void {
+    // Mock weather data until HttpClient provider is fixed
+    this.weatherData = {
+      location: 'Hyderabad',
+      temperature: 28,
+      description: 'partly cloudy',
+      humidity: 65,
+      windSpeed: 3.2
+    };
+    this.selectedFeature = 'Weather';
+    // Show weather modal
+    const weatherModal = document.getElementById('weatherModal');
+    if (weatherModal) {
+      const modal = bootstrap.Modal.getInstance(weatherModal) || new bootstrap.Modal(weatherModal);
+      modal.show();
+    }
+  }
+
+  showFarmers(): void {
+    const farmersModal = document.getElementById('farmersModal');
+    if (farmersModal) {
+      const modal = bootstrap.Modal.getInstance(farmersModal) || new bootstrap.Modal(farmersModal);
+      modal.show();
+    }
   }
 
   /**
