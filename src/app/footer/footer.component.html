@@ -1,70 +1,66 @@
-<footer class="app-footer py-5" style="background-color: #e6b8a2; color: #654321;">
+<footer class="app-footer py-5">
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-4 mb-4 mb-md-0">
                 <div class="d-flex align-items-start">
                     <img src="assets/images/logo.png" alt="Intrad Logo" style="height: 50px; width: auto;" class="me-3">
                     <div>
-                        <h4 class="fw-bold mb-2" style="color: #8b4513;">INTRAD</h4>
-                        <p class="mb-1" style="color: #654321;"><i class="fas fa-map-marker-alt me-2" style="color: #8b4513;"></i>Agricultural Innovation Center</p>
-                        <p class="mb-1" style="color: #654321;"><i class="fas fa-envelope me-2" style="color: #8b4513;"></i>contact&#64;intrad.com</p>
-                        <p class="mb-0" style="color: #654321;"><i class="fas fa-phone me-2" style="color: #8b4513;"></i>+1.800.INTRAD.1</p>
+                        <h4 class="fw-bold mb-2">INTRAD</h4>
+                        <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>Agricultural
+                            Innovation Center</p>
+                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>contact&#64;intrad.com</p>
+                        <p class="mb-0"><i class="fas fa-phone me-2"></i>+1.800.INTRAD.1</p>
                     </div>
                 </div>
                 <hr class="footer-divider my-3">
                 <nav class="footer-nav">
                     <div class="d-flex gap-3">
-                        <small class="text-muted">© 2024 Intrad. All rights reserved.</small>
-                        <a [routerLink]="['/contact']" class="text-decoration-none small" style="color: #8b4513;">Contact Us</a>
+                        <small>© 2025 Intrad. All rights reserved.</small>
+                        <a [routerLink]="['/contact']" class="text-white text-decoration-none small">Contact Us</a>
                     </div>
                 </nav>
             </div>
 
             <!-- Newsletter Section -->
             <div class="col-md-4 col-lg-3 mb-4 mb-md-0">
-                <h5 class="fw-semibold mb-3" style="color: #8b4513;">NEWSLETTER:</h5>
+                <h5 class="fw-semibold mb-3">NEWSLETTER:</h5>
                 <form (ngSubmit)="onNewsletterSubmit()" #newsletterForm="ngForm">
                     <div class="input-group mb-2">
-                        <input type="email" class="form-control" placeholder="Your email" 
-                            [(ngModel)]="newsletterEmail" name="email" required email>
-                        <button type="submit" class="btn" style="background-color: #8b4513; color: white;" 
-                            [disabled]="!newsletterForm.valid">
+                        <input type="email" class="form-control" placeholder="Your email" [(ngModel)]="newsletterEmail"
+                            name="email" required email>
+                        <button type="submit" class="btn" [disabled]="!newsletterForm.valid">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </form>
                 <div class="social-icons mt-3">
-                    <a href="https://facebook.com" class="btn btn-sm rounded-circle me-2" style="border: 1px solid #8b4513; color: #8b4513;" target="_blank">
+                    <a href="https://facebook.com" class="text-white btn btn-sm rounded-circle me-2" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="mailto:contact@intrad.com" class="btn btn-sm rounded-circle me-2" style="border: 1px solid #8b4513; color: #8b4513;" target="_blank">
+                    <a href="mailto:contact@intrad.com" class="text-white btn btn-sm rounded-circle me-2"
+                        target="_blank">
                         <i class="fas fa-envelope"></i>
                     </a>
-                    <a href="#" class="btn btn-sm rounded-circle" style="border: 1px solid #8b4513; color: #8b4513;">
+                    <a href="#" class="text-white btn btn-sm rounded-circle">
                         <i class="fab fa-twitter"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Support Us Section -->
-            <!-- <div class="col-md-4 col-lg-2 mb-4 mb-lg-0 text-md-center">
-                <h5 class="footer-heading mb-3">SUPPORT US:</h5>
-                <button class="btn btn-make-gift py-2 px-4">MAKE A GIFT</button>
-            </div> -->
 
-            <!-- Visit Us Section -->
             <div class="col-md-4 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3" style="color: #8b4513;">VISIT US:</h5>
+                <h5 class="fw-semibold mb-3">VISIT US:</h5>
                 <ul class="list-unstyled footer-list">
-                    <li><a href="#" class="footer-link" style="color: #654321;">Map & Directions</a></li>
-                    <li><a href="#" class="footer-link" style="color: #654321;">Virtual Tour</a></li>
+                    <li><a href="#" class="footer-link">Map & Directions</a></li>
+                    <li><a href="#" class="footer-link">Virtual Tour</a></li>
                 </ul>
             </div>
 
             <div class="col-md-4 col-lg-2 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3" style="color: #8b4513;">WORK WITH US:</h5>
+                <h5 class="fw-semibold mb-3">WORK WITH US:</h5>
                 <ul class="list-unstyled footer-list">
-                    <li><a href="#" [routerLink]="['/career']" class="footer-link" style="color: #654321;">View Jobs</a></li>
+                    <li><a href="#" [routerLink]="['/career']" class="footer-link">View Jobs</a>
+                    </li>
                 </ul>
             </div>
         </div>
