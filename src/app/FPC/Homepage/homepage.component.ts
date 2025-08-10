@@ -3,14 +3,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { HttpClient } from '@angular/common/http'; // Import HttpClient
 
 // Import components and services
 import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
-
-
 
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
@@ -60,14 +58,15 @@ export class HomepageComponent implements OnInit {
     acreOfLand: null,
     fertilizers: '',
   };
-
-  // ViewChild to get a reference to the NgForm directive instance for signup form
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
 
-  constructor(private authService: AuthService) {}
+  private apiKey = '93e63dcc1fb38ed986a59514d85dbbd1';
+  private apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
       this.isLoggedIn = !!user;
     });
@@ -86,27 +85,91 @@ export class HomepageComponent implements OnInit {
   farmersData = {
     totalFarmers: 1250,
     activeFarmers: 980,
-    newThisMonth: 45
+    newThisMonth: 45,
   };
 
   setComingSoonFeature(feature: string): void {
     this.selectedFeature = feature;
   }
 
-  showWeather(): void {
-    // Mock weather data until HttpClient provider is fixed
+  /**
+   * Prompts the user for their current location and returns the coordinates.
+   * Uses a Promise to handle asynchronous geolocation API calls.
+   */
+  getCurrentLocation(): Promise<{ lat: number; lon: number }> {
+    return new Promise((resolve, reject) => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          },
+          (error) => {
+            // Reject the promise if geolocation fails
+            reject(error);
+          }
+        );
+      } else {
+        // Reject the promise if geolocation is not supported
+        reject(new Error('Geolocation is not supported by this browser.'));
+      }
+    });
+  }
+
+  async showWeather(): Promise<void> {
+    try {
+      const { lat, lon } = await this.getCurrentLocation();
+      const requestUrl = `${this.apiUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`;
+
+      this.http.get(requestUrl).subscribe({
+        next: (data: any) => {
+          this.weatherData = {
+            location: data.name,
+            temperature: Math.round(data.main.temp),
+            description: data.weather[0].description,
+            humidity: data.main.humidity,
+            windSpeed: data.wind.speed,
+          };
+          this.selectedFeature = 'Weather';
+
+          const weatherModal = document.getElementById('weatherModal');
+          if (weatherModal) {
+            const modal =
+              bootstrap.Modal.getInstance(weatherModal) ||
+              new bootstrap.Modal(weatherModal);
+            modal.show();
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching weather data:', error);
+          this.showErrorModal('Error fetching weather data.');
+        },
+      });
+    } catch (error: any) {
+      console.error('Geolocation error:', error);
+      this.showErrorModal(
+        'Could not get your location. Please enable location services in your browser.'
+      );
+    }
+  }
+
+  // Helper function to show a generic error modal
+  private showErrorModal(message: string): void {
     this.weatherData = {
-      location: 'Hyderabad',
-      temperature: 28,
-      description: 'partly cloudy',
-      humidity: 65,
-      windSpeed: 3.2
+      location: 'Error',
+      temperature: 'N/A',
+      description: message,
+      humidity: 'N/A',
+      windSpeed: 'N/A',
     };
     this.selectedFeature = 'Weather';
-    // Show weather modal
     const weatherModal = document.getElementById('weatherModal');
     if (weatherModal) {
-      const modal = bootstrap.Modal.getInstance(weatherModal) || new bootstrap.Modal(weatherModal);
+      const modal =
+        bootstrap.Modal.getInstance(weatherModal) ||
+        new bootstrap.Modal(weatherModal);
       modal.show();
     }
   }
@@ -114,15 +177,12 @@ export class HomepageComponent implements OnInit {
   showFarmers(): void {
     const farmersModal = document.getElementById('farmersModal');
     if (farmersModal) {
-      const modal = bootstrap.Modal.getInstance(farmersModal) || new bootstrap.Modal(farmersModal);
+      const modal =
+        bootstrap.Modal.getInstance(farmersModal) ||
+        new bootstrap.Modal(farmersModal);
       modal.show();
     }
   }
-
-  /**
-   * Handles Signup form submission.
-   * Collects data and shows success modal.
-   */
   handleSignup(): void {
     console.log('Sign Up Form Submitted:', this.signupData);
     // In a real application, send this.signupData to your backend API.
