@@ -25,11 +25,8 @@
 body {
   font-family: "Inter", sans-serif;
   color: var(--text-dark);
-  background-image: url("./assets/images/bg1.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   min-height: 100vh;
+  background: #56d0810f;
 }
 
 @keyframes gradientShift {

@@ -52,9 +52,7 @@
 }
 
 .team-member-img {
-  width: 180px; /* Fixed width for circular images */
-  height: 180px; /* Fixed height for circular images */
-  object-fit: contain; /* Ensure image covers the area */
+  /* Ensure image covers the area */
   border: 3px solid rgba(255, 255, 255, 0.5); /* White border around image */
 }
 

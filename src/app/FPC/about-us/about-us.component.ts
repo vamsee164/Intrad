@@ -14,9 +14,8 @@ export class AboutUsComponent {
     {
       name: 'D Uday Kumar',
       role: 'Founder',
-      imageUrl: 'assets/images/uday.png', // Dummy image
+      imageUrl: 'assets/images/uday.jpeg', // Dummy image
     },
-   
   ];
 
   constructor() {}
