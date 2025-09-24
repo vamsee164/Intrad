@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { HomepageComponent } from './FPC/homepage/homepage.component';
+import { HomepageComponent } from './FPC/Homepage/homepage.component';
 import { CareerComponent } from './FPC/career/career.component';
 import { BookSoilComponent } from './FPC/book-soil/book-soil.component';
 import { AboutUsComponent } from './FPC/about-us/about-us.component';

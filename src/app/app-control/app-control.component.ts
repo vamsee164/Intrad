@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { HomepageComponent } from '../FPC/homepage/homepage.component';
+import { HomepageComponent } from '../FPC/Homepage/homepage.component';
 import { ApuDashboardComponent } from '../apu-dashboard/apu-dashboard.component';
 
 @Component({
