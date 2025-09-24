@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    <form (ngSubmit)="onSubmit()" #buyerForm="ngForm">
+    <form (ngSubmit)="onSubmit()" #buyerForm="ngForm" novalidate>
         <!-- Level 1: Main Category Dropdown -->
         <div class="mb-4">
             <label for="mainCategory" class="form-label fw-semibold">Main Category:</label>
@@ -22,7 +22,7 @@
         <div class="mb-4" *ngIf="subCategories.length > 0">
             <label for="subCategory" class="form-label fw-semibold">Sub-Category:</label>
             <select class="form-select form-control-custom shadow-sm" id="subCategory" [(ngModel)]="selectedSubCategory"
-                name="subCategory" (change)="onSubCategoryChange()" required>
+                name="subCategory" (change)="onSubCategoryChange()" [required]="subCategories.length > 0">
                 <option value="" disabled selected>Select a sub-category</option>
                 <option *ngFor="let subCategory of subCategories" [value]="subCategory.value">{{ subCategory.label }}
                 </option>
@@ -33,7 +33,7 @@
         <div class="mb-4" *ngIf="productTypes.length > 0">
             <label for="productType" class="form-label fw-semibold">Product Type:</label>
             <select class="form-select form-control-custom shadow-sm" id="productType" [(ngModel)]="selectedProductType"
-                name="productType" (change)="onProductTypeChange()" required>
+                name="productType" (change)="onProductTypeChange()" [required]="productTypes.length > 0">
                 <option value="" disabled selected>Select a product type</option>
                 <option *ngFor="let type of productTypes" [value]="type.value">{{ type.label }}</option>
             </select>
@@ -43,10 +43,37 @@
         <div class="mb-4" *ngIf="detailsOptions.length > 0">
             <label for="details" class="form-label fw-semibold">Details:</label>
             <select class="form-select form-control-custom shadow-sm" id="details" [(ngModel)]="selectedDetails"
-                name="details" required>
+                name="details" [required]="detailsOptions.length > 0">
                 <option value="" disabled selected>Select details</option>
                 <option *ngFor="let detail of detailsOptions" [value]="detail.value">{{ detail.label }}</option>
             </select>
+        </div>
+
+        <!-- Additional Fields for Database/API -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="buyerName" class="form-label fw-semibold">Buyer Name:</label>
+                <input type="text" class="form-control form-control-custom shadow-sm" id="buyerName"
+                    [(ngModel)]="buyerData.name" name="buyerName" placeholder="Enter your name" required>
+            </div>
+            <div class="col-md-6 mb-4">
+                <label for="buyerEmail" class="form-label fw-semibold">Email:</label>
+                <input type="email" class="form-control form-control-custom shadow-sm" id="buyerEmail"
+                    [(ngModel)]="buyerData.email" name="buyerEmail" placeholder="Enter your email" required email>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="buyerPhone" class="form-label fw-semibold">Phone Number:</label>
+                <input type="tel" class="form-control form-control-custom shadow-sm" id="buyerPhone"
+                    [(ngModel)]="buyerData.phone" name="buyerPhone" placeholder="Enter phone number" required
+                    pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+            </div>
+            <div class="col-md-6 mb-4">
+                <label for="requiredQuantity" class="form-label fw-semibold">Required Quantity:</label>
+                <input type="text" class="form-control form-control-custom shadow-sm" id="requiredQuantity"
+                    [(ngModel)]="buyerData.quantity" name="requiredQuantity" placeholder="e.g., 100 kg" required>
+            </div>
         </div>
 
         <!-- Display Selected Values -->

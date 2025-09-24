@@ -112,6 +112,38 @@
 /* Carousel specific classes for consistency */
 #homepageCarousel {
   box-shadow: var(--shadow-md); /* Apply a shadow to the carousel */
+  aspect-ratio: 16/9; /* Maintain consistent aspect ratio */
+}
+
+#homepageCarousel .carousel-inner {
+  height: 100%;
+}
+
+#homepageCarousel .carousel-item {
+  height: 100%;
+}
+
+#homepageCarousel .carousel-item img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Login card alignment and sizing */
+.login-card {
+  height: fit-content;
+  max-height: 100%;
+  width: 100%;
+}
+
+#pre-login-content .col-md-4 {
+  display: flex;
+  align-items: flex-start;
+}
+
+#pre-login-content .col-md-4 app-login {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 /* Responsive adjustments for overall homepage content */
@@ -127,8 +159,17 @@
   #pre-login-content .col-md-4:last-child {
     margin-bottom: 0; /* Remove extra margin for the last stacked column */
   }
-  .carousel-item img {
-    height: auto; /* Allow image height to adjust */
-    max-height: 200px; /* Cap max height if needed */
+  #homepageCarousel {
+    aspect-ratio: 16/8; /* Slightly shorter on mobile */
+  }
+  
+  #pre-login-content .col-md-4 {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .login-card {
+    max-width: 400px;
+    margin: 0 auto;
   }
 }

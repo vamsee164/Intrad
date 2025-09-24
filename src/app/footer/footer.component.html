@@ -1,55 +1,66 @@
-<footer class="app-footer py-4">
+<footer class="app-footer py-5">
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-4 mb-4 mb-md-0">
                 <div class="d-flex align-items-start">
-                    <img src="assets/images/logo.png" alt="FoodCops Logo" class="navbar-logo logo-height">
+                    <img src="assets/images/logo.png" alt="Intra-d Logo" style="height: 50px; width: auto;" class="me-3">
                     <div>
-                        <h4 class="university-name">INTRA-D</h4>
-                        <p class="university-address mb-1">175 FOREST STREET</p>
-                        <p class="university-address mb-1">WALTHAM, MASSACHUSETTS 02452</p>
-                        <p class="university-address mb-0">+1.781.891.2000</p>
+                        <h4 class="fw-bold mb-2">INTRA-D</h4>
+                        <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>Agricultural
+                            Innovation Center</p>
+                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>contact&#64;intra-d.com</p>
+                        <p class="mb-0"><i class="fas fa-phone me-2"></i>+1.800.INTRA-D.1</p>
                     </div>
                 </div>
                 <hr class="footer-divider my-3">
                 <nav class="footer-nav">
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item"><a href="#" class="footer-link">Copyright</a></li>
-                        <li class="list-inline-item"><a [routerLink]="['/contact']" href="#"
-                                class="footer-link">Contact</a></li>
-                    </ul>
+                    <div class="d-flex gap-3">
+                        <small>© 2025 Intra-d. All rights reserved.</small>
+                        <a [routerLink]="['/contact']" class="text-white text-decoration-none small">Contact Us</a>
+                    </div>
                 </nav>
             </div>
 
-            <!-- Follow Us Section -->
-            <div class="col-md-3 col-lg-2 mb-4 mb-md-0 text-md-center">
-                <h5 class="footer-heading mb-3">FOLLOW US:</h5>
-                <div class="social-icons">
-                    <a href="https://facebook.com" class="social-icon me-2" target="_blank"><img src="assets/images/facebook.svg" alt="Facebook" width="30" height="30"></a>
-                    <a href="mailto:contact@intrad.com" class="social-icon me-2" target="_blank"><img src="assets/images/gmail.svg" alt="Gmail" width="30" height="30"></a>
-                    <!-- <a href="#" class="social-icon"><img src="assets/images/whatsapp.png" alt="Whatsapp" width="30" height="30"></a> -->
+            <!-- Newsletter Section -->
+            <div class="col-md-4 col-lg-3 mb-4 mb-md-0">
+                <h5 class="fw-semibold mb-3">NEWSLETTER:</h5>
+                <form (ngSubmit)="onNewsletterSubmit()" #newsletterForm="ngForm">
+                    <div class="input-group mb-2">
+                        <input type="email" class="form-control" placeholder="Your email" [(ngModel)]="newsletterEmail"
+                            name="email" required email>
+                        <button type="submit" class="btn" [disabled]="!newsletterForm.valid">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+                <div class="social-icons mt-3">
+                    <a href="https://facebook.com" class="text-white btn btn-sm rounded-circle me-2" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="mailto:contact@intra-d.com" class="text-white btn btn-sm rounded-circle me-2"
+                        target="_blank">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="#" class="text-white btn btn-sm rounded-circle">
+                        <i class="fab fa-twitter"></i>
+                    </a>
                 </div>
             </div>
 
-            <!-- Support Us Section -->
-            <!-- <div class="col-md-4 col-lg-2 mb-4 mb-lg-0 text-md-center">
-                <h5 class="footer-heading mb-3">SUPPORT US:</h5>
-                <button class="btn btn-make-gift py-2 px-4">MAKE A GIFT</button>
-            </div> -->
 
-            <!-- Visit Us Section -->
-            <div class="col-md-6 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
-                <h5 class="footer-heading mb-3">VISIT US:</h5>
+            <div class="col-md-4 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
+                <h5 class="fw-semibold mb-3">VISIT US:</h5>
                 <ul class="list-unstyled footer-list">
                     <li><a href="#" class="footer-link">Map & Directions</a></li>
                     <li><a href="#" class="footer-link">Virtual Tour</a></li>
                 </ul>
             </div>
 
-            <div class="col-md-6 col-lg-2 text-md-center text-lg-start">
-                <h5 class="footer-heading mb-3">WORK WITH US:</h5>
+            <div class="col-md-4 col-lg-2 text-md-center text-lg-start">
+                <h5 class="fw-semibold mb-3">WORK WITH US:</h5>
                 <ul class="list-unstyled footer-list">
-                    <li><a href="#" [routerLink]="['/career']" class="footer-link">View Jobs</a></li>
+                    <li><a href="#" [routerLink]="['/career']" class="footer-link">View Jobs</a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 export interface User {
   id: string;
   email: string;
-  role: 'admin' | 'farmer' | 'user';
+  role: string;
 }
 
 @Injectable({
@@ -14,32 +15,26 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.checkAuthStatus();
+  }
 
   login(email: string, password: string): Observable<boolean> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const mockUsers = [
-          { email: 'admin@test.com', password: 'admin123', role: 'admin' as const },
-          { email: 'farmer@test.com', password: 'farmer123', role: 'farmer' as const },
-          { email: 'user@test.com', password: 'pass', role: 'user' as const }
-        ];
-
-        const user = mockUsers.find(u => u.email === email && u.password === password);
-        
-        if (user) {
-          const authUser: User = { id: Date.now().toString(), email: user.email, role: user.role };
-          this.currentUserSubject.next(authUser);
-          observer.next(true);
-        } else {
-          observer.next(false);
-        }
-        observer.complete();
-      }, 500);
-    });
+    if (email && password) {
+      const user: User = { id: Date.now().toString(), email, role: 'admin' };
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      }
+      this.currentUserSubject.next(user);
+      return of(true);
+    }
+    return of(false);
   }
 
   logout(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('currentUser');
+    }
     this.currentUserSubject.next(null);
   }
 
@@ -47,16 +42,18 @@ export class AuthService {
     return this.currentUserSubject.value !== null;
   }
 
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
-
   hasRole(role: string): boolean {
-    const user = this.getCurrentUser();
-    return user?.role === role;
+    const user = this.currentUserSubject.value;
+    return user ? user.role === role : false;
   }
 
-
-
-
+  private checkAuthStatus(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const userData = localStorage.getItem('currentUser');
+      if (userData) {
+        const user = JSON.parse(userData);
+        this.currentUserSubject.next(user);
+      }
+    }
+  }
 }

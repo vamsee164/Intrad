@@ -1,53 +1,88 @@
-
 <!-- src/app/homepage/homepage.component.html -->
 <!-- Main Container for Homepage Content -->
 <div class="homepage-content-wrapper">
     <!-- Pre-Login Content -->
     <div *ngIf="!isLoggedIn">
         <!-- Category Buttons Section -->
-        <div id="category-buttons-section" class="row text-center gx-3 gy-3 mb-4">
-            <div class="col-6 col-md-3">
-                <a href="#" class="btn btn-primary-green w-100 rounded-lg-custom py-3 shadow-sm fw-semibold">Machine</a>
+        <div id="category-buttons-section" class="row text-center gx-2 gy-2 mb-4">
+            <div class="col-6 col-lg-2">
+                <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" data-bs-toggle="modal"
+                    data-bs-target="#comingSoonModal" (click)="setComingSoonFeature('Machinery')">
+                    <i class="fas fa-tractor text-primary-green mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold text-dark mb-1">Machinery</h6>
+                    <p class="text-muted small mb-0">Equipment & tools</p>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <a href="#"
-                    class="btn btn-secondary-blue w-100 rounded-lg-custom py-3 shadow-sm fw-semibold">Farmers</a>
+            <div class="col-6 col-lg-2">
+                <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" (click)="showFarmers()">
+                    <i class="fas fa-users text-secondary-blue mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold text-dark mb-1">Farmers</h6>
+                    <p class="text-muted small mb-0">Connect farmers</p>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <a href="#" class="btn btn-info-light w-100 rounded-lg-custom py-3 shadow-sm fw-semibold">Crops</a>
+            <div class="col-6 col-lg-2">
+                <div class="card-modern p-3 h-100 text-center">
+                    <i class="fas fa-seedling text-success mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold text-dark mb-1">Crops</h6>
+                    <p class="text-muted small mb-0">Crop guidance</p>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <a href="#"
-                    class="btn btn-warning-light w-100 rounded-lg-custom py-3 shadow-sm fw-semibold">Products</a>
+            <div class="col-6 col-lg-2">
+                <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" data-bs-toggle="modal"
+                    data-bs-target="#comingSoonModal" (click)="setComingSoonFeature('Products')">
+                    <i class="fas fa-shopping-basket text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold text-dark mb-1">Products</h6>
+                    <p class="text-muted small mb-0">Agri products</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" (click)="showWeather()">
+                    <i class="fas fa-cloud-sun text-info mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold text-dark mb-1">Weather</h6>
+                    <p class="text-muted small mb-0">Weather forecast</p>
+                </div>
             </div>
         </div>
 
         <!-- Carousel and Login Section -->
-        <div id="pre-login-content" class="row align-items-start mt-4">
-            <div class="col-md-8">
-                <div id="homepageCarousel" class="carousel slide mb-5 rounded-lg-custom overflow-hidden shadow-md"
+        <div id="pre-login-content" class="row mt-3">
+            <div class="col-md-8 h-auto">
+                <div id="homepageCarousel"
+                    class="carousel slide mb-4 rounded-modern overflow-hidden shadow-modern h-100"
                     data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                       <div class="carousel-item active">
-                    <img src="assets/images/aggriculture-banner.png"
-                        class="d-block w-100 rounded-lg-custom" alt="Slide 1: Green Fields">
-                </div>
-                <!-- <div class="carousel-item">
-                    <img src="assets/images/agri.png"
-                        class="d-block w-100 rounded-lg-custom" alt="Slide 2: Agricultural Machinery">
-                </div> -->
-                <div class="carousel-item">
-                    <img src="https://placehold.co/900x300/e9d0a7/34495e?text=Happy+Farmers+Working"
-                        class="d-block w-100 rounded-lg-custom" alt="Slide 2: Farmers">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://placehold.co/900x300/a7d9b9/34495e?text=Green+Fields+and+Harvest"
-                        class="d-block w-100 rounded-lg-custom" alt="Slide 3: Green Fields-1">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://placehold.co/900x300/c7d9ee/34495e?text=Modern+Agricultural+Machinery"
-                        class="d-block w-100 rounded-lg-custom" alt="Slide 4: Agricultural Machinery-1">
-                </div>
+                    <div class="carousel-inner h-100">
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=900&h=350&fit=crop&crop=center"
+                                class="d-block w-100 h-100" style="object-fit: cover;" alt="Agricultural Machinery">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Modern Agricultural Machinery</h5>
+                                <p>Advanced farming equipment for efficient agriculture</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=900&h=350&fit=crop&crop=center"
+                                class="d-block w-100 h-100" style="object-fit: cover;" alt="Dehydration Plant">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Food Processing & Dehydration</h5>
+                                <p>State-of-the-art dehydration plants for food preservation</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=900&h=350&fit=crop&crop=center"
+                                class="d-block w-100 h-100" style="object-fit: cover;" alt="Tractor in Field">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Smart Farming Solutions</h5>
+                                <p>Technology-driven agriculture for better yields</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=900&h=350&fit=crop&crop=center"
+                                class="d-block w-100 h-100" style="object-fit: cover;" alt="Farmers Working">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Empowering Farmers</h5>
+                                <p>Supporting agricultural communities with modern tools</p>
+                            </div>
+                        </div>
                     </div>
                     <!-- Carousel Controls -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#homepageCarousel"
@@ -84,7 +119,7 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form (ngSubmit)="handleSignup()" #signupForm="ngForm">
+                <form (ngSubmit)="handleSignup()" #signupForm="ngForm" novalidate>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="modalName" class="form-label fw-semibold">Name:</label>
@@ -106,7 +141,7 @@
                         <div class="col-md-6">
                             <label for="modalWaterSource" class="form-label fw-semibold">Water Source:</label>
                             <select class="form-select rounded-md-custom" id="modalWaterSource"
-                                [(ngModel)]="signupData.waterSource" name="waterSource">
+                                [(ngModel)]="signupData.waterSource" name="waterSource" required>
                                 <option selected disabled value="">Select water source</option>
                                 <option value="well">Well</option>
                                 <option value="borewell">Borewell</option>
@@ -140,7 +175,7 @@
                         <div class="col-md-6">
                             <label for="modalSoilType" class="form-label fw-semibold">Soil Type:</label>
                             <select class="form-select rounded-md-custom" id="modalSoilType"
-                                [(ngModel)]="signupData.soilType" name="soilType">
+                                [(ngModel)]="signupData.soilType" name="soilType" required>
                                 <option selected disabled value="">Select soil type</option>
                                 <option value="sandy">Sandy</option>
                                 <option value="clay">Clay</option>
@@ -158,7 +193,7 @@
                         <div class="col-md-6">
                             <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers:</label>
                             <select class="form-select rounded-md-custom" id="modalFertilizers"
-                                [(ngModel)]="signupData.fertilizers" name="fertilizers">
+                                [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
                                 <option selected disabled value="">Select common fertilizers used</option>
                                 <option value="urea">Urea</option>
                                 <option value="dap">DAP</option>
@@ -195,6 +230,111 @@
             </div>
             <div class="modal-footer p-3 border-top border-gray-200 d-flex justify-content-end">
                 <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Coming Soon Modal -->
+<div class="modal fade" id="comingSoonModal" tabindex="-1" aria-labelledby="comingSoonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg-custom shadow-lg">
+            <div class="modal-header bg-primary text-white p-3 rounded-top-custom">
+                <h5 class="modal-title" id="comingSoonModalLabel">{{selectedFeature}} - Coming Soon!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="fas fa-clock text-primary mb-3" style="font-size: 3rem;"></i>
+                <h4 class="text-primary mb-3">{{selectedFeature}} Feature</h4>
+                <p class="text-muted mb-0">This feature is currently under development. Stay tuned for updates!</p>
+            </div>
+            <div class="modal-footer p-3 border-top d-flex justify-content-center">
+                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Weather Modal -->
+<div class="modal fade" id="weatherModal" tabindex="-1" aria-labelledby="weatherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg-custom shadow-lg">
+            <div class="modal-header bg-info text-white p-3 rounded-top-custom">
+                <h5 class="modal-title" id="weatherModalLabel">
+                    <i class="fas fa-cloud-sun me-2"></i>Weather Information
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" *ngIf="weatherData">
+                <div class="text-center mb-3">
+                    <h4 class="text-primary mb-2">{{weatherData.location}}</h4>
+                    <div class="display-4 text-info mb-2">{{weatherData.temperature}}°C</div>
+                    <p class="text-muted text-capitalize mb-0">{{weatherData.description}}</p>
+                </div>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <i class="fas fa-tint text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <div class="fw-bold">Humidity</div>
+                        <div class="text-muted">{{weatherData.humidity}}%</div>
+                    </div>
+                    <div class="col-6">
+                        <i class="fas fa-wind text-primary mb-2" style="font-size: 1.5rem;"></i>
+                        <div class="fw-bold">Wind Speed</div>
+                        <div class="text-muted">{{weatherData.windSpeed}} m/s</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer p-3 border-top d-flex justify-content-center">
+                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Farmers Modal -->
+<div class="modal fade" id="farmersModal" tabindex="-1" aria-labelledby="farmersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg-custom shadow-lg">
+            <div class="modal-header bg-secondary-blue text-white p-3 rounded-top-custom">
+                <h5 class="modal-title" id="farmersModalLabel">
+                    <i class="fas fa-users me-2"></i>Farmers Network
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <h4 class="text-primary mb-3">Connected Farmers</h4>
+                </div>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-users text-primary mb-2" style="font-size: 2rem;"></i>
+                            <div class="h4 text-primary mb-1">{{farmersData.totalFarmers}}</div>
+                            <small class="text-muted">Total Farmers</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-user-check text-success mb-2" style="font-size: 2rem;"></i>
+                            <div class="h4 text-success mb-1">{{farmersData.activeFarmers}}</div>
+                            <small class="text-muted">Active Farmers</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-user-plus text-info mb-2" style="font-size: 2rem;"></i>
+                            <div class="h4 text-info mb-1">{{farmersData.newThisMonth}}</div>
+                            <small class="text-muted">New This Month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer p-3 border-top d-flex justify-content-center">
+                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

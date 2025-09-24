@@ -6,55 +6,39 @@
                 growth opportunities in every role.</p>
         </div>
     </div>
-    <div class="row justify-content-center align-items-center mb-4">
-        <div class="col-auto d-flex align-items-center">
-            <label for="locationSelect" class="form-label mb-0 me-2 fw-semibold">Location:</label>
-            <select class="form-select rounded-md-custom shadow-sm" id="locationSelect" [(ngModel)]="selectedLocation">
-                <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
-            </select>
+    <form (ngSubmit)="searchJobs()" #jobSearchForm="ngForm">
+        <div class="row justify-content-center align-items-center mb-4">
+            <div class="col-auto d-flex align-items-center">
+                <label for="locationSelect" class="form-label mb-0 me-2 fw-semibold">Location:</label>
+                <select class="form-select rounded-md-custom shadow-sm" id="locationSelect" 
+                    [(ngModel)]="selectedLocation" name="location" required>
+                    <option value="">Select Location</option>
+                    <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+                </select>
+            </div>
+            <div class="col-auto d-flex align-items-center ms-md-4 mt-3 mt-md-0">
+                <label for="domainSelect" class="form-label mb-0 me-2 fw-semibold">Domain:</label>
+                <select class="form-select rounded-md-custom shadow-sm" id="domainSelect" 
+                    [(ngModel)]="selectedDomain" name="domain" required>
+                    <option value="">Select Domain</option>
+                    <option *ngFor="let dom of domains" [value]="dom">{{ dom }}</option>
+                </select>
+            </div>
         </div>
-        <div class="col-auto d-flex align-items-center ms-md-4 mt-3 mt-md-0">
-            <label for="domainSelect" class="form-label mb-0 me-2 fw-semibold">Domain:</label>
-            <select class="form-select rounded-md-custom shadow-sm" id="domainSelect" [(ngModel)]="selectedDomain">
-                <option *ngFor="let dom of domains" [value]="dom">{{ dom }}</option>
-            </select>
-        </div>
-    </div>
 
-    <div class="row justify-content-center mt-4">
-        <div class="col-auto">
-            <button type="button" class="btn btn-primary btn-lg rounded-md-custom shadow-sm px-5 "
-                (click)="searchJobs()">Search Jobs</button>
-
+        <div class="row justify-content-center mt-4">
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-lg rounded-md-custom shadow-sm px-5"
+                    [disabled]="!jobSearchForm.valid">Search Jobs</button>
+            </div>
         </div>
+    </form>
         <div class="job-openings-text">
-            <p class="text-muted mt-4">Are you passionate about transforming
-                agriculture and uplifting farmers' livelihoods?
-                We’re on the lookout for driven individuals like you to join our mission and reshape the future of
-                farming!
-                Our innovative approach centers on value-added dehydrated products, enabling farmers to diversify their
-                income, reduce post-harvest losses, and access new markets. By turning fresh produce into shelf-stable,
-                high-quality dehydrated goods, we empower farming communities to achieve greater financial stability and
-                resilience.
-                As a member of our team, you’ll work with cutting-edge processing technology, helping refine and expand
-                our product offerings. Your creativity and expertise will directly contribute to boosting farmer
-                incomes, enhancing food preservation, and promoting sustainable agricultural practices.
-                But that’s just the beginning! As our organization grows, so do your opportunities. We’re committed to
-                your professional development through training programs, mentorship, and a collaborative environment
-                that values innovation and impact.
-                Joining us means becoming part of a passionate, inclusive community working toward a shared goal: a more
-                secure, sustainable, and prosperous future for farmers. Together, we’ll create solutions that improve
-                rural livelihoods, reduce food waste, and bring nutritious, long-lasting products to consumers
-                everywhere.
-                We offer competitive compensation, comprehensive benefits, and a flexible work culture that supports
-                your well-being and growth. <br>
-                🌟 Don’t miss the chance to be part of this exciting journey.
-                Apply now and help us revolutionize agriculture through innovation in dehydrated products.
-                Let’s build a better future—one harvest at a time.
+            <p class="text-muted mt-4">
+                We’re on a mission to transform agriculture and uplift farmers’ livelihoods by turning fresh produce into high-quality dehydrated products that reduce post-harvest losses, open new markets, and boost farmer incomes. By joining our team, you’ll work with cutting-edge processing technology, contribute to sustainable food solutions, and directly impact rural communities. We offer competitive pay, growth opportunities, and a collaborative culture where innovation thrives. Be part of this journey to revolutionize farming and build a more secure, sustainable future—one harvest at a time.
                 #JoinOurTeam #FarmerIncomeStability #DehydratedInnovation #SustainableAgriculture</p>
         </div>
-    </div>
-
+    
     <!-- Job search results (initially hidden, can be displayed based on searchJobs logic) -->
     <div *ngIf="showSearchResults" class="mt-5 p-4 border rounded-xl shadow-lg bg-white">
         <h3 class="text-primary-green mb-3">Search Results:</h3>

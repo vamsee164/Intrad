@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 nav-background">
-    <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#" [routerLink]="['/']">
-            <img src="assets/images/logo.png" alt="FoodCops Logo" class="navbar-logo logo-height rounded-circle">
-
+<nav class="navbar navbar-expand-lg shadow-modern p-3">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center fw-bold" href="#" [routerLink]="['/']">
+            <img src="assets/images/logo.png" alt="Intra-d Logo" style="height: 40px; width: auto;" class="me-2">
+            <span class="text-primary-green" style="font-size: 1.5rem;">INTRA-D</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
             aria-controls="homepageNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,22 +12,23 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active"
                     [routerLinkActiveOptions]="{exact: true}">
-                    <a [routerLink]="['/']" class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
-                        href="#">Home</a>
+                    <a (click)="onHomeClick($event)"
+                        class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium" href="#"
+                        style="cursor: pointer;"><i class="fas fa-home me-2"></i>Home</a>
                 </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
-                        [routerLink]="['/career']">We Hire</a>
+                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium"
+                        [routerLink]="['/career']"><i class="fas fa-briefcase me-2"></i>We Hire</a>
                 </li>
                 <!-- Crops Dropdown -->
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/crops') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2 dropdown-toggle"
-                        href="#" id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Crops
+                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
+                        id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                        <i class="fas fa-leaf me-2"></i>Crops
                     </a>
                     <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
-                        <li routerLinkActive="active"><a class="dropdown-item"
+                        <!-- <li routerLinkActive="active"><a class="dropdown-item"
                                 [routerLink]="['/crops/cereals']">Cereals</a></li>
                         <li routerLinkActive="active"><a class="dropdown-item"
                                 [routerLink]="['/crops/pulses']">Pulses</a></li>
@@ -35,7 +36,7 @@
                                 [routerLink]="['/crops/oilseeds']">Oilseeds</a></li>
                         <li>
                             <hr class="dropdown-divider">
-                        </li>
+                        </li> -->
                         <li routerLinkActive="active"><a class="dropdown-item"
                                 [routerLink]="['/crops/vegetables']">Vegetables</a></li>
                         <li routerLinkActive="active"><a class="dropdown-item"
@@ -45,15 +46,15 @@
 
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
                     <a [routerLink]="['/about']"
-                        class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2" href="#">About
-                        Us</a>
+                        class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium" href="#">
+                        <i class="fas fa-info-circle me-2"></i>About Us</a>
                 </li>
                 <!-- Book Dropdown -->
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/booksoil') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2 dropdown-toggle"
-                        href="#" id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Book
+                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
+                        id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                        <i class="fas fa-calendar-check me-2"></i>Book
                     </a>
                     <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarBookDropdown">
                         <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/booksoil']">Book A Soil
@@ -63,8 +64,8 @@
                     </ul>
                 </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-secondary-blue rounded-lg-custom px-4 py-2"
-                        [routerLink]="['/contact']" href="#">Contact Us</a>
+                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium"
+                        [routerLink]="['/contact']" href="#"><i class="fas fa-envelope me-2"></i>Contact Us</a>
                 </li>
                 <li class="nav-item d-none" id="logoutNavItem">
                     <button class="nav-link btn btn-danger rounded-lg-custom px-4 py-2" id="logoutBtn">Logout</button>
@@ -73,3 +74,29 @@
         </div>
     </div>
 </nav>
+
+<!-- Home Confirmation Modal -->
+<div class="modal fade" id="homeConfirmModal" tabindex="-1" aria-labelledby="homeConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg-custom shadow-lg">
+            <div class="modal-header bg-warning text-dark p-3 rounded-top-custom">
+                <h5 class="modal-title" id="homeConfirmModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Navigation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="fas fa-home text-warning mb-3" style="font-size: 3rem;"></i>
+                <h4 class="text-dark mb-3">Warning: Data will be erased</h4>
+                <p class="text-muted mb-0">Going to homepage will log you out and clear your session data. Do you want
+                    to continue?</p>
+            </div>
+            <div class="modal-footer p-3 border-top d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-success rounded-md-custom px-4" (click)="confirmHome()">Yes,
+                    Continue</button>
+                <button type="button" class="btn btn-secondary rounded-md-custom px-4" data-bs-dismiss="modal">No, Stay
+                    Here</button>
+            </div>
+        </div>
+    </div>
+</div>

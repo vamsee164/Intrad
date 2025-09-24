@@ -1,8 +1,5 @@
-/* src/app/footer/footer.component.css */
-
-/* CSS Variables for Theming */
 :host {
-  --footer-bg: #70543e; /* Black background */
+  --footer-bg: #172a4e; /* Black background */
   --footer-text-color: #ffffff; /* White text color */
   --footer-link-color: #cccccc; /* Light gray for links */
   --footer-link-hover-color: #ffffff; /* White on link hover */

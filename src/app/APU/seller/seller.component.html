@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    <form (ngSubmit)="onSubmit()" #sellerForm="ngForm">
+    <form (ngSubmit)="onSubmit()" #sellerForm="ngForm" novalidate>
         <div class="mb-4">
             <label for="sellerName" class="form-label fw-semibold">Name of Seller:</label>
             <input type="text" class="form-control form-control-custom shadow-sm" id="sellerName"
@@ -39,6 +39,37 @@
             <input type="text" class="form-control form-control-custom shadow-sm" id="location"
                 [(ngModel)]="formData.location" name="location" placeholder="Enter your location (village/city)"
                 required>
+        </div>
+
+        <!-- Additional Fields for Database/API -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="sellerEmail" class="form-label fw-semibold">Email:</label>
+                <input type="email" class="form-control form-control-custom shadow-sm" id="sellerEmail"
+                    [(ngModel)]="formData.email" name="sellerEmail" placeholder="Enter your email" required email>
+            </div>
+            <div class="col-md-6 mb-4">
+                <label for="pricePerUnit" class="form-label fw-semibold">Price per Unit:</label>
+                <input type="number" class="form-control form-control-custom shadow-sm" id="pricePerUnit"
+                    [(ngModel)]="formData.pricePerUnit" name="pricePerUnit" placeholder="Enter price" required min="0" step="0.01">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="harvestDate" class="form-label fw-semibold">Harvest Date:</label>
+                <input type="date" class="form-control form-control-custom shadow-sm" id="harvestDate"
+                    [(ngModel)]="formData.harvestDate" name="harvestDate" required>
+            </div>
+            <div class="col-md-6 mb-4">
+                <label for="qualityGrade" class="form-label fw-semibold">Quality Grade:</label>
+                <select class="form-select form-control-custom shadow-sm" id="qualityGrade"
+                    [(ngModel)]="formData.qualityGrade" name="qualityGrade" required>
+                    <option value="" disabled selected>Select quality grade</option>
+                    <option value="premium">Premium</option>
+                    <option value="standard">Standard</option>
+                    <option value="basic">Basic</option>
+                </select>
+            </div>
         </div>
 
         <!-- Submit Button -->

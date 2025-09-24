@@ -1,123 +1,122 @@
-/* Global styles for the entire Angular application */
+/* Global Styles */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
 
-/* Global font */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
-
-/* CSS Variables */
 :root {
-  /* Colors */
-  --primary-green: #28a745;
-  --primary-green-hover: #218838;
-  --primary-green-border-hover: #1e7e34;
-
-  --secondary-blue: #007bff;
-  --secondary-blue-hover: #0069d9;
-  --secondary-blue-border-hover: #0062cc;
-
-  --info-light: #cfe2ff;
-  /* Bootstrap's info background */
-  --info-light-text: #0c4187;
-  /* Darker blue for contrast on info-light */
-  --info-light-hover: #b0cced;
-
-  --warning-light: #fff3cd;
-  /* Bootstrap's warning background */
-  --warning-light-text: #664d03;
-  /* Darker yellow for contrast on warning-light */
-  --warning-light-hover: #e0d0b0;
-
-  --body-bg: #f8f9fa;
-  /* Light gray background */
-  --main-border-color: #6c757d;
-  /* border-secondary equivalent */
-  --text-dark: #212529;
-  /* Bootstrap's dark text */
-  --text-muted: #6c757d;
-  /* Bootstrap's muted text */
-  --navbar-bg: #f8f9fa;
-  /* Bootstrap's light background */
-  --modal-header-bg-success: #198754;
-  /* Bootstrap's success background for modal header */
-
-  /* Border Radii */
-  --border-radius-xl: 1rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-md: 0.375rem;
-
-  /* Shadows */
-  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --primary-green: #22c55e;
+  --primary-green-dark: #16a34a;
+  --secondary-blue: #7d62e9;
+  --secondary-blue-dark: #2563eb;
+  --accent-orange: #f59e0b;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --bg-light: #f8fafc;
+  --border-color: #e5e7eb;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-/* Base Body Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Inter", sans-serif;
-  background-color: var(--body-bg);
+  color: var(--text-dark);
+  min-height: 100vh;
+  background: #56d0810f;
 }
 
-/* Custom Border Radius Classes */
-.rounded-xl {
-  border-radius: var(--border-radius-xl) !important;
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.rounded-lg-custom {
-  border-radius: var(--border-radius-lg) !important;
-}
-
-.rounded-md-custom {
-  border-radius: var(--border-radius-md) !important;
-}
-
-/* Custom Button Colors */
 .btn-primary-green {
-  background-color: var(--primary-green);
+  background: var(--primary-green);
   border-color: var(--primary-green);
-  color: #fff;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .btn-primary-green:hover {
-  background-color: var(--primary-green-hover);
-  border-color: var(--primary-green-border-hover);
+  background: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary-blue {
-  background-color: var(--secondary-blue);
+  background: var(--secondary-blue);
   border-color: var(--secondary-blue);
-  color: #fff;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .btn-secondary-blue:hover {
-  background-color: var(--secondary-blue-hover);
-  border-color: var(--secondary-blue-border-hover);
+  background: var(--secondary-blue-dark);
+  border-color: var(--secondary-blue-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
-.btn-info-light {
-  background-color: var(--info-light);
-  border-color: var(--info-light);
-  color: var(--info-light-text);
+.card-modern {
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: none;
+  transition: all 0.3s ease;
 }
 
-.btn-info-light:hover {
-  background-color: var(--info-light-hover);
-  border-color: var(--info-light-hover);
+.card-modern:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-.btn-warning-light {
-  background-color: var(--warning-light);
-  border-color: var(--warning-light);
-  color: var(--warning-light-text);
-}
-
-.btn-warning-light:hover {
-  background-color: var(--warning-light-hover);
-  border-color: var(--warning-light-hover);
-}
-
-/* Text Colors */
 .text-primary-green {
   color: var(--primary-green) !important;
 }
-
 .text-secondary-blue {
   color: var(--secondary-blue) !important;
+}
+.bg-primary-green {
+  background-color: var(--primary-green) !important;
+}
+.bg-secondary-blue {
+  background-color: var(--secondary-blue) !important;
+}
+
+.rounded-modern {
+  border-radius: 12px !important;
+}
+.shadow-modern {
+  box-shadow: var(--shadow) !important;
+}
+
+.form-control:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.25);
+}
+
+.navbar-modern {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.homepage-main-section {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  border: none;
 }
