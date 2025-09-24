@@ -22,6 +22,26 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  private redirectByRole(): void {
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        switch (user.role) {
+          case 'admin':
+            this.router.navigate(['/control']);
+            break;
+          case 'farmer':
+            this.router.navigate(['/seller']);
+            break;
+          case 'user':
+            this.router.navigate(['/buyer']);
+            break;
+          default:
+            this.router.navigate(['/']);
+        }
+      }
+    }).unsubscribe();
+  }
+
   handleLogin(): void {
     if (!this.loginHtmlForm.valid) return;
     
@@ -37,7 +57,7 @@ export class LoginComponent {
             this.loginMessageType = 'success';
             this.loginHtmlForm.resetForm();
             this.loginSuccess.emit();
-            this.router.navigate(['/control']);
+            this.redirectByRole();
           } else {
             this.loginMessage = 'Invalid username or password.';
             this.loginMessageType = 'danger';
