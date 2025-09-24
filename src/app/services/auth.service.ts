@@ -20,8 +20,8 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<boolean> {
-    if (email && password) {
-      const user: User = { id: Date.now().toString(), email, role: 'admin' };
+    const user = this.validateUser(email, password);
+    if (user) {
       if (isPlatformBrowser(this.platformId)) {
         localStorage.setItem('currentUser', JSON.stringify(user));
       }
@@ -29,6 +29,17 @@ export class AuthService {
       return of(true);
     }
     return of(false);
+  }
+
+  private validateUser(email: string, password: string): User | null {
+    const users = [
+      { id: '1', email: 'admin@intrad.com', password: 'admin123', role: 'admin' },
+      { id: '2', email: 'farmer@intrad.com', password: 'farmer123', role: 'farmer' },
+      { id: '3', email: 'user@intrad.com', password: 'user123', role: 'user' }
+    ];
+    
+    const foundUser = users.find(u => u.email === email && u.password === password);
+    return foundUser ? { id: foundUser.id, email: foundUser.email, role: foundUser.role } : null;
   }
 
   logout(): void {
