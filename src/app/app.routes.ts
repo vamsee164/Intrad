@@ -8,6 +8,8 @@ import { LoginComponent } from './FPC/login/login.component';
 import { BuyerComponent } from './APU/buyer/buyer.component';
 import { SellerComponent } from './APU/seller/seller.component';
 import { AppControlComponent } from './app-control/app-control.component';
+import { VegetablesComponent } from './FPC/vegetables/vegetables.component';
+import { FruitsComponent } from './FPC/fruits/fruits.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -19,6 +21,8 @@ export const routes: Routes = [
   { path: 'booksoil', component: BookSoilComponent },
   { path: 'about', component: AboutUsComponent },
   { path: 'contact', component: ContactUsComponent },
+  { path: 'crops/vegetables', component: VegetablesComponent },
+  { path: 'crops/fruits', component: FruitsComponent },
   { path: 'buyer', component: BuyerComponent, canActivate: [AuthGuard] },
   { path: 'seller', component: SellerComponent, canActivate: [AuthGuard] }
 ];

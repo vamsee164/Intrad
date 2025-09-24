@@ -1,5 +1,5 @@
 {
-  "name": "intrad",
+  "name": "intra-d",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:intrad": "node dist/intrad/server/server.mjs"
+    "serve:ssr:intra-d": "node dist/intra-d/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -16,7 +16,7 @@
     "@angular/common": "^18.2.13",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.13",
-    "@angular/fire": "^18.0.0",
+    "@angular/fire": "^18.0.1",
     "@angular/forms": "^18.2.13",
     "@angular/material": "^18.2.14",
     "@angular/platform-browser": "^18.2.13",
@@ -26,7 +26,7 @@
     "@angular/ssr": "^18.2.20",
     "bootstrap": "^5.3.7",
     "express": "^4.18.2",
-    "firebase": "^12.0.0",
+    "firebase": "^12.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "^0.14.10"

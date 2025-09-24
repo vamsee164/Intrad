@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HomepageComponent } from './FPC/homepage/homepage.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 
@@ -9,13 +8,12 @@ import { FooterComponent } from './footer/footer.component';
   standalone: true,
   imports: [
     RouterOutlet,
-    HomepageComponent,
     NavbarComponent,
     FooterComponent
-  ],
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'intrad';
+  title = 'intra-d';
 }
