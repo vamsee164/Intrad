@@ -1,0 +1,114 @@
+<div class="" *ngIf="product">
+    <div class="row g-0">
+        <!-- Product Image Section -->
+        <div class="col-md-6">
+            <div class="image-container">
+                <img [src]="product.image" [alt]="product.name" class="product-image" />
+                <!-- Image Badge -->
+                <div class="image-badge" *ngIf="product.onSale">
+                    <span class="badge bg-danger">Sale</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details Section -->
+        <div class="col-md-6">
+            <div class="card-body p-4 p-lg-5 h-100 d-flex flex-column">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a [routerLink]="['/']" class="text-decoration-none">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a [routerLink]="['/crops', product.category]" class="text-decoration-none">
+                                {{ product.category | titlecase }}
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {{ product.name }}
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Category Tag -->
+                <div class="mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">
+                        {{ product.category | titlecase }}
+                    </span>
+                </div>
+
+                <!-- Product Title -->
+                <h1 class="h3 fw-bold text-dark mb-3">{{ product.name }}</h1>
+
+                <!-- Product Description -->
+                <div class="mb-4 flex-grow-1">
+                    <p class="text-muted mb-3 lead">{{ product.description }}</p>
+
+                    <!-- Additional Product Details -->
+                    <div class="product-details" *ngIf="product.details">
+                        <ul class="list-unstyled">
+                            <li class="mb-2" *ngFor="let detail of product.details">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {{ detail }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Price Section -->
+                <div class="price-section mb-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="h2 fw-bold text-success mb-0">
+                            ₹{{ product.price | number:'1.0-0' }}
+                        </span>
+                        <span class="h5 text-muted text-decoration-line-through mb-0" *ngIf="product.originalPrice">
+                            ₹{{ product.originalPrice | number:'1.0-0' }}
+                        </span>
+                        <span class="badge bg-success"
+                            *ngIf="product.originalPrice && product.price < product.originalPrice">
+                            Save {{ ((product.originalPrice - product.price) / product.originalPrice * 100)
+                            | number:'1.0-0' }}%
+                        </span>
+                    </div>
+
+                    <!-- Stock Status -->
+                    <div class="stock-status mb-3">
+                        <span class="badge bg-success" *ngIf="!product.outOfStock">
+                            <i class="fas fa-check me-1"></i>In Stock
+                        </span>
+                        <span class="badge bg-danger" *ngIf="product.outOfStock">
+                            <i class="fas fa-times me-1"></i>Out of Stock
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons mt-auto">
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <button class="btn btn-success btn-lg w-100" [disabled]="product.outOfStock">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger btn-lg w-100">
+                                <i class="fas fa-heart me-2"></i>Wishlist
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Actions -->
+                    <div class="d-flex gap-2 mb-4">
+                        <button class="btn btn-outline-secondary flex-fill">
+                            <i class="fas fa-share-alt me-2"></i>Share
+                        </button>
+                        <button class="btn btn-outline-secondary flex-fill">
+                            <i class="fas fa-balance-scale me-2"></i>Compare
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
