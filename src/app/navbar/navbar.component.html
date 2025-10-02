@@ -24,7 +24,8 @@
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/crops') || isDropdownActive('/bookfield')">
                     <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
-                        id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                        id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="cursor: pointer;">
                         <i class="fas fa-leaf me-2"></i>Crops
                     </a>
                     <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
@@ -38,13 +39,13 @@
                             <hr class="dropdown-divider">
                         </li> -->
                         <li routerLinkActive="active"><a class="dropdown-item"
-                                [routerLink]="['/crops/vegetables']">Vegetables</a></li>
+                                [routerLink]="['/crops', 'vegetables']">Vegetables</a></li>
                         <li routerLinkActive="active"><a class="dropdown-item"
-                                [routerLink]="['/crops/fruits']">Fruits</a></li>
+                                [routerLink]="['/crops', 'fruits']">Fruits</a></li>
                     </ul>
                 </li>
 
-                <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
+                <li class=" nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
                     <a [routerLink]="['/about']"
                         class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium" href="#">
                         <i class="fas fa-info-circle me-2"></i>About Us</a>
@@ -53,11 +54,13 @@
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/booksoil') || isDropdownActive('/bookfield')">
                     <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
-                        id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                        id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="cursor: pointer;">
                         <i class="fas fa-calendar-check me-2"></i>Book
                     </a>
                     <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarBookDropdown">
-                        <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/booksoil']">Book A Soil
+                        <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/booksoil']">Book
+                                A Soil
                                 Test</a></li>
                         <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/bookfield']">Book A
                                 Field Visit</a></li>
