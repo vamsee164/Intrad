@@ -38,13 +38,13 @@
         </div>
 
         <!-- Carousel and Login Section -->
-        <div id="pre-login-content" class="row gx-3">
+        <div id="pre-login-content" class="row gx-3 ">
             <!-- Login: top on mobile, right on desktop -->
-            <div class="col-12 col-md-5 col-lg-4 order-first order-md-last mb-2 mb-md-0">
+            <div class="col-sm-12 col-md-5 col-lg-4 order-first order-md-last mb-2 mb-md-0">
                 <app-login (loginSuccess)="onLoginSuccess()"></app-login>
             </div>
             <!-- Carousel: bottom on mobile, left on desktop -->
-            <div class="col-12 col-md-7 col-lg-8 order-last order-md-first">
+            <div class="col-sm-12 col-md-7 col-lg-8 order-last order-md-first">
                 <div id="homepageCarousel" class="carousel slide rounded-modern overflow-hidden shadow-modern"
                     data-bs-ride="carousel">
                     <div class="carousel-inner ">
@@ -115,36 +115,40 @@
                 <form (ngSubmit)="handleSignup()" #signupForm="ngForm" novalidate>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="modalRole" class="form-label fw-semibold">Role: <span class="text-danger">*</span></label>
-                            <select class="form-select rounded-md-custom" 
-                                    [class.is-invalid]="(signupForm.submitted || modalRole.touched) && modalRole.invalid"
-                                    id="modalRole" #modalRole="ngModel" 
-                                    [(ngModel)]="signupData.role" name="role" required>
+                            <label for="modalRole" class="form-label fw-semibold">Role: <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select rounded-md-custom"
+                                [class.is-invalid]="(signupForm.submitted || modalRole.touched) && modalRole.invalid"
+                                id="modalRole" #modalRole="ngModel" [(ngModel)]="signupData.role" name="role" required>
                                 <option selected disabled value="">Select your role</option>
                                 <option value="farmer">Farmer</option>
                                 <option value="user">Buyer / Seller</option>
                                 <option value="admin">Admin</option>
                             </select>
-                            <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalRole.touched) && modalRole.invalid">
+                            <div class="invalid-feedback"
+                                *ngIf="(signupForm.submitted || modalRole.touched) && modalRole.invalid">
                                 Role is required
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="modalName" class="form-label fw-semibold">Name: <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control rounded-md-custom" 
-                                   [class.is-invalid]="(signupForm.submitted || modalName.touched) && modalName.invalid"
-                                   id="modalName" #modalName="ngModel"
-                                   [(ngModel)]="signupData.name" name="name" placeholder="Enter your full name" required>
-                            <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalName.touched) && modalName.invalid">
+                            <label for="modalName" class="form-label fw-semibold">Name: <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control rounded-md-custom"
+                                [class.is-invalid]="(signupForm.submitted || modalName.touched) && modalName.invalid"
+                                id="modalName" #modalName="ngModel" [(ngModel)]="signupData.name" name="name"
+                                placeholder="Enter your full name" required>
+                            <div class="invalid-feedback"
+                                *ngIf="(signupForm.submitted || modalName.touched) && modalName.invalid">
                                 Name is required
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="modalTypicalCrops" class="form-label fw-semibold">Typical Crops: <span class="text-danger">*</span></label>
-                            <select class="form-select rounded-md-custom" 
-                                    [class.is-invalid]="(signupForm.submitted || modalTypicalCrops.touched) && modalTypicalCrops.invalid"
-                                    id="modalTypicalCrops" #modalTypicalCrops="ngModel" 
-                                    [(ngModel)]="signupData.typicalCrops" name="typicalCrops" required>
+                            <label for="modalTypicalCrops" class="form-label fw-semibold">Typical Crops: <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select rounded-md-custom"
+                                [class.is-invalid]="(signupForm.submitted || modalTypicalCrops.touched) && modalTypicalCrops.invalid"
+                                id="modalTypicalCrops" #modalTypicalCrops="ngModel"
+                                [(ngModel)]="signupData.typicalCrops" name="typicalCrops" required>
                                 <option selected disabled value="">Select Crop</option>
                                 <option value="mango">Mango</option>
                                 <option value="banana">Banana</option>
@@ -159,35 +163,37 @@
                                 <option value="coriander">Coriander</option>
                                 <option value="curry-leaves">Curry Leaves</option>
                             </select>
-                            <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalTypicalCrops.touched) && modalTypicalCrops.invalid">
+                            <div class="invalid-feedback"
+                                *ngIf="(signupForm.submitted || modalTypicalCrops.touched) && modalTypicalCrops.invalid">
                                 Please select a crop
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="modalMobileNo" class="form-label fw-semibold">Mobile No: <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control rounded-md-custom" 
-                                   [class.is-invalid]="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid"
-                                   id="modalMobileNo" #modalMobileNo="ngModel"
-                                   [(ngModel)]="signupData.mobileNo" name="mobileNo" placeholder="Enter your mobile number"
-                                   (input)="onPhoneInput($event)"
-                                   [disabled]="otpSent"
-                                   pattern="[0-9]{10}" maxlength="10" minlength="10" title="Mobile number must be exactly 10 digits" required>
-                            <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid">
+                            <label for="modalMobileNo" class="form-label fw-semibold">Mobile No: <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel" class="form-control rounded-md-custom"
+                                [class.is-invalid]="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid"
+                                id="modalMobileNo" #modalMobileNo="ngModel" [(ngModel)]="signupData.mobileNo"
+                                name="mobileNo" placeholder="Enter your mobile number" (input)="onPhoneInput($event)"
+                                [disabled]="otpSent" pattern="[0-9]{10}" maxlength="10" minlength="10"
+                                title="Mobile number must be exactly 10 digits" required>
+                            <div class="invalid-feedback"
+                                *ngIf="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid">
                                 <span *ngIf="modalMobileNo.errors?.['required']">Mobile number is required</span>
-                                <span *ngIf="modalMobileNo.errors?.['pattern'] || modalMobileNo.errors?.['minlength'] || modalMobileNo.errors?.['maxlength']">Mobile number must be exactly 10 digits</span>
+                                <span
+                                    *ngIf="modalMobileNo.errors?.['pattern'] || modalMobileNo.errors?.['minlength'] || modalMobileNo.errors?.['maxlength']">Mobile
+                                    number must be exactly 10 digits</span>
                             </div>
-                            
+
                             <!-- Send OTP Button -->
-                            <button type="button" 
-                                    *ngIf="!otpSent && signupData.mobileNo.length === 10"
-                                    class="btn btn-sm btn-outline-primary mt-2"
-                                    (click)="sendOtpForVerification()"
-                                    [disabled]="isSendingOtp">
+                            <button type="button" *ngIf="!otpSent && signupData.mobileNo.length === 10"
+                                class="btn btn-sm btn-outline-primary mt-2" (click)="sendOtpForVerification()"
+                                [disabled]="isSendingOtp">
                                 <i class="bi bi-send me-1"></i>
                                 {{ isSendingOtp ? 'Sending...' : 'Send OTP' }}
                             </button>
                         </div>
-                        
+
                         <!-- OTP Field (shown after OTP is sent) -->
                         <div class="col-md-6" *ngIf="showOtpField">
                             <label for="modalOtp" class="form-label fw-semibold">
@@ -196,38 +202,28 @@
                                     <i class="bi bi-check-circle me-1"></i>Verified
                                 </span>
                             </label>
-                            <input type="text" 
-                                   class="form-control rounded-md-custom" 
-                                   [class.is-valid]="isMobileVerified"
-                                   id="modalOtp"
-                                   [(ngModel)]="otpCode" 
-                                   name="otp" 
-                                   placeholder="Enter 6-digit OTP"
-                                   maxlength="6"
-                                   [disabled]="isMobileVerified"
-                                   pattern="[0-9]{6}">
-                            
+                            <input type="text" class="form-control rounded-md-custom"
+                                [class.is-valid]="isMobileVerified" id="modalOtp" [(ngModel)]="otpCode" name="otp"
+                                placeholder="Enter 6-digit OTP" maxlength="6" [disabled]="isMobileVerified"
+                                pattern="[0-9]{6}">
+
                             <!-- OTP Message -->
-                            <div class="alert alert-{{otpMessageType}} alert-sm mt-2 mb-0 py-1 px-2" 
-                                 *ngIf="otpMessage"
-                                 style="font-size: 0.85rem;">
-                                <i class="bi" [ngClass]="{'bi-check-circle': otpMessageType === 'success', 'bi-exclamation-circle': otpMessageType === 'danger'}"></i>
+                            <div class="alert alert-{{otpMessageType}} alert-sm mt-2 mb-0 py-1 px-2" *ngIf="otpMessage"
+                                style="font-size: 0.85rem;">
+                                <i class="bi"
+                                    [ngClass]="{'bi-check-circle': otpMessageType === 'success', 'bi-exclamation-circle': otpMessageType === 'danger'}"></i>
                                 {{ otpMessage }}
                             </div>
-                            
+
                             <!-- OTP Action Buttons -->
                             <div class="d-flex gap-2 mt-2" *ngIf="!isMobileVerified">
-                                <button type="button" 
-                                        class="btn btn-sm btn-primary"
-                                        (click)="verifyOtpInline()"
-                                        [disabled]="isVerifyingOtp || otpCode.length !== 6">
+                                <button type="button" class="btn btn-sm btn-primary" (click)="verifyOtpInline()"
+                                    [disabled]="isVerifyingOtp || otpCode.length !== 6">
                                     <i class="bi bi-shield-check me-1"></i>
                                     {{ isVerifyingOtp ? 'Verifying...' : 'Verify OTP' }}
                                 </button>
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-secondary"
-                                        (click)="resendOtpInline()"
-                                        [disabled]="isSendingOtp">
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    (click)="resendOtpInline()" [disabled]="isSendingOtp">
                                     <i class="bi bi-arrow-clockwise me-1"></i>
                                     {{ isSendingOtp ? 'Sending...' : 'Resend' }}
                                 </button>
@@ -235,22 +231,24 @@
                         </div>
                         <ng-container *ngIf="signupData.role !== 'user'">
                             <div class="col-md-6">
-                                <label for="modalVillage" class="form-label fw-semibold">Village: <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-md-custom" 
-                                       [class.is-invalid]="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid"
-                                       id="modalVillage" #modalVillage="ngModel"
-                                       [(ngModel)]="signupData.village" name="village"
-                                       placeholder="Enter your village name" required>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid">
+                                <label for="modalVillage" class="form-label fw-semibold">Village: <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid"
+                                    id="modalVillage" #modalVillage="ngModel" [(ngModel)]="signupData.village"
+                                    name="village" placeholder="Enter your village name" required>
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid">
                                     Village is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalWaterSource" class="form-label fw-semibold">Water Source: <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-md-custom" 
-                                        [class.is-invalid]="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid"
-                                        id="modalWaterSource" #modalWaterSource="ngModel"
-                                        [(ngModel)]="signupData.waterSource" name="waterSource" required>
+                                <label for="modalWaterSource" class="form-label fw-semibold">Water Source: <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid"
+                                    id="modalWaterSource" #modalWaterSource="ngModel"
+                                    [(ngModel)]="signupData.waterSource" name="waterSource" required>
                                     <option selected disabled value="">Select water source</option>
                                     <option value="well">Well</option>
                                     <option value="borewell">Borewell</option>
@@ -258,42 +256,48 @@
                                     <option value="river">River</option>
                                     <option value="rainfed">Rainfed</option>
                                 </select>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid">
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid">
                                     Water source is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalMandal" class="form-label fw-semibold">Mandal: <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-md-custom" 
-                                       [class.is-invalid]="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid"
-                                       id="modalMandal" #modalMandal="ngModel"
-                                       [(ngModel)]="signupData.mandal" name="mandal" placeholder="Enter your mandal" required>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid">
+                                <label for="modalMandal" class="form-label fw-semibold">Mandal: <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid"
+                                    id="modalMandal" #modalMandal="ngModel" [(ngModel)]="signupData.mandal"
+                                    name="mandal" placeholder="Enter your mandal" required>
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid">
                                     Mandal is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalSoilTest" class="form-label fw-semibold">Soil Test: <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-md-custom" 
-                                        [class.is-invalid]="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid"
-                                        id="modalSoilTest" #modalSoilTest="ngModel"
-                                        [(ngModel)]="signupData.soilTest" name="soilTest" required>
+                                <label for="modalSoilTest" class="form-label fw-semibold">Soil Test: <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid"
+                                    id="modalSoilTest" #modalSoilTest="ngModel" [(ngModel)]="signupData.soilTest"
+                                    name="soilTest" required>
                                     <option selected disabled value="">Select soil test result</option>
                                     <option value="tested-high">Tested - High Nutrients</option>
                                     <option value="tested-medium">Tested - Medium Nutrients</option>
                                     <option value="tested-low">Tested - Low Nutrients</option>
                                     <option value="not-tested">Not Tested</option>
                                 </select>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid">
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid">
                                     Soil test is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalSoilType" class="form-label fw-semibold">Soil Type: <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-md-custom" 
-                                        [class.is-invalid]="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid"
-                                        id="modalSoilType" #modalSoilType="ngModel"
-                                        [(ngModel)]="signupData.soilType" name="soilType" required>
+                                <label for="modalSoilType" class="form-label fw-semibold">Soil Type: <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid"
+                                    id="modalSoilType" #modalSoilType="ngModel" [(ngModel)]="signupData.soilType"
+                                    name="soilType" required>
                                     <option selected disabled value="">Select soil type</option>
                                     <option value="black">Black</option>
                                     <option value="Red">Red</option>
@@ -302,27 +306,31 @@
                                     <option value="forest">Forest</option>
                                     <option value="alluvial">Alluvial</option>
                                 </select>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid">
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid">
                                     Soil type is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalAcreOfLand" class="form-label fw-semibold">Acre of Land: <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control rounded-md-custom" 
-                                       [class.is-invalid]="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid"
-                                       id="modalAcreOfLand" #modalAcreOfLand="ngModel"
-                                       [(ngModel)]="signupData.acreOfLand" name="acreOfLand"
-                                       placeholder="Enter acres of land owned" min="0" step="any" required>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid">
+                                <label for="modalAcreOfLand" class="form-label fw-semibold">Acre of Land: <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid"
+                                    id="modalAcreOfLand" #modalAcreOfLand="ngModel" [(ngModel)]="signupData.acreOfLand"
+                                    name="acreOfLand" placeholder="Enter acres of land owned" min="0" step="any"
+                                    required>
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid">
                                     Acre of land is required
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers: <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-md-custom" 
-                                        [class.is-invalid]="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid"
-                                        id="modalFertilizers" #modalFertilizers="ngModel"
-                                        [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
+                                <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers: <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select rounded-md-custom"
+                                    [class.is-invalid]="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid"
+                                    id="modalFertilizers" #modalFertilizers="ngModel"
+                                    [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
                                     <option selected disabled value="">Select common fertilizers used</option>
                                     <option value="urea">Urea</option>
                                     <option value="dap">DAP</option>
@@ -330,7 +338,8 @@
                                     <option value="npk">NPK Complex</option>
                                     <option value="organic">Organic Fertilizers</option>
                                 </select>
-                                <div class="invalid-feedback" *ngIf="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid">
+                                <div class="invalid-feedback"
+                                    *ngIf="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid">
                                     Fertilizers selection is required
                                 </div>
                             </div>
@@ -355,7 +364,8 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-xl shadow-lg">
             <div class="modal-header bg-primary-green text-white p-4 rounded-top-custom">
-                <h5 class="modal-title display-6 fw-bold" id="forgotPassModalLabel">{{ 'login.forgotform' | translate }}</h5>
+                <h5 class="modal-title display-6 fw-bold" id="forgotPassModalLabel">{{ 'login.forgotform' | translate }}
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -363,15 +373,14 @@
                 <form (ngSubmit)="handleForgotPassword()" #forgotForm="ngForm" novalidate>
                     <div class="mb-4">
                         <label for="forgotEmail" class="form-label fw-semibold text-dark">
-                            <i class="fas fa-envelope me-2 text-primary"></i>{{ 'login.email' | translate }} /Mobile No. <span class="text-danger">*</span>
+                            <i class="fas fa-envelope me-2 text-primary"></i>{{ 'login.email' | translate }} /Mobile No.
+                            <span class="text-danger">*</span>
                         </label>
-                        <input type="email" id="forgotEmail" name="forgotEmail" 
-                               [(ngModel)]="forgotPasswordData.email"
-                               [class.is-invalid]="forgotForm.submitted && forgotEmail.invalid"
-                               #forgotEmail="ngModel"
-                               placeholder="email address / Mobile Number"
-                               class="form-control form-control-lg rounded-3 border-2"
-                               style="padding: 12px 16px; border-color: #e0e6ed;" required email>
+                        <input type="email" id="forgotEmail" name="forgotEmail" [(ngModel)]="forgotPasswordData.email"
+                            [class.is-invalid]="forgotForm.submitted && forgotEmail.invalid" #forgotEmail="ngModel"
+                            placeholder="email address / Mobile Number"
+                            class="form-control form-control-lg rounded-3 border-2"
+                            style="padding: 12px 16px; border-color: #e0e6ed;" required email>
                         <div class="invalid-feedback" *ngIf="forgotForm.submitted && forgotEmail.invalid">
                             <span *ngIf="forgotEmail.errors?.['required']">Email is required</span>
                             <span *ngIf="forgotEmail.errors?.['email']">Please enter a valid email</span>
@@ -382,31 +391,32 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="newPassword" class="form-label fw-semibold text-dark">
-                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.password' | translate }} <span class="text-danger">*</span>
+                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.password' | translate }}
+                                    <span class="text-danger">*</span>
                                 </label>
-                                <input type="password" id="newPassword" name="newPassword" 
-                                       [(ngModel)]="forgotPasswordData.password"
-                                       [class.is-invalid]="forgotForm.submitted && newPassword.invalid"
-                                       #newPassword="ngModel"
-                                       placeholder="********"
-                                       class="form-control form-control-lg rounded-3 border-2"
-                                       style="padding: 12px 16px; border-color: #e0e6ed;" required>
+                                <input type="password" id="newPassword" name="newPassword"
+                                    [(ngModel)]="forgotPasswordData.password"
+                                    [class.is-invalid]="forgotForm.submitted && newPassword.invalid"
+                                    #newPassword="ngModel" placeholder="********"
+                                    class="form-control form-control-lg rounded-3 border-2"
+                                    style="padding: 12px 16px; border-color: #e0e6ed;" required>
                                 <div class="invalid-feedback" *ngIf="forgotForm.submitted && newPassword.invalid">
                                     Password is required
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="confirmNewPassword" class="form-label fw-semibold text-dark">
-                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.confirmpassword' | translate }} <span class="text-danger">*</span>
+                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.confirmpassword' | translate
+                                    }} <span class="text-danger">*</span>
                                 </label>
-                                <input type="password" id="confirmNewPassword" name="confirmNewPassword" 
-                                       [(ngModel)]="forgotPasswordData.confirmPassword"
-                                       [class.is-invalid]="forgotForm.submitted && confirmNewPassword.invalid"
-                                       #confirmNewPassword="ngModel"
-                                       placeholder="********"
-                                       class="form-control form-control-lg rounded-3 border-2"
-                                       style="padding: 12px 16px; border-color: #e0e6ed;" required>
-                                <div class="invalid-feedback" *ngIf="forgotForm.submitted && confirmNewPassword.invalid">
+                                <input type="password" id="confirmNewPassword" name="confirmNewPassword"
+                                    [(ngModel)]="forgotPasswordData.confirmPassword"
+                                    [class.is-invalid]="forgotForm.submitted && confirmNewPassword.invalid"
+                                    #confirmNewPassword="ngModel" placeholder="********"
+                                    class="form-control form-control-lg rounded-3 border-2"
+                                    style="padding: 12px 16px; border-color: #e0e6ed;" required>
+                                <div class="invalid-feedback"
+                                    *ngIf="forgotForm.submitted && confirmNewPassword.invalid">
                                     Confirm password is required
                                 </div>
                             </div>
@@ -415,8 +425,7 @@
 
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold mb-3"
-                            [disabled]="!forgotForm.valid"
-                            style="padding: 12px;">
+                        [disabled]="!forgotForm.valid" style="padding: 12px;">
                         {{ 'common.submit' | translate }}
                     </button>
                 </form>
@@ -439,7 +448,8 @@
                 {{ 'modal.formsuccess' | translate }}
             </div>
             <div class="modal-footer p-3 border-top border-gray-200 d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">{{ 'common.close' | translate }}</button>
+                <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">{{
+                    'common.close' | translate }}</button>
             </div>
         </div>
     </div>
@@ -460,7 +470,8 @@
                 <p class="text-muted mb-0">{{ 'modal.development' | translate }}</p>
             </div>
             <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary-green rounded-md-custom" data-bs-dismiss="modal">{{ 'common.gotit' | translate }}</button>
+                <button type="button" class="btn btn-primary-green rounded-md-custom" data-bs-dismiss="modal">{{
+                    'common.gotit' | translate }}</button>
             </div>
         </div>
     </div>
@@ -498,7 +509,8 @@
                 </div>
             </div>
             <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{ 'common.close' | translate }}</button>
+                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{
+                    'common.close' | translate }}</button>
             </div>
         </div>
     </div>
@@ -544,15 +556,13 @@
                 </div>
             </div>
             <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{ 'common.close' | translate }}</button>
+                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{
+                    'common.close' | translate }}</button>
             </div>
         </div>
     </div>
 </div>
 <!-- OTP Verification Modal for Signup -->
-<app-otp-verification 
-    [mobileNumber]="signupData.mobileNo"
-    [showOtpModal]="showOtpModal"
-    (otpVerified)="onOtpVerified($event)"
-    (modalClosed)="onOtpModalClosed()">
+<app-otp-verification [mobileNumber]="signupData.mobileNo" [showOtpModal]="showOtpModal"
+    (otpVerified)="onOtpVerified($event)" (modalClosed)="onOtpModalClosed()">
 </app-otp-verification>

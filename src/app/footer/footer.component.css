@@ -1,14 +1,14 @@
 :host {
-  --footer-bg: #2d5016;           /* Agricultural dark green */
-  --footer-text-color: #ffffff;   /* White text */
-  --footer-link-color: #f0f8f0;   /* Light green for links */
+  --footer-bg: #2d5016; /* Agricultural dark green */
+  --footer-text-color: #ffffff; /* White text */
+  --footer-link-color: #f0f8f0; /* Light green for links */
   --footer-link-hover-color: #90ee90; /* Light green on hover */
   --footer-heading-color: #ffffff; /* White for headings */
   --footer-divider-color: #4a7c59; /* Medium green for divider */
-  --social-icon-bg: #4a7c59;      /* Medium green for social icons */
+  --social-icon-bg: #4a7c59; /* Medium green for social icons */
   --social-icon-hover-bg: #6b8e23; /* Olive green on hover */
-  --button-bg: #6b8e23;           /* Olive green for buttons */
-  --button-hover-bg: #8b4513;     /* Earth brown on hover */
+  --button-bg: #6b8e23; /* Olive green for buttons */
+  --button-hover-bg: #8b4513; /* Earth brown on hover */
 }
 
 /* Overall Footer Styling */
@@ -103,7 +103,9 @@
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 0.25rem; /* Slightly rounded corners */
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
 }
 
 .btn-make-gift:hover {
@@ -128,12 +130,12 @@
   height: 40px;
   margin-right: 16px;
 }
+.logo-text {
+  color: var(--footer-heading-color);
+}
 /* Responsive Adjustments */
 @media (max-width: 991.98px) {
   /* Medium devices (tablets) and down */
-  .app-footer .row > div {
-    text-align: center; /* Center align all columns */
-  }
   .footer-logo {
     margin-right: 0 !important; /* Remove margin right */
     margin-bottom: 1rem; /* Add some space below logo */
@@ -157,14 +159,11 @@
     display: inline-block; /* Ensure they wrap correctly */
   }
   .social-icons {
-    justify-content: center; /* Center social icons */
     display: flex;
   }
   .footer-list {
-    padding-left: 0; /* Remove default list padding */
-  }
-  .footer-list li {
-    text-align: center; /* Center list items */
+    padding-left: 0;
+    /* Remove default list padding */
   }
 }
 

@@ -1,71 +1,66 @@
 <nav class="navbar navbar-expand-lg shadow-modern p-3 z-2">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center fw-bold" (click)="onLogoClick($event)"
-            style="cursor: pointer;">
-            <img src="assets/images/logo.jpg" alt="Intra-d Logo" class="me-2" width="80">
-            <div class="d-flex align-items-center flex-column">
-                <span class="text-primary-green" style="font-size: 1.5rem;">{{ 'home.title' | translate }}</span>
-                <span class="text-primary-green" style="font-size: .8rem;">{{ 'home.subtitle' | translate }}</span>
-            </div>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
-            aria-controls="homepageNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="homepageNavbar">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{exact: true}">
-                    <a (click)="onHomeClick($event)"
-                        class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" href="#"
-                        style="cursor: pointer;"><i class="fas fa-home me-2"></i>{{ 'nav.home' | translate }}</a>
-                </li>
-                <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                        [routerLink]="['/career']"><i class="fas fa-briefcase me-2"></i>{{ 'nav.wehire' | translate
-                        }}</a>
-                </li>
-                <!-- Crops Dropdown -->
-                <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
-                    [class.active]="isDropdownActive('/crops') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-primary-green rounded-modern dropdown-toggle fw-medium"
-                        id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                        style="cursor: pointer;">
-                        <i class="fas fa-leaf me-2"></i>{{ 'nav.crops' | translate }}
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
-                        <li routerLinkActive="active"><a class="dropdown-item"
-                                [routerLink]="['/crops', 'vegetables']">{{ 'nav.vegetables' | translate }}</a></li>
-                        <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/crops', 'fruits']">{{
-                                'nav.fruits' | translate }}</a></li>
-                    </ul>
-                </li>
-
-                <li class=" nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a [routerLink]="['/about']" class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                        href="#">
-                        <i class="fas fa-info-circle me-2"></i>{{ 'nav.about' | translate }}</a>
-                </li>
-                <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                        [routerLink]="['/contact']" href="#"><i class="fas fa-envelope me-2"></i>{{ 'nav.contact' |
-                        translate }}</a>
-                </li>
-                <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="authService.isAuthenticated()" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-success rounded-modern px-4 py-2 fw-medium"
-                        [routerLink]="['/profile']" href="#"><i class="fas fa-user me-2"></i>{{ 'nav.profile' |
-                        translate }}</a>
-                </li>
-                <!-- Language Switcher -->
-                <li class="nav-item me-2 mb-2 mb-lg-0">
-                    <app-language-switcher></app-language-switcher>
-                </li>
-                <li class="nav-item d-none" id="logoutNavItem">
-                    <button class="nav-link btn btn-danger rounded-lg-custom" id="logoutBtn">{{ 'nav.logout' | translate
-                        }}</button>
-                </li>
-            </ul>
+    <a class="navbar-brand d-flex align-items-center fw-bold" (click)="onLogoClick($event)" style="cursor: pointer;">
+        <img src="assets/images/logo.jpg" alt="Intra-d Logo" class="me-2" width="80">
+        <div class="d-flex align-items-center flex-column">
+            <span class="text-primary-green" style="font-size: 1.5rem;">{{ 'home.title' | translate }}</span>
+            <span class="text-primary-green" style="font-size: .8rem;">{{ 'home.subtitle' | translate }}</span>
         </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
+        aria-controls="homepageNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="homepageNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a (click)="onHomeClick($event)" class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
+                    href="#" style="cursor: pointer;"><i class="fas fa-home me-2"></i>{{ 'nav.home' | translate }}</a>
+            </li>
+            <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/career']"><i
+                        class="fas fa-briefcase me-2"></i>{{ 'nav.wehire' | translate
+                    }}</a>
+            </li>
+            <!-- Crops Dropdown -->
+            <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
+                [class.active]="isDropdownActive('/crops') || isDropdownActive('/bookfield')">
+                <a class="nav-link btn btn-outline-primary-green rounded-modern dropdown-toggle fw-medium"
+                    id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="cursor: pointer;">
+                    <i class="fas fa-leaf me-2"></i>{{ 'nav.crops' | translate }}
+                </a>
+                <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
+                    <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/crops', 'vegetables']">{{
+                            'nav.vegetables' | translate }}</a></li>
+                    <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/crops', 'fruits']">{{
+                            'nav.fruits' | translate }}</a></li>
+                </ul>
+            </li>
+
+            <li class=" nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
+                <a [routerLink]="['/about']" class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
+                    href="#">
+                    <i class="fas fa-info-circle me-2"></i>{{ 'nav.about' | translate }}</a>
+            </li>
+            <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/contact']"
+                    href="#"><i class="fas fa-envelope me-2"></i>{{ 'nav.contact' |
+                    translate }}</a>
+            </li>
+            <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="authService.isAuthenticated()" routerLinkActive="active">
+                <a class="nav-link btn btn-outline-success rounded-modern px-4 py-2 fw-medium"
+                    [routerLink]="['/profile']" href="#"><i class="fas fa-user me-2"></i>{{ 'nav.profile' |
+                    translate }}</a>
+            </li>
+            <!-- Language Switcher -->
+            <li class="nav-item me-2 mb-2 mb-lg-0">
+                <app-language-switcher></app-language-switcher>
+            </li>
+            <li class="nav-item d-none" id="logoutNavItem">
+                <button class="nav-link btn btn-danger rounded-lg-custom" id="logoutBtn">{{ 'nav.logout' | translate
+                    }}</button>
+            </li>
+        </ul>
     </div>
 </nav>
 

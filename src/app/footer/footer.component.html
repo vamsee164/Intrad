@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center mb-2">
                     <img src="assets/images/logo.jpg" alt="Intra-d Logo" style="height: 50px; width: auto;"
                         class="me-3">
-                    <h4 class="fw-bold mb-2">INTRA-D</h4>
+                    <h4 class="fw-bold mb-2 logo-text">INTRA-D</h4>
                 </div>
                 <div>
                     <p class="mb-1">{{ 'footer.description' | translate }}</p>
@@ -16,32 +16,26 @@
                 <nav class="footer-nav">
                     <div class="d-flex gap-3">
                         <small>{{ 'footer.copyright' | translate }}</small>
-                        <a [routerLink]="['/contact']" class="text-white text-decoration-none small">{{ 'nav.contact' | translate }}</a>
+                        <a [routerLink]="['/contact']" class="text-white text-decoration-none small">{{ 'nav.contact' |
+                            translate }}</a>
                     </div>
                 </nav>
             </div>
 
             <!-- Social Media Section -->
             <div class="col-md-4 col-lg-3 mb-4 mb-md-0">
-                <!-- <h5 class="fw-semibold mb-3">NEWSLETTER:</h5>
-                <form (ngSubmit)="onNewsletterSubmit()" #newsletterForm="ngForm">
-                    <div class="input-group mb-2">
-                        <input type="email" class="form-control" placeholder="Your email" [(ngModel)]="newsletterEmail"
-                            name="email" required email>
-                        <button type="submit" class="btn" [disabled]="!newsletterForm.valid">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </form> -->
-                <h5 class="fw-semibold mb-3">{{ 'footer.followus' | translate }}:</h5>
+                <h5 class="fw-semibold mb-3 text-white ">{{ 'footer.followus' | translate }}:</h5>
                 <div class="social-icons">
-                    <a href="https://wa.me/+919603790037" class="btn btn-sm rounded-circle me-2" target="_blank" title="WhatsApp">
+                    <a href="https://wa.me/+919603790037" class="btn btn-sm rounded-circle me-2" target="_blank"
+                        title="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
-                    <a href="http://instagram.com/intrad_farmers/" class="btn btn-sm rounded-circle me-2" target="_blank" title="Instagram">
+                    <a href="http://instagram.com/intrad_farmers/" class="btn btn-sm rounded-circle me-2"
+                        target="_blank" title="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://facebook.com/intrad" class="btn btn-sm rounded-circle me-2" target="_blank" title="Facebook">
+                    <a href="https://facebook.com/intrad" class="btn btn-sm rounded-circle me-2" target="_blank"
+                        title="Facebook">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <a href="mailto:contact@intra-d.com" class="btn btn-sm rounded-circle" title="Email">
@@ -52,7 +46,7 @@
 
 
             <div class="col-md-4 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3">{{ 'footer.visitus' | translate }}:</h5>
+                <h5 class="fw-semibold mb-3 text-white">{{ 'footer.visitus' | translate }}:</h5>
                 <ul class="list-unstyled footer-list">
                     <li><a href="#" class="footer-link">{{ 'footer.directions' | translate }}</a></li>
                     <li><a href="#" class="footer-link">{{ 'footer.virtualtour' | translate }}</a></li>
@@ -60,9 +54,10 @@
             </div>
 
             <div class="col-md-4 col-lg-2 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3">{{ 'footer.workwithus' | translate }}:</h5>
+                <h5 class="fw-semibold mb-3 text-white">{{ 'footer.workwithus' | translate }}:</h5>
                 <ul class="list-unstyled footer-list">
-                    <li><a href="#" [routerLink]="['/career']" class="footer-link">{{ 'footer.viewjobs' | translate }}</a>
+                    <li><a href="#" [routerLink]="['/career']" class="footer-link">{{ 'footer.viewjobs' | translate
+                            }}</a>
                     </li>
                 </ul>
             </div>
