@@ -67,4 +67,8 @@ export class CareerComponent {
     this.showSearchResults = false;
     this.foundJobs = [];
   }
+
+  trackByFn(index: number, item: any): any {
+    return item?.id || item || index;
+  }
 }

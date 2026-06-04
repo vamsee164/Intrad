@@ -1,43 +1,161 @@
-<!-- src/app/about-us/about-us.component.html -->
-<div class="about-us-section">
+<!-- About Us Page - Redesigned -->
+<div class="about-page">
+
+  <!-- Hero Section -->
+  <section class="about-hero">
+    <div class="hero-overlay"></div>
+    <div class="container position-relative z-2 text-center py-5">
+      <span class="about-badge">Our Story</span>
+      <h1 class="hero-title">Empowering Farmers,<br><span class="highlight">Growing Together</span></h1>
+      <p class="hero-subtitle">Intra-D is an agricultural platform bridging the gap between farmers, sellers, and buyers
+        — leveraging technology to bring prosperity to rural India.</p>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="mv-section">
     <div class="container py-5">
-        <div class="row justify-content-center mb-5">
-            <div class="col-12 text-center">
-                <h2 class="section-title text-white mb-4">THE TEAM</h2>
-            </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+          <div class="mv-card mv-mission">
+            <div class="mv-icon"><i class="fas fa-bullseye"></i></div>
+            <h3>Our Mission</h3>
+            <p>To digitally connect farmers with markets, tools, and resources — removing middlemen, reducing costs, and
+              maximizing farm income through transparent trade and smart agriculture services.</p>
+          </div>
         </div>
-
-        <div class="row g-4">
-            <div class=" col" *ngFor="let member of teamMembers">
-                <div class="team-member-card text-center shadow-sm">
-                    <img [src]="member.imageUrl" alt="{{ member.name }}"
-                        class="img-fluid rounded-circle mb-3 team-member-img">
-                    <h5 class="member-name">{{ member.name }}</h5>
-                    <p class="member-role">{{ member.role }}</p>
-                    <!-- <p class="member-experience">{{ member.experience }}</p> -->
-                </div>
-            </div>
+        <div class="col-md-5">
+          <div class="mv-card mv-vision">
+            <div class="mv-icon"><i class="fas fa-eye"></i></div>
+            <h3>Our Vision</h3>
+            <p>A future where every Indian farmer has equal access to technology, fair prices, modern equipment, and
+              expert guidance — making agriculture a thriving and dignified profession.</p>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </section>
 
-<div class="contact-info-section">
-    <div class="container-fluid h-100">
-        <div class="row h-100 g-0">
-            <div
-                class="col-md-4 contact-item contact-item-light d-flex gap-3 justify-content-center align-items-center">
-                <i class="fas fa-paper-plane fa-2x text-dark"></i>
-                <p class="mb-0 text-dark">intra-d&#64;agri.com</p>
-            </div>
-            <div class="col-md-4 contact-item contact-item-red d-flex gap-3 justify-content-center align-items-center">
-                <i class="fas fa-mobile-alt fa-2x text-white"></i>
-                <p class="mb-0 text-white">+91 9030353080</p>
-            </div>
-            <div class="col-md-4 contact-item contact-item-blue d-flex gap-3 justify-content-center align-items-center">
-                <i class="fab fa-linkedin-in fa-2x me-2 text-white"></i>
-                <i class="fab fa-instagram fa-2x me-2 text-white"></i>
-                <i class="fab fa-facebook-f fa-2x text-white"></i>
-            </div>
+  <!-- Stats Bar -->
+  <section class="stats-section">
+    <div class="container-fluid py-4">
+      <div class="row g-0 text-center">
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Farmers Connected</div>
         </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-number">12+</div>
+          <div class="stat-label">Districts Covered</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Years of Impact</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-number">98%</div>
+          <div class="stat-label">Farmer Satisfaction</div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <span class="about-badge">People Behind the Mission</span>
+        <h2 class="section-heading">Meet The Team</h2>
+        <p class="section-subheading">Passionate individuals working to transform Indian agriculture</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-6 col-md-4 col-lg-2dot4" *ngFor="let member of teamMembers; trackBy: trackByFn">
+          <div class="team-card">
+            <div class="team-img-wrapper">
+              <img [src]="member.imageUrl" [alt]="member.name" class="team-img">
+              <div class="team-overlay">
+                <i class="fas fa-leaf"></i>
+              </div>
+            </div>
+            <div class="team-info">
+              <h5 class="team-name">{{ member.name }}</h5>
+              <span class="team-role">{{ member.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <span class="about-badge">What We Stand For</span>
+        <h2 class="section-heading">Our Core Values</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-6 col-md-3">
+          <div class="value-card text-center">
+            <div class="value-icon"><i class="fas fa-handshake"></i></div>
+            <h5>Trust</h5>
+            <p>Transparent dealings, fair trade, and honest partnerships at every step.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="value-card text-center">
+            <div class="value-icon"><i class="fas fa-leaf"></i></div>
+            <h5>Sustainability</h5>
+            <p>Promoting eco-friendly farming practices for long-term soil and crop health.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="value-card text-center">
+            <div class="value-icon"><i class="fas fa-lightbulb"></i></div>
+            <h5>Innovation</h5>
+            <p>Bringing cutting-edge technology to the fields that need it most.</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="value-card text-center">
+            <div class="value-icon"><i class="fas fa-users"></i></div>
+            <h5>Community</h5>
+            <p>Building a strong network of farmers, buyers, and sellers who grow together.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Strip -->
+  <section class="contact-strip">
+    <div class="row g-0">
+      <div class="col-md-4 strip-item strip-light">
+        <i class="fas fa-paper-plane"></i>
+        <div>
+          <div class="strip-label">Email Us</div>
+          <div class="strip-value">intra-d&#64;agri.com</div>
+        </div>
+      </div>
+      <div class="col-md-4 strip-item strip-red">
+        <i class="fas fa-phone-alt"></i>
+        <div>
+          <div class="strip-label">Call Us</div>
+          <div class="strip-value">+91 9030353080</div>
+        </div>
+      </div>
+      <div class="col-md-4 strip-item strip-blue">
+        <div class="social-icons">
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <div>
+          <div class="strip-label">Follow Us</div>
+          <div class="strip-value">&#64;intrad.agri</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div>

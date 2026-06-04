@@ -1,65 +1,166 @@
-.lead {
-  color: var(--text-muted); /* Use theme variable */
-  max-width: 600px; /* Limit width of description text */
+/* Hero Section */
+.career-hero {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, #1a3009 0%, #2d5016 100%);
+  color: white;
+  border-radius: var(--border-radius-xl, 1rem);
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(26, 48, 9, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.career-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.career-hero h1 {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.lead-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.15rem;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* Form Styles */
+.search-container {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius-lg, 0.75rem);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-top: -5rem;
+  position: relative;
+  z-index: 3;
 }
 
 .form-label {
-  font-weight: 600; /* fw-semibold equivalent */
+  font-weight: 600;
+  color: #1a3009;
 }
 
-.form-select.rounded-md-custom,
-.form-control.rounded-md-custom {
-  border-radius: var(--border-radius-md) !important; /* Use theme variable */
-  box-shadow: var(--shadow-sm); /* Use theme variable */
+.form-select.rounded-md-custom {
+  border-radius: 0.5rem !important;
+  border: 1px solid #e0e6ed;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
 }
 
-/* Specific styling for the job results section */
-.rounded-xl {
-  border-radius: var(--border-radius-xl) !important;
+.form-select.rounded-md-custom:focus {
+  border-color: #2d5016;
+  box-shadow: 0 0 0 0.25rem rgba(45, 80, 22, 0.25);
 }
 
-.list-group-item {
-  border-color: #e9ecef; /* Light border for list items */
+.btn-primary-green {
+  background-color: #2d5016;
+  border-color: #2d5016;
+  color: white;
+  transition: all 0.3s ease;
 }
 
+.btn-primary-green:hover:not(:disabled) {
+  background-color: #1a3009;
+  border-color: #1a3009;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 48, 9, 0.3);
+}
+
+/* About Text */
 .job-openings-text {
-  font-size: 20px;
+  font-size: 1.1rem;
   text-align: center;
-  padding-inline: 10%;
+  padding: 3rem 10%;
+  color: #4b5563;
+  line-height: 1.8;
 }
 
-/* Responsive adjustments */
-@media (max-width: 767.98px) {
-  .job-openings-container {
-    padding: 1.5rem; /* Reduce padding on small screens */
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-  .col-auto {
-    width: 100%; /* Make dropdowns full width on small screens */
-  }
-  .col-auto .form-label {
-    width: auto; /* Allow label to take natural width */
-  }
-  .ms-md-4 {
-    margin-left: 0 !important; /* Remove horizontal margin on small screens */
-  }
-  .mt-3.mt-md-0 {
-    margin-top: 1rem !important; /* Add top margin between dropdowns on small screens */
-  }
-}
-
+/* Job Cards */
 .job-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-  border-left: 4px solid #28a745;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid #e5e7eb;
+  border-left: 5px solid #2d5016;
+  border-radius: var(--border-radius-md, 0.5rem);
+  background: white;
 }
 
 .job-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+  border-left-color: #1a3009;
+}
+
+.job-title {
+  color: #1a3009;
+  font-weight: 700;
+}
+
+.badge-custom {
+  background-color: #f3f4f6;
+  color: #374151;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+}
+
+.btn-apply {
+  background-color: transparent;
+  color: #2d5016;
+  border: 2px solid #2d5016;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-apply:hover {
+  background-color: #2d5016;
+  color: white;
 }
 
 .spinner-border {
   width: 3rem;
   height: 3rem;
+  color: #2d5016;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .career-hero {
+    padding: 3rem 1rem;
+  }
+  
+  .search-container {
+    padding: 1.5rem;
+    margin-top: 1rem;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .job-openings-text {
+    padding: 2rem 5%;
+  }
+  
+  .apply-container {
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .btn-apply {
+    width: 100%;
+  }
 }

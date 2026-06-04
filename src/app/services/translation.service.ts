@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 export interface Translation {
@@ -271,14 +272,16 @@ export class TranslationService {
     }
   };
 
-  constructor() {
-    const savedLang = localStorage.getItem('language') || 'en';
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    const savedLang = (isPlatformBrowser(this.platformId) ? localStorage.getItem('language') : null) || 'en';
     this.currentLanguage.next(savedLang);
   }
 
   setLanguage(lang: string): void {
     this.currentLanguage.next(lang);
-    localStorage.setItem('language', lang);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('language', lang);
+    }
   }
 
   getCurrentLanguage(): string {

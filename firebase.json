@@ -5,7 +5,6 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
- 
   "hosting": {
     "public": "dist/intra-d/browser",
     "ignore": [
@@ -19,7 +18,16 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099,
+      "host": "127.0.0.1"
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "singleProjectMode": true
   }
-
-
 }

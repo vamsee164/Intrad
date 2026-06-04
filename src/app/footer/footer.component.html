@@ -1,66 +1,103 @@
-<footer class="app-footer py-5">
+<footer class="app-footer">
+
+  <!-- Main Footer Body -->
+  <div class="footer-body">
     <div class="container">
-        <div class="row">
-            <div class="col-md-5 col-lg-4 mb-4 mb-md-0">
-                <div class="d-flex align-items-center mb-2">
-                    <img src="assets/images/logo.jpg" alt="Intra-d Logo" style="height: 50px; width: auto;"
-                        class="me-3">
-                    <h4 class="fw-bold mb-2 logo-text">INTRA-D</h4>
-                </div>
-                <div>
-                    <p class="mb-1">{{ 'footer.description' | translate }}</p>
-                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>contact&#64;intra-d.com</p>
-                    <p class="mb-0"><i class="fas fa-phone me-2"></i>+91 96037 90037</p>
-                </div>
-                <hr class="footer-divider my-3">
-                <nav class="footer-nav">
-                    <div class="d-flex gap-3">
-                        <small>{{ 'footer.copyright' | translate }}</small>
-                        <a [routerLink]="['/contact']" class="text-white text-decoration-none small">{{ 'nav.contact' |
-                            translate }}</a>
-                    </div>
-                </nav>
-            </div>
+      <div class="row gy-4">
 
-            <!-- Social Media Section -->
-            <div class="col-md-4 col-lg-3 mb-4 mb-md-0">
-                <h5 class="fw-semibold mb-3 text-white ">{{ 'footer.followus' | translate }}:</h5>
-                <div class="social-icons">
-                    <a href="https://wa.me/+919603790037" class="btn btn-sm rounded-circle me-2" target="_blank"
-                        title="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                    <a href="http://instagram.com/intrad_farmers/" class="btn btn-sm rounded-circle me-2"
-                        target="_blank" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://facebook.com/intrad" class="btn btn-sm rounded-circle me-2" target="_blank"
-                        title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="mailto:contact@intra-d.com" class="btn btn-sm rounded-circle" title="Email">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                </div>
+        <!-- Brand Column -->
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <div class="brand-logo-row">
+              <img src="assets/images/logo.jpg" alt="Intra-D Logo" class="footer-logo">
+              <span class="brand-name">INTRA-D</span>
             </div>
-
-
-            <div class="col-md-4 col-lg-2 mb-4 mb-md-0 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3 text-white">{{ 'footer.visitus' | translate }}:</h5>
-                <ul class="list-unstyled footer-list">
-                    <li><a href="#" class="footer-link">{{ 'footer.directions' | translate }}</a></li>
-                    <li><a href="#" class="footer-link">{{ 'footer.virtualtour' | translate }}</a></li>
-                </ul>
+            <p class="brand-tagline">{{ 'footer.description' | translate }}</p>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:contact@intra-d.com">contact&#64;intra-d.com</a>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <a href="tel:+919603790037">+91 96037 90037</a>
+              </div>
             </div>
-
-            <div class="col-md-4 col-lg-2 text-md-center text-lg-start">
-                <h5 class="fw-semibold mb-3 text-white">{{ 'footer.workwithus' | translate }}:</h5>
-                <ul class="list-unstyled footer-list">
-                    <li><a href="#" [routerLink]="['/career']" class="footer-link">{{ 'footer.viewjobs' | translate
-                            }}</a>
-                    </li>
-                </ul>
-            </div>
+          </div>
         </div>
+
+        <!-- Social Column -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="footer-section-title">{{ 'footer.followus' | translate }}</h6>
+          <div class="social-grid">
+            <a href="https://wa.me/+919603790037" class="social-btn whatsapp" target="_blank" rel="noopener"
+              title="WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+              <span>WhatsApp</span>
+            </a>
+            <a href="http://instagram.com/intrad_farmers/" class="social-btn instagram" target="_blank" rel="noopener"
+              title="Instagram">
+              <i class="fab fa-instagram"></i>
+              <span>Instagram</span>
+            </a>
+            <a href="https://facebook.com/intrad" class="social-btn facebook" target="_blank" rel="noopener"
+              title="Facebook">
+              <i class="fab fa-facebook-f"></i>
+              <span>Facebook</span>
+            </a>
+            <a href="mailto:contact@intra-d.com" class="social-btn email" title="Email Us">
+              <i class="fas fa-envelope"></i>
+              <span>Email Us</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Visit Us Column -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-section-title">{{ 'footer.visitus' | translate }}</h6>
+          <ul class="footer-links">
+            <li><a href="#" class="footer-link"><i class="fas fa-map-marker-alt me-2"></i>{{ 'footer.directions' |
+                translate }}</a></li>
+            <li><a href="#" class="footer-link"><i class="fas fa-video me-2"></i>{{ 'footer.virtualtour' | translate
+                }}</a></li>
+          </ul>
+        </div>
+
+        <!-- Work With Us Column -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h6 class="footer-section-title">{{ 'footer.workwithus' | translate }}</h6>
+          <ul class="footer-links">
+            <li>
+              <a [routerLink]="['/career']" class="footer-link">
+                <i class="fas fa-briefcase me-2"></i>{{ 'footer.viewjobs' | translate }}
+              </a>
+            </li>
+            <li>
+              <a [routerLink]="['/contact']" class="footer-link">
+                <i class="fas fa-headset me-2"></i>{{ 'nav.contact' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <span class="copyright">{{ 'footer.copyright' | translate }}</span>
+        <div class="footer-bottom-links">
+          <a [routerLink]="['/contact']" class="footer-bottom-link">{{ 'nav.contact' | translate }}</a>
+          <span class="separator">·</span>
+          <a [routerLink]="['/about']" class="footer-bottom-link">{{ 'nav.about' | translate }}</a>
+          <span class="separator">·</span>
+          <a [routerLink]="['/career']" class="footer-bottom-link">{{ 'nav.wehire' | translate }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </footer>

@@ -5,7 +5,8 @@
       <span class="back-icon">←</span>
     </button>
     <h1 class="profile-title">{{ currentUser.role | titlecase }} Profile</h1>
-    <button class="edit-btn">
+    <!-- Fix #12: Edit button now has a handler -->
+    <button class="edit-btn" (click)="navigateToEditProfile()" title="Edit Profile">
       <span class="edit-icon">✏️</span>
     </button>
   </div>
@@ -103,14 +104,15 @@
         <div class="action-icon">🌱</div>
         <div class="action-content">
           <div class="action-title">My Crops</div>
-          <div class="action-subtitle">My Crops</div>
+          <div class="action-subtitle">View & manage</div>
         </div>
       </div>
       <div class="action-card" (click)="navigateToSoilTest()">
         <div class="action-icon">🧪</div>
         <div class="action-content">
           <div class="action-title">Soil Test</div>
-          <div class="action-subtitle">Black Soil</div>
+          <!-- Fix #11: show actual soil type, not hardcoded -->
+          <div class="action-subtitle">{{ profileData.roleSpecific?.soilType || 'Book a test' }}</div>
         </div>
       </div>
     </div>
@@ -118,15 +120,16 @@
       <div class="action-card" (click)="navigateToMarketPrices()">
         <div class="action-icon">💰</div>
         <div class="action-content">
-          <div class="action-title">My Crops</div>
-          <div class="action-subtitle">Market Prices</div>
+          <!-- Fix #13: was 'My Crops' — corrected to 'Market Prices' -->
+          <div class="action-title">Market Prices</div>
+          <div class="action-subtitle">Live rates</div>
         </div>
       </div>
       <div class="action-card" (click)="navigateToHelpCenter()">
         <div class="action-icon">❓</div>
         <div class="action-content">
           <div class="action-title">Help Center</div>
-          <div class="action-subtitle">Help Center</div>
+          <div class="action-subtitle">Support & FAQs</div>
         </div>
       </div>
     </div>

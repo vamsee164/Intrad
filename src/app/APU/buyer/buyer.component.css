@@ -1,241 +1,202 @@
-/* src/app/buyer/buyer.component.css */
-
-/* CSS Variables for Theming */
+/* ================================================================
+   BUYER FORM — Premium Agricultural Design
+   ================================================================ */
 :host {
-  --primary-green: #28a745;
-  --primary-green-hover: #218838;
-  --primary-green-border-hover: #1e7e34;
-  --text-muted: #6c757d;
-  --form-bg: #f8f9fa; /* Light background for the form container */
-  --border-color: #dee2e6; /* Light border for form container */
-  --input-bg: #ffffff; /* White background for inputs */
-  --input-border: #ced4da; /* Light gray border for inputs */
-  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  --border-radius-xl: 1rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-md: 0.375rem;
-  --light-green-bg: #e6ffe6; /* Very light green for selections display */
+  --g900: #0f2a07;
+  --g800: #1b4010;
+  --g700: #2d5016;
+  --g500: #4a7c59;
+  --g200: #c6e8c6;
+  --g50:  #f0faf0;
+  --gold: #c8941a;
+  --white: #ffffff;
+  --grey50:  #fafafa;
+  --grey100: #f4f6f4;
+  --grey200: #e8eceb;
+  --grey500: #6b7280;
+  --shadow-sm: 0 2px 8px rgba(45,80,22,0.06), 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(45,80,22,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(45,80,22,0.14), 0 4px 12px rgba(0,0,0,0.08);
+  --ease: cubic-bezier(0.4,0,0.2,1);
 }
 
+/* ── Page Layout ─────────────────────────── */
 .buyer-form-container {
-  max-width: 700px;
-  margin: 3rem auto;
-  padding: 2.5rem;
-  background-color: var(--form-bg);
-  border-radius: var(--border-radius-xl);
+  max-width: 680px;
+  margin: 36px auto;
+  padding: 36px 32px;
+  background: var(--white);
+  border-radius: 20px;
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-color);
-  font-family: "Inter", sans-serif;
+  border: 1.5px solid rgba(45,80,22,0.08);
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
-.display-5 {
-  color: var(--primary-green);
+/* ── Header ──────────────────────────────── */
+.buyer-form-container h2,
+.buyer-form-container .display-5 {
+  color: var(--g700);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
 }
 
-.lead {
-  color: var(--text-muted);
+.buyer-form-container .lead {
+  color: var(--grey500);
+  font-size: 15px;
+  margin-top: 4px;
 }
 
+/* ── Form Labels & Controls ──────────────── */
 .form-label {
-  font-weight: 600;
-  color: var(
-    --text-dark
-  ); /* Assuming text-dark is defined in a global scope or here */
+  font-weight: 700;
+  color: #1e2d1e;
+  font-size: 13px;
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .form-control-custom,
 .form-select.form-control-custom {
-  border-radius: var(--border-radius-md) !important;
-  background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
-  box-shadow: var(--shadow-sm);
-  padding: 0.75rem 1rem;
+  border-radius: 10px !important;
+  background: var(--white);
+  border: 1.5px solid var(--grey200);
+  box-shadow: none;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: #1e2d1e;
+  transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
 }
 
 .form-control-custom:focus,
 .form-select.form-control-custom:focus {
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25); /* Green focus ring */
+  border-color: var(--g700);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.12);
+  outline: none;
 }
 
+/* ── Primary Button ──────────────────────── */
 .btn-primary-green {
-  background-color: var(--primary-green);
-  border-color: var(--primary-green);
+  background: linear-gradient(135deg, var(--g700) 0%, var(--g500) 100%);
+  border: none !important;
   color: #fff;
-  border-radius: var(--border-radius-lg) !important; /* Pill-like shape */
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  border-radius: 12px !important;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 13px 24px;
+  transition: all 0.18s var(--ease);
+  box-shadow: 0 4px 16px rgba(45,80,22,0.28);
 }
 
 .btn-primary-green:hover:not(:disabled) {
-  background-color: var(--primary-green-hover);
-  border-color: var(--primary-green-border-hover);
+  background: linear-gradient(135deg, var(--g800) 0%, var(--g600, #3d6b1f) 100%);
+  box-shadow: 0 6px 20px rgba(45,80,22,0.38);
+  transform: translateY(-1px);
+  color: #fff;
 }
 
 .btn-primary-green:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ── Selection Summary Box ────────────────── */
 .bg-light-green {
-  background-color: var(--light-green-bg);
-  border-color: var(--primary-green);
+  background: var(--g50) !important;
+  border: 1.5px solid var(--g200) !important;
+  border-radius: 12px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 767.98px) {
-  .buyer-form-container {
-    padding: 1.25rem;
-    margin: 1rem auto;
-    border-radius: 0.75rem;
-  }
-  .display-5 {
-    font-size: 1.5rem;
-  }
-  .btn-primary-green.btn-lg {
-    padding: 12px 20px;
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 576px) {
-  .buyer-form-container {
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    padding: 1rem;
-  }
-  .display-5 {
-    font-size: 1.3rem;
-  }
-}
-
-/* Confirmation View Styles */
+/* ── Confirmation View ─────────────────────── */
 .confirmation-view {
-  animation: fadeIn 0.5s ease-in;
+  animation: fadeInUp 0.4s var(--ease);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.success-icon {
-  animation: scaleIn 0.6s ease-out;
-}
+.success-icon { animation: scalePop 0.5s var(--ease); }
 
-@keyframes scaleIn {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
+@keyframes scalePop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .submission-summary {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--g50) 0%, #f8fcf8 100%);
+  border: 1.5px solid var(--g200);
+  border-radius: 14px;
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(45,80,22,0.06);
 }
 
+.detail-item:last-child { border-bottom: none; }
+
 .detail-label {
-  font-weight: 600;
-  color: #6c757d;
-  font-size: 14px;
+  font-weight: 700;
+  color: var(--grey500);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .detail-value {
-  font-weight: 500;
-  color: #212529;
+  font-weight: 600;
+  color: var(--g700);
   font-size: 14px;
   text-align: right;
 }
 
 .confirmation-view .btn {
-  transition: all 0.3s ease;
+  border-radius: 12px !important;
+  font-weight: 700;
+  transition: all 0.18s var(--ease);
 }
 
 .confirmation-view .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14);
 }
 
-.confirmation-view .alert {
-  border-left: 4px solid #0dcaf0;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .confirmation-view .btn {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .confirmation-view .btn.me-3 {
-    margin-right: 0 !important;
-  }
-  
-  .detail-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .detail-value {
-    text-align: left;
-    margin-top: 4px;
-  }
-}
-
-/* Last Submission Banner */
+/* ── Last Submission Banner ─────────────────── */
 .last-submission-banner {
-  animation: slideDown 0.4s ease-out;
+  animation: slideDown 0.35s var(--ease);
 }
 
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .last-submission-banner .alert {
-  border-left: 4px solid #0dcaf0;
-  background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+  border-left: 4px solid var(--g500);
+  background: linear-gradient(135deg, var(--g50) 0%, #f0fdf0 100%);
+  border-radius: 12px;
+  border: 1.5px solid var(--g200);
 }
 
 .last-submission-details {
-  animation: expandDown 0.3s ease-out;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--g50) 0%, #f8fcf8 100%);
+  border-radius: 12px;
+  border: 1.5px solid var(--g200);
+  animation: expandDown 0.3s var(--ease);
 }
 
 @keyframes expandDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
-  }
+  from { opacity: 0; max-height: 0; overflow: hidden; }
+  to   { opacity: 1; max-height: 600px; }
 }
 
 .last-submission-details small {
@@ -244,28 +205,37 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
-}
-
-.last-submission-banner .btn-outline-info {
-  border-width: 2px;
+  color: var(--grey500);
   font-weight: 600;
-  transition: all 0.3s;
 }
 
-.last-submission-banner .btn-outline-info:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.3);
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 767.98px) {
+  .buyer-form-container {
+    padding: 20px 16px;
+    margin: 12px auto;
+    border-radius: 16px;
+  }
+
+  .buyer-form-container .display-5,
+  .buyer-form-container h2 { font-size: 20px; }
+
+  .confirmation-view .btn { width: 100%; margin-bottom: 10px; }
+  .confirmation-view .btn.me-3 { margin-right: 0 !important; }
+  .detail-item { flex-direction: column; align-items: flex-start; }
+  .detail-value { text-align: left; margin-top: 4px; }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .last-submission-banner .alert {
-    flex-direction: column;
-    align-items: flex-start !important;
-    gap: 10px;
+@media (max-width: 576px) {
+  .buyer-form-container {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-top: 1.5px solid rgba(45,80,22,0.08);
+    padding: 16px 14px;
   }
-  
-  .last-submission-banner .btn {
-    width: 100%;
-  }
+
+  .last-submission-banner .alert { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+  .last-submission-banner .btn   { width: 100%; }
 }

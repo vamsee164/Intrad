@@ -1,24 +1,25 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { GeoLocationService } from '../../services/geo-location.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { AuthService } from '../../services/auth.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-book-soil',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './book-soil.component.html',
   styleUrl: './book-soil.component.css',
 })
-export class BookSoilComponent implements OnInit {
+export class BookSoilComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
+  private readonly dbUrl = 'https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app/soilTest.json';
 
-  
-  
   @ViewChild('soilForm') soilForm!: NgForm;
-
   title = 'Soil Test Booking';
 
   // Soil Test Form Model
@@ -41,34 +42,39 @@ export class BookSoilComponent implements OnInit {
   };
 
   constructor(
-    private geoService: GeoLocationService, 
-    private http: HttpClient,
-    private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService
+    private readonly geoService: GeoLocationService,
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {}
 
-  ngOnInit() {
-    // Pre-populate form with user data if logged in
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.soilTestForm.farmerName = user.name || '';
-        this.soilTestForm.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
-        this.soilTestForm.village = user.profileData?.village || user.location || '';
-      }
-    });
+  ngOnInit(): void {
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user) {
+          this.soilTestForm.farmerName = user.name || '';
+          this.soilTestForm.mobileNumber = user.phone || user.profileData?.mobileNo || '';
+          this.soilTestForm.village = user.profileData?.village || user.location || '';
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   goBack(): void {
-    // Check if user is a farmer and navigate to farmer dashboard
-    this.authService.currentUser$.subscribe(user => {
-      if (user?.role === 'farmer') {
-        this.router.navigate(['/farmer']);
-      } else {
-        // Otherwise go back in history
-        window.history.back();
-      }
-    }).unsubscribe();
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user?.role === 'farmer') {
+          this.router.navigate(['/farmer']);
+        } else {
+          window.history.back();
+        }
+      });
   }
 
   goToFarmerDashboard(): void {
@@ -86,38 +92,30 @@ export class BookSoilComponent implements OnInit {
     }
   }
 
-async onSubmit() {
-  if (this.soilForm.invalid) {
-    this.soilForm.form.markAllAsTouched();
-    return;
+  async onSubmit(): Promise<void> {
+    if (this.soilForm.invalid) {
+      this.soilForm.form.markAllAsTouched();
+      return;
+    }
+    try {
+      const location = await this.geoService.getCurrentLocation();
+      const payload = {
+        ...this.soilTestForm,
+        location,
+        createdAt: new Date().toISOString(),
+        status: 'REQUESTED'
+      };
+      this.http.post(this.dbUrl, payload).subscribe({
+        next: () => {
+          alert('Soil Test Request Submitted with Location');
+          this.resetForm();
+        },
+        error: () => alert('Unable to submit request. Please try again.')
+      });
+    } catch {
+      alert('Unable to get location. Please enable GPS.');
+    }
   }
-  try {
-    const location = await this.geoService.getCurrentLocation();
-
-    const payload = {
-      ...this.soilTestForm,
-      location,
-      createdAt: new Date().toISOString(),
-      status: 'REQUESTED'
-    };
-
-    this.http.post('https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app/soilTest.json', payload).subscribe({
-      next: (response) => {
-        console.log('Success:', response);
-        alert('Soil Test Request Submitted with Location');
-        this.resetForm();
-      },
-      error: (error) => {
-        console.error('HTTP Error:', error);
-        alert('Unable to submit request. Please try again.');
-      }
-    });
-
-  } catch (error) {
-    console.error('Location Error:', error);
-    alert('Unable to get location. Please enable GPS.');
-  }
-}
 
 
   /**

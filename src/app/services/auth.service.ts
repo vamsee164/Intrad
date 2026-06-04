@@ -2,6 +2,8 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { FirebaseService } from './firebase.service';
 
 export interface User {
   id: string;
@@ -25,28 +27,68 @@ interface LoginCredentials {
 export class AuthService {
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public readonly currentUser$ = this.currentUserSubject.asObservable();
-  private sessionTimeout: any;
+  private sessionTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router
+    @Inject(PLATFORM_ID) private readonly platformId: object,
+    private readonly router: Router,
+    private readonly firebaseService: FirebaseService
   ) {
     this.checkAuthStatus();
   }
 
   login(credentials: LoginCredentials): Observable<boolean> {
-    try {
-      const user = this.validateUser(credentials);
-      if (user) {
-        this.setCurrentUser(user);
-        this.startSessionTimeout();
-        return of(true);
-      }
-      return of(false);
-    } catch (error) {
-      console.error('Login error:', error);
-      return of(false);
-    }
+    return this.firebaseService.loginWithEmailPassword(credentials.email, credentials.password).pipe(
+      switchMap((authResult) => {
+        const uid = authResult.user.uid;
+        return this.firebaseService.getUser(uid).pipe(
+          map((profile) => {
+            if (!profile) return false;
+            const user: User = {
+              id: uid,
+              email: profile.email || credentials.email,
+              role: profile.role || 'farmer',
+              name: profile.name || '',
+              phone: profile.mobileNo || profile.phone || '',
+              profileData: profile
+            };
+            this.setCurrentUser(user);
+            this.startSessionTimeout();
+            return true;
+          }),
+          catchError(() => of(false))
+        );
+      }),
+      catchError((authError) => {
+        console.warn('Firebase Auth failed, trying legacy database fallback:', authError.message);
+        return this.firebaseService.getAllUsers().pipe(
+          map((users) => {
+            if (!users) return false;
+            for (const userId in users) {
+              const userContainer = users[userId];
+              for (const firebaseKey in userContainer) {
+                const userObj = userContainer[firebaseKey];
+                if (userObj?.email === credentials.email && userObj?.password === credentials.password) {
+                  const legacyUser: User = {
+                    id: userObj.userId || userId,
+                    email: userObj.email,
+                    role: userObj.role || 'farmer',
+                    name: userObj.name || '',
+                    phone: userObj.mobileNo || userObj.phone || '',
+                    profileData: userObj
+                  };
+                  this.setCurrentUser(legacyUser);
+                  this.startSessionTimeout();
+                  return true;
+                }
+              }
+            }
+            return false;
+          }),
+          catchError(() => of(false))
+        );
+      })
+    );
   }
 
   validateFirebaseUser(email: string, password: string, firebaseUsers: any): User | null {
@@ -80,20 +122,10 @@ export class AuthService {
     }
   }
 
+  /** @deprecated — use validateFirebaseUser() for real user lookup */
   private validateUser({ email, password }: LoginCredentials): User | null {
-    try {
-      const users = [
-        { id: '1', email: 'admin@intrad.com', password: 'admin123', role: 'admin' },
-        { id: '2', email: 'farmer@intrad.com', password: 'farmer123', role: 'farmer' },
-        { id: '3', email: 'user@intrad.com', password: 'user123', role: 'user' }
-      ];
-      
-      const foundUser = users.find(u => u.email === email && u.password === password);
-      return foundUser ? { id: foundUser.id, email: foundUser.email, role: foundUser.role } : null;
-    } catch (error) {
-      console.error('User validation error:', error);
-      return null;
-    }
+    // Removed hardcoded credentials — authentication is done via Firebase
+    return null;
   }
 
   setCurrentUser(user: User): void {
@@ -135,8 +167,11 @@ export class AuthService {
         return '/control';
       case 'farmer':
         return '/farmer';
-      case 'user':
-        return '/buyer';
+      case 'buyer':
+      case 'user': // Legacy fallback
+        return '/apu/buyer';
+      case 'seller':
+        return '/apu/seller';
       default:
         return '/homepage';
     }
@@ -169,6 +204,7 @@ export class AuthService {
   }
 
   private startSessionTimeout(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.clearSessionTimeout();
     this.sessionTimeout = setTimeout(() => {
       this.logout('/homepage');

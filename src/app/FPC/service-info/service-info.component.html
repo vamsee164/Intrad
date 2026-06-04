@@ -372,19 +372,17 @@
     </div>
 </div>
 
-<!-- Dummy Success Modal for DashboardComponent to use -->
-<!-- In a real app, you might have a shared modal service or define this once at AppComponent level -->
 <div class="modal fade" id="successModalDashboard" tabindex="-1" aria-labelledby="successModalLabelDashboard"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-lg-custom shadow-lg">
             <div class="modal-header bg-success text-white p-3 rounded-top-custom">
-                <h5 class="modal-title h5" id="successModalLabelDashboard">Form Submission</h5>
+                <h5 class="modal-title h5" id="successModalLabelDashboard">{{ modalTitle }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
             <div class="modal-body p-4 text-secondary">
-                Form submitted successfully! Check the console for details.
+                {{ modalBody }}
             </div>
             <div class="modal-footer p-3 border-top border-gray-200 d-flex justify-content-end">
                 <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">Close</button>

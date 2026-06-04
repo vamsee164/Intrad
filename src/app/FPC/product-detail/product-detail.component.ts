@@ -112,4 +112,8 @@ export class ProductDetailComponent implements OnInit {
   getProductsByCategory(category: string) {
     return this.products.filter((p) => p.category === category);
   }
+
+  trackByFn(index: number, item: any): any {
+    return item || index;
+  }
 }

@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TranslationService } from '../services/translation.service';
 
 @Component({
@@ -32,16 +34,19 @@ import { TranslationService } from '../services/translation.service';
     }
   `]
 })
-export class LanguageSwitcherComponent {
+export class LanguageSwitcherComponent implements OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   languages: { code: string; name: string; nativeName: string }[] = [];
   currentLanguage = 'en';
 
   constructor(private translationService: TranslationService) {
     this.languages = this.translationService.getAvailableLanguages();
     this.currentLanguage = this.translationService.getCurrentLanguage();
-    this.translationService.currentLanguage$.subscribe(lang => {
-      this.currentLanguage = lang;
-    });
+    this.translationService.currentLanguage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(lang => {
+        this.currentLanguage = lang;
+      });
   }
 
   switchLanguage(langCode: string): void {
@@ -51,5 +56,10 @@ export class LanguageSwitcherComponent {
   getCurrentLanguageName(): string {
     const lang = this.languages.find(l => l.code === this.currentLanguage);
     return lang?.nativeName || 'English';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -3,3 +3,29 @@
     <router-outlet></router-outlet>
     <app-footer></app-footer>
 </main>
+
+<!-- Global Back Navigation Confirmation Modal -->
+<div class="modal fade" id="backNavModal" tabindex="-1" aria-labelledby="backNavModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg shadow-lg">
+            <div class="modal-header bg-warning text-dark p-3">
+                <h5 class="modal-title" id="backNavModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Leave this page?
+                </h5>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="fas fa-arrow-left text-warning mb-3" style="font-size: 2.5rem;"></i>
+                <h5 class="text-dark mb-2">Go back to Dashboard?</h5>
+                <p class="text-muted mb-0">Any unsaved changes will be lost. Do you want to continue?</p>
+            </div>
+            <div class="modal-footer p-3 border-top d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-success rounded px-4" (click)="backNav.confirmNavigation()">
+                    <i class="fas fa-check me-1"></i> Yes, Go to Dashboard
+                </button>
+                <button type="button" class="btn btn-secondary rounded px-4" (click)="backNav.cancelNavigation()">
+                    <i class="fas fa-times me-1"></i> Stay Here
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

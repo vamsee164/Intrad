@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 const products = [
@@ -10,7 +10,7 @@ const products = [
     name: 'Apple',
     description: 'Fresh and juicy apples',
     price: 100,
-    image: 'https://placehold.co/300x200?text=Apple',
+    image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const products = [
     name: 'Banana',
     description: 'Sweet and ripe bananas',
     price: 40,
-    image: 'https://placehold.co/300x200?text=Banana',
+    image: 'https://images.unsplash.com/photo-1571501435323-b1d55f0b83e0?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const products = [
     name: 'Orange',
     description: 'Citrus-rich and refreshing oranges',
     price: 70,
-    image: 'https://placehold.co/300x200?text=Orange',
+    image: 'https://images.unsplash.com/photo-1549888834-3ec93abae044?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ const products = [
     name: 'Mango',
     description: 'Delicious tropical mangoes',
     price: 120,
-    image: 'https://placehold.co/300x200?text=Mango',
+    image: 'https://images.unsplash.com/photo-1553279768-865429fd01a5?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const products = [
     name: 'Grapes',
     description: 'Seedless and sweet green grapes',
     price: 90,
-    image: 'https://placehold.co/300x200?text=Grapes',
+    image: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=400&q=80',
   },
 
   // Vegetables
@@ -52,7 +52,7 @@ const products = [
     name: 'Carrot',
     description: 'Crunchy and vitamin-rich carrots',
     price: 60,
-    image: 'https://placehold.co/300x200?text=Carrot',
+    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 7,
@@ -60,7 +60,7 @@ const products = [
     name: 'Broccoli',
     description: 'Fresh and green broccoli florets',
     price: 80,
-    image: 'https://placehold.co/300x200?text=Broccoli',
+    image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 8,
@@ -68,7 +68,7 @@ const products = [
     name: 'Tomato',
     description: 'Red and juicy farm-fresh tomatoes',
     price: 50,
-    image: 'https://placehold.co/300x200?text=Tomato',
+    image: 'assets/images/tomato.png',
   },
   {
     id: 9,
@@ -76,7 +76,7 @@ const products = [
     name: 'Spinach',
     description: 'Leafy and iron-rich spinach',
     price: 40,
-    image: 'https://placehold.co/300x200?text=Spinach',
+    image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 10,
@@ -84,7 +84,7 @@ const products = [
     name: 'Potato',
     description: 'Versatile and fresh potatoes',
     price: 30,
-    image: 'https://placehold.co/300x200?text=Potato',
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=400&q=80',
   },
 ];
 
@@ -98,11 +98,12 @@ const products = [
 export class ProductListComponent implements OnInit {
   category: string = '';
   products: any[] = [];
+  selectedProduct: any = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
-    // ✅ Subscribe to changes in the route params
+    // Subscribe to changes in the route params
     this.route.paramMap.subscribe((params) => {
       this.category = params.get('category') || '';
       console.log('Category changed:', this.category);
@@ -112,5 +113,25 @@ export class ProductListComponent implements OnInit {
 
   getProductsByCategory(category: string) {
     return products.filter((p) => p.category === category);
+  }
+
+  openAuthModal(product: any) {
+    this.selectedProduct = product;
+  }
+
+  navigateToLogin() {
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 300);
+  }
+
+  navigateToGuest() {
+    setTimeout(() => {
+      this.router.navigate(['/apu/buyer']);
+    }, 300);
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item?.id || index;
   }
 }

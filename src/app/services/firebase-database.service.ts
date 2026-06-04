@@ -16,7 +16,7 @@ export class FirebaseDatabaseService {
 
   // Push data (auto-generated key)
   pushData(path: string, data: any): Promise<any> {
-    return push(ref(this.db, path), data);
+    return push(ref(this.db, path), data).then(ref => ref);
   }
 
   // Read data once

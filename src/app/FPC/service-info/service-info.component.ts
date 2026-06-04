@@ -5,11 +5,15 @@ import {
   PLATFORM_ID,
   ViewChild,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
+
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
 
@@ -41,6 +45,7 @@ interface SoilTestData {
   sampleDate: string;
   problemDescription: string;
 }
+
 @Component({
   selector: 'app-service-info',
   standalone: true,
@@ -48,8 +53,14 @@ interface SoilTestData {
   templateUrl: './service-info.component.html',
   styleUrl: './service-info.component.css',
 })
-export class ServiceInfoComponent implements OnInit {
+export class ServiceInfoComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   currentUser: User | null = null;
+  
+  // Modal text bindings (removes direct DOM manipulation)
+  modalTitle = '';
+  modalBody = '';
+
   // Lease form data
   leaseData: LeaseData = {
     landType: '',
@@ -94,38 +105,23 @@ export class ServiceInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe((user) => {
-      this.currentUser = user;
-      
-      // Pre-populate soil test form with user data
-      if (user) {
-        this.soilTestData.farmerName = user.name || '';
-        this.soilTestData.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
-        this.soilTestData.village = user.profileData?.village || user.location || '';
-      }
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        
+        // Pre-populate soil test form with user data
+        if (user) {
+          this.soilTestData.farmerName = user.name || '';
+          this.soilTestData.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
+          this.soilTestData.village = user.profileData?.village || user.location || '';
+        }
+      });
+  }
 
-    if (isPlatformBrowser(this.platformId)) {
-      // Re-initialize Bootstrap's tab functionality if needed
-      const firstTabEl = this.document.querySelector(
-        '#v-pills-tab button:first-child'
-      );
-      if (firstTabEl) {
-        // new bootstrap.Tab(firstTabEl).show(); // Manually show the first tab if not active by default
-      }
-
-      // Add change listener for water source if it exists
-      const leaseWaterSourceSelect = this.document.getElementById(
-        'leaseWaterSource'
-      ) as HTMLSelectElement;
-      if (leaseWaterSourceSelect) {
-        leaseWaterSourceSelect.addEventListener('change', () =>
-          this.toggleLeaseWaterSourceQuestions()
-        );
-        // Initial call to set correct display on load
-        this.toggleLeaseWaterSourceQuestions();
-      }
-    }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -134,12 +130,6 @@ export class ServiceInfoComponent implements OnInit {
    */
   toggleLeaseWaterSourceQuestions(): void {
     // Angular's *ngIf handles this directly in the template based on leaseData.waterSource
-    // No direct DOM manipulation like 'style.display = "block"' is needed here when using [(ngModel)] and *ngIf.
-    // However, if some logic requires it, you can keep the references but modify based on Angular's data.
-    // The previous implementation used direct DOM manipulation. With Angular's *ngIf,
-    // these elements will simply not be in the DOM unless their condition is met.
-    // So, this method mostly serves to trigger change detection if needed for non-Angular elements,
-    // but the *ngIf on the HTML handles the display directly.
   }
 
   /**
@@ -154,26 +144,29 @@ export class ServiceInfoComponent implements OnInit {
       email: this.currentUser.email,
     };
 
-    this.firebaseService.createLeaseApplication(submissionData).subscribe({
-      next: (response) => {
-        console.log('Lease application created:', response);
-        
-        // Show success modal
-        const successModalElement = this.document.getElementById('successModalDashboard');
-        if (successModalElement) {
-          const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
-          this.document.getElementById('successModalLabelDashboard')!.textContent = 'Lease Application Submitted';
-          (this.document.querySelector('#successModalDashboard .modal-body') as HTMLElement).textContent = 'Your lease application has been submitted successfully!';
-          successModal.show();
+    this.firebaseService.createLeaseApplication(submissionData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log('Lease application created:', response);
+          
+          this.modalTitle = 'Lease Application Submitted';
+          this.modalBody = 'Your lease application has been submitted successfully!';
+
+          // Show success modal
+          const successModalElement = this.document.getElementById('successModalDashboard');
+          if (successModalElement) {
+            const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+            successModal.show();
+          }
+          
+          this.leaseHtmlForm.resetForm();
+        },
+        error: (error) => {
+          console.error('Error submitting lease application:', error);
+          alert('Failed to submit lease application. Please try again.');
         }
-        
-        this.leaseHtmlForm.resetForm();
-      },
-      error: (error) => {
-        console.error('Error submitting lease application:', error);
-        alert('Failed to submit lease application. Please try again.');
-      }
-    });
+      });
   }
 
   /**
@@ -190,21 +183,13 @@ export class ServiceInfoComponent implements OnInit {
     console.log('Rent Form Submitted:', submissionData);
     // In a real application, send this.rentData to your backend API.
 
+    this.modalTitle = 'Rent Inquiry Success';
+    this.modalBody = 'Your rent inquiry has been submitted successfully!';
+
     // Show success modal
-    const successModalElement = this.document.getElementById(
-      'successModalDashboard'
-    ); // Use a distinct ID
+    const successModalElement = this.document.getElementById('successModalDashboard');
     if (successModalElement) {
-      const successModal =
-        bootstrap.Modal.getInstance(successModalElement) ||
-        new bootstrap.Modal(successModalElement);
-      this.document.getElementById('successModalLabelDashboard')!.textContent =
-        'Rent Inquiry Success';
-      (
-        this.document.querySelector(
-          '#successModalDashboard .modal-body'
-        ) as HTMLElement
-      ).textContent = 'Your rent inquiry has been submitted successfully!';
+      const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
       successModal.show();
     }
     this.rentHtmlForm.resetForm(); // Reset the form using NgForm reference
@@ -226,12 +211,13 @@ export class ServiceInfoComponent implements OnInit {
     console.log('Soil Test Form Submitted:', submissionData);
     // In a real application, send this data to your backend API.
 
+    this.modalTitle = 'Soil Test Request Submitted';
+    this.modalBody = 'Your soil test request has been submitted successfully!';
+
     // Show success modal
     const successModalElement = this.document.getElementById('successModalDashboard');
     if (successModalElement) {
       const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
-      this.document.getElementById('successModalLabelDashboard')!.textContent = 'Soil Test Request Submitted';
-      (this.document.querySelector('#successModalDashboard .modal-body') as HTMLElement).textContent = 'Your soil test request has been submitted successfully!';
       successModal.show();
     }
     

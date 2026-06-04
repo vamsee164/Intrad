@@ -1,27 +1,65 @@
 :host {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  min-height: 100%;
+  padding: 1rem;
 }
 
 .login-card {
   width: 100%;
+  max-width: 420px;
   background: #fff;
-  border-radius: 0.875rem;
-  padding: 1.25rem;
-  box-shadow: 0 4px 20px rgba(45, 80, 22, 0.11);
-  border: 1px solid rgba(45, 80, 22, 0.09);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(45,80,22,0.13);
+  border: 1.5px solid rgba(45,80,22,0.09);
+  margin: 0 auto;
 }
 
-/* Icon */
-.login-icon i {
+/* ── Branded Header Strip ── */
+.login-brand-header {
+  background: linear-gradient(135deg, #0f2a07 0%, #2d5016 55%, #4a7c59 100%);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.login-brand-icon {
   font-size: 2rem;
-  color: #2d5016;
-  animation: pulse 2s infinite;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.25);
 }
 
-/* Header block */
+.login-brand-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.login-brand-tagline {
+  font-size: 11px;
+  color: rgba(255,255,255,0.72);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ── Content Area (below header) ── */
 .login-header {
-  margin-bottom: 0.875rem;
+  padding: 16px 20px 0;
+  margin-bottom: 0.5rem;
 }
 
 /* Labels */
@@ -33,7 +71,17 @@
   display: block;
 }
 
-/* Inputs */
+/* ── Form / Footer Padding (card has no global padding now) ── */
+.login-card form,
+.login-alert,
+.login-footer {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.login-card form { padding-top: 12px; }
+.login-footer    { padding-bottom: 16px; }
+
 .login-input {
   display: block;
   width: 100%;
@@ -54,7 +102,9 @@
   transform: none !important;
 }
 
-.login-input.is-invalid { border-color: #dc3545; }
+.login-input.is-invalid {
+  border-color: #dc3545;
+}
 
 .invalid-feedback {
   font-size: 0.75rem;
@@ -63,7 +113,9 @@
 }
 
 /* Field spacing */
-.field-group { margin-bottom: 0.65rem; }
+.field-group {
+  margin-bottom: 0.65rem;
+}
 
 /* Button */
 .login-btn {
@@ -84,7 +136,10 @@
   box-shadow: 0 3px 8px rgba(45, 80, 22, 0.25);
 }
 
-.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* Alert */
 .login-alert {
@@ -95,12 +150,18 @@
 }
 
 /* Footer */
-.login-footer { margin-top: 0.5rem; }
+.login-footer {
+  margin-top: 0.5rem;
+}
 
 .login-footer a,
-.login-footer button { font-size: 0.78rem; }
+.login-footer button {
+  font-size: 0.78rem;
+}
 
-.login-footer .border-top { padding-top: 0.4rem !important; }
+.login-footer .border-top {
+  padding-top: 0.4rem !important;
+}
 
 /* ── Tablet ≤ 767px ── */
 @media (max-width: 767px) {
@@ -108,7 +169,10 @@
     padding: 1rem;
     border-radius: 0.75rem;
   }
-  .login-header { margin-bottom: 0.65rem; }
+
+  .login-header {
+    margin-bottom: 0.65rem;
+  }
 }
 
 /* ── Mobile ≤ 576px: hide icon + desc ── */
@@ -119,14 +183,18 @@
   }
 
   .login-icon,
-  .login-desc { display: none !important; }
+  .login-desc {
+    display: none !important;
+  }
 
   .login-title {
     font-size: 0.95rem !important;
     margin-bottom: 0.5rem !important;
   }
 
-  .login-header { margin-bottom: 0.5rem; }
+  .login-header {
+    margin-bottom: 0.5rem;
+  }
 
   .login-input {
     padding: 7px 10px;
@@ -138,15 +206,24 @@
     font-size: 0.83rem;
   }
 
-  .field-group { margin-bottom: 0.5rem; }
-  .login-footer { margin-top: 0.4rem; }
+  .field-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .login-footer {
+    margin-top: 0.4rem;
+  }
 }
 
 /* ── Very small ≤ 380px ── */
 @media (max-width: 380px) {
-  .login-card { padding: 0.75rem; }
+  .login-card {
+    padding: 0.75rem;
+  }
 
-  .login-title { font-size: 0.875rem !important; }
+  .login-title {
+    font-size: 0.875rem !important;
+  }
 
   .login-input {
     padding: 6px 9px;
@@ -158,10 +235,19 @@
     font-size: 0.8rem;
   }
 
-  .field-group { margin-bottom: 0.4rem; }
+  .field-group {
+    margin-bottom: 0.4rem;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.06); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
 }

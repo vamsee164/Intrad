@@ -48,7 +48,7 @@
                     <!-- Additional Product Details -->
                     <div class="product-details" *ngIf="product.details">
                         <ul class="list-unstyled">
-                            <li class="mb-2" *ngFor="let detail of product.details">
+                            <li class="mb-2" *ngFor="let detail of product.details; trackBy: trackByFn">
                                 <i class="fas fa-check-circle text-success me-2"></i>
                                 {{ detail }}
                             </li>

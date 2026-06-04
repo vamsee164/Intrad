@@ -1,140 +1,180 @@
-/* src/app/navbar/navbar.component.css */
-
-/* CSS Variables for Agricultural Navbar Theme */
+/* ================================================================
+   NAVBAR — Premium Agricultural Theme
+   ================================================================ */
 :host {
-  --navbar-bg-color: rgba(248, 255, 254, 0.95); /* Light agricultural background */
-  --navbar-brand-color: #2d5016; /* Agricultural dark green */
-  --nav-link-color: #2d5016; /* Agricultural green for nav links */
-  --nav-link-hover-bg: #4a7c59; /* Medium green on hover */
-  --nav-link-hover-color: #ffffff; /* White text on hover */
-  --nav-link-active-color: #ffffff; /* White for active links */
-  --nav-link-active-bg: #2d5016; /* Dark green background for active */
-  --dropdown-item-hover-bg: #f0f8f0; /* Light green hover for dropdown */
-  --dropdown-border-radius: 0.75rem;
-  --btn-outline-border: #2d5016; /* Agricultural green border */
-  --btn-outline-hover-bg: #2d5016; /* Agricultural green hover */
-  --btn-outline-hover-color: #ffffff; /* White text on hover */
+  --navbar-bg-color: rgba(255, 255, 255, 0.97);
+  --g700: #2d5016;
+  --g500: #4a7c59;
+  --g50:  #f0faf0;
+  --g200: #c6e8c6;
+  --gold: #c8941a;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Base ──────────────────────────────────── */
 .navbar {
-  border-radius: 0.75rem;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   background: var(--navbar-bg-color) !important;
-  backdrop-filter: blur(15px);
-  border-bottom: 2px solid rgba(45, 80, 22, 0.1);
-  box-shadow: 0 4px 15px rgba(45, 80, 22, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(45, 80, 22, 0.09) !important;
+  box-shadow: 0 2px 16px rgba(45, 80, 22, 0.08) !important;
+  border-radius: 0;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  transition: box-shadow 0.25s var(--ease);
 }
 
+/* Sticky scroll shadow enhancement */
+.navbar.scrolled {
+  box-shadow: 0 4px 24px rgba(45, 80, 22, 0.14) !important;
+}
+
+/* ── Brand ─────────────────────────────────── */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none !important;
+}
+
+.navbar-brand img {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(45, 80, 22, 0.15);
+}
+
+.navbar-brand span,
 .navbar-brand .fw-bold {
-  color: var(--navbar-brand-color);
-}
-
-.navbar-brand span {
-  color: var(--navbar-brand-color) !important;
-}
-.nav-background {
-  background-color: #00807633 !important;
-}
-.rounded-circle {
-  border-radius: 15% !important;
-}
-
-/* Agricultural Theme Button Classes */
-.btn-outline-primary-green {
-  color: var(--nav-link-color) !important;
-  border-color: var(--btn-outline-border) !important;
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.btn-outline-primary-green:hover {
-  background-color: var(--btn-outline-hover-bg) !important;
-  color: var(--btn-outline-hover-color) !important;
-  border-color: var(--btn-outline-hover-bg) !important;
-}
-
-.navbar-nav .nav-link {
-  color: var(--nav-link-color) !important;
-  transition: all 0.3s ease;
-  border: 2px solid var(--btn-outline-border);
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  text-align: center;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.navbar-nav .nav-link:hover {
-  background-color: var(--btn-outline-hover-bg) !important;
-  color: var(--btn-outline-hover-color) !important;
-  border-color: var(--btn-outline-hover-bg);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(45, 80, 22, 0.2);
-}
-
-/* Active state for navigation items */
-.navbar-nav .nav-item.active > .nav-link {
-  background-color: var(--nav-link-active-bg) !important;
-  color: var(--nav-link-active-color) !important;
-  font-weight: 600;
-  border-color: var(--nav-link-active-bg);
-  box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
-}
-
-/* Active state for dropdown parent (if any child is active) */
-.navbar-nav .nav-item.dropdown.active .dropdown-toggle {
-  background-color: var(--nav-link-active-bg);
-  color: var(--nav-link-active-color) !important;
-  font-weight: 600;
-  border-color: var(--nav-link-active-color);
-}
-
-/* Dropdown Menu Styling */
-.navbar-nav .nav-item.dropdown .dropdown-menu {
-  border-radius: var(--dropdown-border-radius);
-  margin-top: 0.5rem;
-  border: 2px solid rgba(45, 80, 22, 0.1);
-  box-shadow: 0 10px 30px rgba(45, 80, 22, 0.15);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-.navbar-nav .dropdown-item {
-  color: var(--nav-link-color);
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.navbar-nav .dropdown-menu .dropdown-item:hover,
-.navbar-nav .dropdown-item:focus {
-  background-color: var(--nav-link-active-bg);
-  color: var(--nav-link-active-color);
-  transform: translateX(5px);
-}
-
-.btn.show {
-  background-color: var(--btn-outline-secondary-blue-hover-color);
-}
-
-/* Active state for dropdown items */
-.navbar-nav .dropdown-item.active {
-  background-color: var(--nav-link-active-bg);
-  color: var(--nav-link-active-color) !important;
-  font-weight: 600;
+  color: var(--g700) !important;
 }
 
 .logo-text {
   display: flex;
-  align-items: center;
   flex-direction: column;
-  line-height: 1;
+  line-height: 1.15;
 }
 
-.logo-text .small {
-  font-size: 10px;
+.logo-text .small { font-size: 10px; opacity: 0.72; }
+
+/* ── Nav Link Pills ─────────────────────────── */
+.navbar-nav .nav-link {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--g700) !important;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  padding: 7px 14px !important;
+  transition:
+    background 0.18s ease,
+    color       0.18s ease,
+    border-color 0.18s ease,
+    box-shadow  0.18s ease;
+  white-space: nowrap;
+  background: transparent;
 }
 
-/* Responsive adjustments */
+.navbar-nav .nav-link:hover {
+  background: var(--g50);
+  border-color: var(--g200);
+  color: var(--g700) !important;
+  box-shadow: none;
+  transform: none; /* avoid jitter in mobile */
+}
+
+/* Active link */
+.navbar-nav .nav-item.active > .nav-link,
+.navbar-nav .nav-item > .nav-link.active {
+  background: var(--g700);
+  color: #fff !important;
+  border-color: var(--g700);
+  box-shadow: 0 3px 12px rgba(45, 80, 22, 0.28);
+}
+
+/* ── Outline Pill (used by btn-outline-primary-green class) ── */
+.btn-outline-primary-green {
+  color: var(--g700) !important;
+  border-color: var(--g700) !important;
+  border-width: 1.5px !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  padding: 7px 14px !important;
+  transition: background 0.18s ease, color 0.18s ease !important;
+}
+
+.btn-outline-primary-green:hover {
+  background: var(--g700) !important;
+  color: #fff !important;
+  border-color: var(--g700) !important;
+}
+
+/* ── Sign Up CTA — filled green, stands out from outline links ── */
+.btn-signup-cta {
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  padding: 7px 18px !important;
+  box-shadow: 0 3px 12px rgba(45,80,22,0.25) !important;
+  transition: all 0.18s ease !important;
+}
+
+.btn-signup-cta:hover {
+  background: linear-gradient(135deg, #1b4010 0%, #3d6b1f 100%) !important;
+  box-shadow: 0 5px 18px rgba(45,80,22,0.38) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Dropdown ───────────────────────────────── */
+.navbar-nav .dropdown-menu {
+  border-radius: 12px;
+  border: 1.5px solid rgba(45, 80, 22, 0.10);
+  box-shadow: 0 8px 32px rgba(45, 80, 22, 0.14);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  margin-top: 8px;
+  padding: 6px;
+}
+
+.navbar-nav .dropdown-item {
+  color: var(--g700);
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navbar-nav .dropdown-item:hover,
+.navbar-nav .dropdown-item:focus {
+  background: var(--g50);
+  color: var(--g700);
+  transform: none;
+}
+
+.navbar-nav .dropdown-item.active {
+  background: var(--g700);
+  color: #fff;
+}
+
+/* ── Modal ──────────────────────────────────── */
+.modal-header.bg-warning {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  color: #fff !important;
+}
+
+.modal-header.bg-warning .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+/* ── Responsive ─────────────────────────────── */
 @media (min-width: 992px) {
   .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
     display: block;
@@ -142,56 +182,66 @@
 }
 
 @media (max-width: 991.98px) {
-  /* Adjust for smaller screens */
-  .navbar-toggler {
-    margin-left: auto; /* Push toggler to the right */
+  .navbar {
+    padding: 10px 16px;
   }
+
   .navbar-collapse {
-    text-align: center; /* Center items when collapsed */
+    background: rgba(255,255,255,0.98);
+    border-radius: 12px;
+    margin-top: 10px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(45,80,22,0.12);
+    border: 1.5px solid rgba(45,80,22,0.08);
   }
+
   .navbar-nav .nav-item {
-    margin-right: 0 !important; /* Remove horizontal margin */
-    margin-left: 0 !important;
-    margin-bottom: 0.5rem !important; /* Add vertical spacing */
+    margin-bottom: 4px !important;
   }
+
   .navbar-nav .nav-link {
-    width: 100%; /* Make links full width when stacked */
+    width: 100%;
+    text-align: left;
   }
-  /* Disable hover transform on touch/mobile to prevent layout shift */
-  .navbar-nav .nav-link:hover {
-    transform: none;
-  }
-  .navbar-nav .nav-item.dropdown .dropdown-menu {
-    width: 100%; /* Make dropdown menu full width */
-    text-align: center; /* Center dropdown items */
-  }
-  .navbar-nav .dropdown-item {
-    padding-left: 0; /* Adjust padding for stacked items */
-    padding-right: 0;
-  }
-  /* Disable dropdown item transform on mobile */
-  .navbar-nav .dropdown-menu .dropdown-item:hover,
-  .navbar-nav .dropdown-item:focus {
-    transform: none;
+
+  .navbar-nav .dropdown-menu {
+    box-shadow: none;
+    border: 1.5px solid rgba(45,80,22,0.08);
+    margin-top: 4px;
   }
 }
 
 @media (max-width: 576px) {
   .navbar {
-    border-radius: 0;
     padding: 8px 12px;
   }
 
-  .navbar-brand .fw-bold {
-    font-size: 1rem;
+  .navbar-brand img {
+    width: 52px !important;
   }
 
   .navbar-nav .nav-link {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: 0.83rem;
+    padding: 6px 12px !important;
   }
+}
 
-  .logo-text .small {
-    font-size: 9px;
-  }
+/* ── Logout Button in Navbar ── */
+.btn-logout-cta {
+  background: #dc3545 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  padding: 7px 18px !important;
+  box-shadow: 0 3px 12px rgba(220, 53, 69, 0.25) !important;
+  transition: all 0.18s ease !important;
+}
+
+.btn-logout-cta:hover {
+  background: #bb2d3b !important;
+  color: #fff !important;
+  box-shadow: 0 5px 18px rgba(220, 53, 69, 0.38) !important;
+  transform: translateY(-1px) !important;
 }

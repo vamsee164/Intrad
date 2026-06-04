@@ -32,30 +32,26 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.currentUser = user;
-        if (user) {
-          this.loadProfileData(user);
-        }
+        if (user) this.loadProfileData(user);
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  private loadProfileData(user: User) {
-    // Use Firebase data if available, otherwise use mock data
-    // Check multiple possible phone field names
-    const phoneNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '9876543210';
-    console.log('Phone number:', phoneNumber);
+  private loadProfileData(user: User): void {
+    const phoneNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
     const baseProfile = {
       name: user.name || this.getUserName(user.role),
-      location: user.location || user.profileData?.village || user.profileData?.location || 'Warangal, Telangana',
+      // Fix #11: no hardcoded location fallback — show N/A if missing
+      location: user.location || user.profileData?.village || user.profileData?.location || 'N/A',
       phone: phoneNumber,
       language: 'తెలుగు',
       profileImage: user.profileData?.profileImage || 'assets/images/default-avatar.svg'
@@ -66,13 +62,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.profileData = {
           ...baseProfile,
           roleSpecific: {
-            // Pre-populate all signup data fields
-            land: (user.profileData?.acreOfLand ? user.profileData.acreOfLand + ' Acres' : '3 Acres'),
-            crops: user.profileData?.typicalCrops || 'Rice, Maize',
-            soilType: user.profileData?.soilType || 'Black Soil',
-            village: user.profileData?.village || user.location || 'Warangal',
+            // Fix #11: use 'N/A' fallbacks, not fake data
+            land: user.profileData?.acreOfLand != null ? user.profileData.acreOfLand + ' Acres' : 'N/A',
+            crops: Array.isArray(user.profileData?.typicalCrops)
+              ? user.profileData.typicalCrops.join(', ') || 'N/A'
+              : (user.profileData?.typicalCrops || 'N/A'),
+            soilType: user.profileData?.soilType || 'N/A',
+            village: user.profileData?.village || user.location || 'N/A',
             mandal: user.profileData?.mandal || 'N/A',
-            waterSource: user.profileData?.waterSource || 'Borewell',
+            waterSource: user.profileData?.waterSource || 'N/A',
             fertilizers: user.profileData?.fertilizers || 'N/A',
             soilTest: user.profileData?.soilTest || 'not-tested',
             email: user.email || 'N/A',
@@ -119,30 +117,32 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateBack() {
+  navigateBack(): void {
     this.router.navigate([this.getDashboardRoute()]);
   }
 
-  navigateToMyCrops() {
-    alert('Feature coming soon...');
-    console.log('Navigate to My Crops');
+  navigateToEditProfile(): void {
+    // Route to the dashboard where profile editing is available
+    this.router.navigate([this.getDashboardRoute()]);
   }
 
-  navigateToSoilTest() {
-    alert('Feature coming soon...');
-    console.log('Navigate to Soil Test');
+  navigateToMyCrops(): void {
+    this.router.navigate(['/crops/vegetables']);
   }
 
-  navigateToMarketPrices() {
-    // console.log('Navigate to Market Prices');
-    alert('Feature coming soon...');
+  navigateToSoilTest(): void {
+    this.router.navigate(['/booksoil']);
   }
 
-  navigateToHelpCenter() {
-    alert('Feature coming soon...');
+  navigateToMarketPrices(): void {
+    this.router.navigate(['/crops/vegetables']);
   }
 
-  logout() {
+  navigateToHelpCenter(): void {
+    this.router.navigate(['/contact']);
+  }
+
+  logout(): void {
     this.authService.logout('/homepage');
   }
 
@@ -154,8 +154,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         return '/farmer';
       case APP_CONSTANTS.ROLES.USER:
       case 'buyer':
-      case 'seller':
         return '/apu/buyer';
+      case 'seller':
+        return '/apu/seller';
       case APP_CONSTANTS.ROLES.ADMIN:
         return '/control';
       default:

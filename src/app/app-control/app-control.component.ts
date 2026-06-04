@@ -140,4 +140,8 @@ export class AppControlComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout('/homepage');
   }
+
+  trackByFn(index: number, item: any): any {
+    return item?.id || index;
+  }
 }

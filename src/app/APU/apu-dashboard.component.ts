@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-apu-dashboard',
@@ -9,116 +11,304 @@ import { AuthService, User } from '../services/auth.service';
   imports: [CommonModule],
   template: `
     <div class="apu-dashboard-container">
-      <div class="dashboard-header">
-        <button class="btn btn-outline-secondary mb-3" (click)="backToControl()" *ngIf="isAdmin()">
-          <i class="bi bi-arrow-left"></i> Back to Control
-        </button>
-        <h1 class="text-center mb-2">Agricultural Processing Unit (APU)</h1>
-        <p class="text-center text-muted mb-4">Choose your service</p>
-      </div>
 
-      <div class="row g-4 justify-content-center">
-        <div class="col-md-5">
-          <div class="service-card buyer-card" (click)="navigateToBuyer()">
-            <div class="service-icon">🛒</div>
-            <h2>Buyer Portal</h2>
-            <p>Looking to purchase agricultural products? Submit your requirements and connect with sellers.</p>
-            <button class="btn btn-primary btn-lg w-100">
-              <i class="bi bi-cart-check me-2"></i>Go to Buyer Form
+      <!-- ── Top Header Bar (replaces global navbar on this route) ── -->
+      <div class="apu-header">
+        <div class="apu-header-inner">
+          <!-- Brand / Page title -->
+          <div class="apu-brand">
+            <div class="apu-brand-icon">🏭</div>
+            <div>
+              <div class="apu-brand-name">APU Portal</div>
+              <div class="apu-brand-sub">Agricultural Processing Unit</div>
+            </div>
+          </div>
+
+          <!-- Right-side actions -->
+          <div class="apu-header-actions">
+            <button class="btn btn-outline-secondary btn-sm me-2"
+                    (click)="backToControl()" *ngIf="isAdmin()"
+                    title="Back to Admin Control">
+              <i class="bi bi-arrow-left me-1"></i>
+              <span class="d-none d-sm-inline">Admin Panel</span>
+            </button>
+
+            <!-- Profile pill -->
+            <button class="btn btn-apu-profile" (click)="goToProfile()" title="View Profile">
+              <i class="bi bi-person-circle me-2"></i>
+              <span class="d-none d-sm-inline">{{ currentUser?.name || 'Profile' }}</span>
+            </button>
+
+            <!-- Logout pill -->
+            <button class="btn btn-apu-logout" (click)="logout()" title="Logout">
+              <i class="bi bi-box-arrow-right me-1"></i>
+              <span class="d-none d-sm-inline">Logout</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-5">
-          <div class="service-card seller-card" (click)="navigateToSeller()">
-            <div class="service-icon">📦</div>
-            <h2>Seller Portal</h2>
-            <p>Have agricultural products to sell? List your offerings and reach potential buyers.</p>
-            <button class="btn btn-success btn-lg w-100">
-              <i class="bi bi-box-seam me-2"></i>Go to Seller Form
-            </button>
-          </div>
+      <!-- ── Welcome Section ── -->
+      <div class="apu-welcome">
+        <h1 class="apu-welcome-title">
+          Welcome{{ currentUser?.name ? ', ' + currentUser!.name : '' }}! 👋
+        </h1>
+        <p class="apu-welcome-sub">Choose a portal to continue</p>
+      </div>
+
+      <!-- ── Service Cards ── -->
+      <div class="apu-cards-grid">
+        <!-- Buyer Card -->
+        <div class="service-card buyer-card" (click)="navigateToBuyer()">
+          <div class="service-icon">🛒</div>
+          <h2>Buyer Portal</h2>
+          <p>Looking to purchase agricultural products? Submit your requirements and connect with sellers.</p>
+          <button class="btn btn-buyer w-100">
+            <i class="bi bi-cart-check me-2"></i>Go to Buyer Form
+          </button>
+        </div>
+
+        <!-- Seller Card -->
+        <div class="service-card seller-card" (click)="navigateToSeller()">
+          <div class="service-icon">📦</div>
+          <h2>Seller Portal</h2>
+          <p>Have agricultural products to sell? List your offerings and reach potential buyers.</p>
+          <button class="btn btn-seller w-100">
+            <i class="bi bi-box-seam me-2"></i>Go to Seller Form
+          </button>
         </div>
       </div>
+
     </div>
   `,
   styles: [`
+    /* ── Container ─────────────────────────── */
     .apu-dashboard-container {
       min-height: 100vh;
-      padding: 2rem;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background:
+        radial-gradient(ellipse 80% 50% at 0% 0%, rgba(45,80,22,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200,148,26,0.05) 0%, transparent 60%),
+        linear-gradient(160deg, #f8fdf8 0%, #fefdf8 50%, #f8fbf8 100%);
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     }
 
-    .dashboard-header {
+    /* ── Top Header ────────────────────────── */
+    .apu-header {
+      background: linear-gradient(135deg, #0f2a07 0%, #2d5016 55%, #4a7c59 100%);
+      box-shadow: 0 4px 24px rgba(45,80,22,0.28);
+      padding: 0 24px;
+    }
+
+    .apu-header-inner {
       max-width: 1200px;
-      margin: 0 auto 3rem;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      gap: 12px;
     }
 
-    .dashboard-header h1 {
-      color: #2c3e50;
-      font-weight: 700;
-      font-size: 2.5rem;
+    .apu-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .row {
-      max-width: 1200px;
+    .apu-brand-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .apu-brand-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .apu-brand-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+    }
+
+    .apu-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Profile pill */
+    .btn-apu-profile {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.18);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      color: #fff;
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.18s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-apu-profile:hover {
+      background: rgba(255,255,255,0.30);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Logout pill */
+    .btn-apu-logout {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(220, 53, 69, 0.22);
+      border: 1.5px solid rgba(220, 53, 69, 0.45);
+      color: #fff;
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.18s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-apu-logout:hover {
+      background: rgba(220, 53, 69, 0.45);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ── Welcome ────────────────────────────── */
+    .apu-welcome {
+      text-align: center;
+      padding: 48px 24px 32px;
+      max-width: 640px;
       margin: 0 auto;
     }
 
+    .apu-welcome-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      color: #1b4010;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .apu-welcome-sub {
+      color: #6b7280;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    /* ── Cards Grid ─────────────────────────── */
+    .apu-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+    }
+
     .service-card {
-      background: white;
+      background: #fff;
       border-radius: 20px;
-      padding: 3rem 2rem;
+      padding: 36px 28px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(45,80,22,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      border: 1.5px solid rgba(45,80,22,0.08);
+      transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
       cursor: pointer;
-      height: 100%;
     }
 
     .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(45,80,22,0.16), 0 6px 16px rgba(0,0,0,0.08);
     }
 
-    .buyer-card:hover {
-      border: 2px solid #007bff;
-    }
-
-    .seller-card:hover {
-      border: 2px solid #28a745;
-    }
+    .buyer-card:hover  { border-color: #2e6fbd; }
+    .seller-card:hover { border-color: #2d5016; }
 
     .service-icon {
-      font-size: 5rem;
-      margin-bottom: 1.5rem;
+      font-size: 4.5rem;
+      margin-bottom: 20px;
+      display: block;
     }
 
     .service-card h2 {
-      color: #2c3e50;
-      font-weight: 600;
-      margin-bottom: 1rem;
+      color: #1b4010;
+      font-weight: 800;
+      font-size: 22px;
+      margin-bottom: 12px;
     }
 
     .service-card p {
-      color: #6c757d;
-      margin-bottom: 2rem;
-      font-size: 1.1rem;
+      color: #6b7280;
+      margin-bottom: 28px;
+      font-size: 15px;
+      line-height: 1.65;
     }
 
-    .btn {
-      border-radius: 50px;
-      padding: 0.75rem 2rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    /* Buyer button */
+    .btn-buyer {
+      background: linear-gradient(135deg, #1e4e8c 0%, #2e6fbd 100%);
+      border: none;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(30,78,140,0.30);
+      transition: all 0.18s ease;
     }
 
-    .btn:hover {
-      transform: scale(1.05);
+    .btn-buyer:hover {
+      background: linear-gradient(135deg, #163a6e 0%, #1e4e8c 100%);
+      box-shadow: 0 6px 20px rgba(30,78,140,0.40);
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    /* Seller button */
+    .btn-seller {
+      background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+      border: none;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(45,80,22,0.30);
+      transition: all 0.18s ease;
+    }
+
+    .btn-seller:hover {
+      background: linear-gradient(135deg, #1b4010 0%, #3d6b1f 100%);
+      box-shadow: 0 6px 20px rgba(45,80,22,0.40);
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    /* ── Responsive ─────────────────────────── */
+    @media (max-width: 600px) {
+      .apu-header    { padding: 0 14px; }
+      .apu-header-inner { height: 60px; }
+      .apu-brand-icon  { font-size: 22px; }
+      .apu-brand-name  { font-size: 14px; }
+      .apu-brand-sub   { display: none; }
+      .apu-welcome     { padding: 28px 16px 20px; }
+      .apu-cards-grid  { padding: 0 14px 32px; gap: 16px; grid-template-columns: 1fr; }
+      .service-card    { padding: 24px 18px; }
+      .service-icon    { font-size: 3.5rem; }
     }
   `]
 })
-export class ApuDashboardComponent implements OnInit {
+export class ApuDashboardComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   currentUser: User | null = null;
 
   constructor(
@@ -127,24 +317,39 @@ export class ApuDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   isAdmin(): boolean {
     return this.currentUser?.role === 'admin';
   }
 
-  navigateToBuyer() {
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  navigateToBuyer(): void {
     this.router.navigate(['/apu/buyer']);
   }
 
-  navigateToSeller() {
+  navigateToSeller(): void {
     this.router.navigate(['/apu/seller']);
   }
 
-  backToControl() {
+  backToControl(): void {
     this.router.navigate(['/control']);
+  }
+
+  logout(): void {
+    this.authService.logout('/homepage');
   }
 }

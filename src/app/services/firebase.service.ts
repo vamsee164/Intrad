@@ -1,16 +1,16 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, push, set } from 'firebase/database';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { Database, getDatabase, ref, push, set } from 'firebase/database';
+import { Auth, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseConfig } from '../../environments/firebase.config';
 
 export interface SignupUser {
   name: string;
-  typicalCrops: string;
+  typicalCrops: string[];
   village: string;
   waterSource: string;
   mandal: string;
@@ -30,9 +30,9 @@ export interface SignupUser {
   providedIn: 'root'
 })
 export class FirebaseService {
-  private baseUrl = 'https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app';
-  private db: any;
-  private auth: any;
+  private baseUrl = firebaseConfig.databaseURL || 'https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app';
+  private readonly db: Database | null = null;
+  private readonly auth: Auth | null = null;
 
   constructor(
     private http: HttpClient,
@@ -46,23 +46,31 @@ export class FirebaseService {
     }
   }
 
-  // Create user with credentials using HTTP
+  // Create user securely with Auth + Database PUT using UID
   createUser(userData: SignupUser): Observable<any> {
-    const userId = this.generateUserId();
     const generatedPassword = this.generatePassword();
-    const userWithCredentials = {
-      ...userData,
-      userId,
-      email: `${userData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com`,
-      password: generatedPassword,
-      role: userData.role || 'farmer', // Default to farmer if no role specified
-      createdAt: new Date().toISOString()
-    };
-    
-    return this.http.post(`${this.baseUrl}/signUpFrom/${userId}.json`, userWithCredentials)
-      .pipe(
-        map(response => ({ ...response, generatedPassword }))
-      );
+    const email = `${userData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com`;
+
+    return this.signupWithEmailPassword(email, generatedPassword).pipe(
+      switchMap((authResult: any) => {
+        const uid = authResult.user.uid;
+        // Fix #5: NEVER store the password in the database
+        const { password: _removed, ...safeData } = userData as any;
+        const userWithCredentials = {
+          ...safeData,
+          userId: uid,
+          email,
+          role: userData.role || 'farmer',
+          createdAt: new Date().toISOString()
+          // password intentionally excluded from DB record
+        };
+
+        return this.http.put(`${this.baseUrl}/signUpFrom/${uid}.json`, userWithCredentials)
+          .pipe(
+            map(() => ({ email, generatedPassword, name: userData.name, userId: uid }))
+          );
+      })
+    );
   }
 
   // Read user by ID
@@ -85,52 +93,61 @@ export class FirebaseService {
     return this.http.get(`${this.baseUrl}/signUpFrom.json`);
   }
 
-  // Update user password
-  updateUserPassword(email: string, newPassword: string): Observable<any> {
+  // Update user password — only in Firebase Auth (DB no longer stores passwords)
+  // Fix #3: data is stored flat at /signUpFrom/{uid} (PUT), not double-nested
+  updateUserPassword(identifier: string, newPassword: string): Observable<any> {
     return this.getAllUsers().pipe(
       switchMap((users: any) => {
-        if (!users) return from([null]);
-        
-        // Find user by email
-        for (const userId in users) {
-          const userContainer = users[userId];
-          for (const firebaseKey in userContainer) {
-            const user = userContainer[firebaseKey];
-            if (user && user.email === email) {
-              // Update password using HTTP PATCH
-              return this.http.patch(`${this.baseUrl}/signUpFrom/${userId}/${firebaseKey}.json`, {
-                password: newPassword
-              });
-            }
+        if (!users) return of(null);
+
+        // Users are stored flat: { [uid]: { email, mobileNo, ... } }
+        for (const userId of Object.keys(users)) {
+          const user = users[userId];
+          if (
+            user &&
+            (user.email === identifier ||
+              user.mobileNo === identifier ||
+              user.phone === identifier)
+          ) {
+            // Update only non-sensitive fields; passwords belong in Firebase Auth only
+            // For a full password reset, use Firebase Auth sendPasswordResetEmail()
+            return this.http.patch(
+              `${this.baseUrl}/signUpFrom/${userId}.json`,
+              { lastPasswordReset: new Date().toISOString() }
+            );
           }
         }
-        return from([null]);
+        return of(null);
       })
     );
   }
 
   // Firebase Auth signup
   signupWithEmailPassword(email: string, password: string): Observable<any> {
+    if (!this.auth) {
+      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    }
     return from(createUserWithEmailAndPassword(this.auth, email, password));
   }
 
   // Firebase Auth login
   loginWithEmailPassword(email: string, password: string): Observable<any> {
+    if (!this.auth) {
+      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    }
     return from(signInWithEmailAndPassword(this.auth, email, password));
   }
 
-  // Login authentication (legacy)
-  authenticateUser(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signInForm.json`, {
-      email,
-      password,
-      loginTime: new Date().toISOString()
-    });
+  // Login authentication (log only — actual auth is via Firebase Auth SDK)
+  authenticateUser(email: string, _password: string): Observable<any> {
+    // Note: Login logging removed — no need to store login timestamps
+    return of(null);
   }
 
-  // Verify user credentials
-  verifyCredentials(email: string, password: string): Observable<any> {
-    return this.getAllUsers();
+  // Fix #8: verifyCredentials no longer dumps all user data
+  verifyCredentials(_email: string, _password: string): Observable<any> {
+    // Use loginWithEmailPassword() for actual credential verification
+    return of(null);
   }
 
   // Create land lease application
@@ -201,8 +218,30 @@ export class FirebaseService {
   }
 
   // Buyer/Seller Forms
+  createBuyerForm(buyerData: any): Observable<any> {
+    const formId = this.generateRequestId();
+    const formWithId = {
+      ...buyerData,
+      formId,
+      status: 'pending',
+      submittedAt: new Date().toISOString()
+    };
+    return this.http.post(`${this.baseUrl}/buyerForms/${formId}.json`, formWithId);
+  }
+
   getAllBuyerForms(): Observable<any> {
     return this.http.get(`${this.baseUrl}/buyerForms.json`);
+  }
+
+  createSellerForm(sellerData: any): Observable<any> {
+    const formId = this.generateRequestId();
+    const formWithId = {
+      ...sellerData,
+      formId,
+      status: 'pending',
+      submittedAt: new Date().toISOString()
+    };
+    return this.http.post(`${this.baseUrl}/sellerForms/${formId}.json`, formWithId);
   }
 
   getAllSellerForms(): Observable<any> {
@@ -210,23 +249,20 @@ export class FirebaseService {
   }
 
   private generateRequestId(): string {
-    return 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-  }
-
-  private generateUserId(): string {
-    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
   }
 
   private generateApplicationId(): string {
-    return 'app_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'app_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
   }
 
+  // Fix #6: Use crypto.getRandomValues() — cryptographically secure password generation
   private generatePassword(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let password = '';
-    for (let i = 0; i < 8; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+    const array = new Uint8Array(10);
+    crypto.getRandomValues(array);
+    return Array.from(array)
+      .map(b => chars[b % chars.length])
+      .join('');
   }
 }

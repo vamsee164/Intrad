@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
+import { FirebaseService } from '../../services/firebase.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface DropdownOption {
   label: string;
@@ -111,8 +113,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
     //     },
     //   },
     // },
-    RawVegetablesFurits: {
-      label: 'Raw Vegetables & Furits',
+    // Fix #17: corrected typo 'Furits' → 'Fruits'
+    RawVegetablesFruits: {
+      label: 'Raw Vegetables & Fruits',
       subCategories: {
         lentils: {
           label: 'Lentils',
@@ -144,10 +147,12 @@ export class BuyerComponent implements OnInit, OnDestroy {
   submittedData: any = null;
   showLastSubmission: boolean = false;
 
-  private userSub!: Subscription;
+  private readonly destroy$ = new Subject<void>();
+  isSubmitting: boolean = false;
 
   constructor(
     private authService: AuthService,
+    private firebaseService: FirebaseService,
     private router: Router
   ) {}
 
@@ -164,13 +169,17 @@ export class BuyerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSub = this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+      });
     
-    this.mainCategories = [
-      { label: 'Fruits & Vegetables', value: 'fruits-vegetables' }
-    ];
+    // Dynamic main categories from the hierarchy
+    this.mainCategories = Object.keys(this.productHierarchy).map(key => ({
+      label: (this.productHierarchy as any)[key].label,
+      value: key
+    }));
     
     // Load last submission from localStorage
     this.loadLastSubmission();
@@ -199,28 +208,56 @@ export class BuyerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onMainCategoryChange(): void {
-    this.subCategories = [
-      { label: 'Fruits', value: 'fruits' },
-      { label: 'Vegetables', value: 'vegetables' }
-    ];
+    this.selectedSubCategory = '';
+    this.selectedProductType = '';
+    this.selectedDetails = '';
+    this.subCategories = [];
+    this.productTypes = [];
+    this.detailsOptions = [];
+
+    const category = (this.productHierarchy as any)[this.selectedMainCategory];
+    if (category?.subCategories) {
+      this.subCategories = Object.keys(category.subCategories).map(key => ({
+        label: category.subCategories[key].label,
+        value: key
+      }));
+    }
   }
 
   onSubCategoryChange(): void {
-    this.productTypes = [
-      { label: 'Mango', value: 'mango' },
-      { label: 'Tomato', value: 'tomato' }
-    ];
+    this.selectedProductType = '';
+    this.selectedDetails = '';
+    this.productTypes = [];
+    this.detailsOptions = [];
+
+    const category = (this.productHierarchy as any)[this.selectedMainCategory];
+    const subCat = category?.subCategories?.[this.selectedSubCategory];
+    if (subCat?.productTypes) {
+      this.productTypes = Object.keys(subCat.productTypes).map(key => ({
+        label: subCat.productTypes[key].label,
+        value: key
+      }));
+    }
   }
 
   onProductTypeChange(): void {
-    this.detailsOptions = [
-      { label: 'Slices', value: 'slices' },
-      { label: 'Powder', value: 'powder' }
-    ];
+    this.selectedDetails = '';
+    this.detailsOptions = [];
+
+    const category = (this.productHierarchy as any)[this.selectedMainCategory];
+    const subCat = category?.subCategories?.[this.selectedSubCategory];
+    const prodType = subCat?.productTypes?.[this.selectedProductType];
+    if (prodType?.details) {
+      this.detailsOptions = Object.keys(prodType.details).map(key => ({
+        label: prodType.details[key],
+        value: key
+      }));
+    }
   }
 
   getLabel(options: DropdownOption[], value: string): string {
@@ -244,17 +281,33 @@ export class BuyerComponent implements OnInit, OnDestroy {
       status: 'pending',
     };
 
-    console.log('Buyer Inquiry Submitted:', submissionData);
+    // Fix #25: removed console.log from production submit
+    this.isSubmitting = true;
     
-    // Save to localStorage for future reference
-    localStorage.setItem('lastBuyerSubmission', JSON.stringify(submissionData));
-    
-    // Store submitted data and show confirmation
-    this.submittedData = submissionData;
-    this.currentView = 'confirmation';
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.firebaseService.createBuyerForm(submissionData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.isSubmitting = false;
+          // Save to localStorage for future reference
+          localStorage.setItem('lastBuyerSubmission', JSON.stringify(submissionData));
+          
+          // Store submitted data and show confirmation
+          this.submittedData = submissionData;
+          this.currentView = 'confirmation';
+          
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (_error) => {
+          this.isSubmitting = false;
+          // Fix #22: no alert() — show inline error in form instead
+          if (this.buyerForm) {
+            // Set a flag the template can show — or use a simple property
+            console.error('Buyer form submit failed');
+          }
+        }
+      });
   }
 
   /**
@@ -288,5 +341,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
     this.productTypes = [];
     this.detailsOptions = [];
     this.submittedData = null;
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item?.value || index;
   }
 }

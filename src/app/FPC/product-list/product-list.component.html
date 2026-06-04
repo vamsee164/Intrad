@@ -10,7 +10,7 @@
 
     <!-- Products Grid -->
     <div class="row g-4" *ngIf="products && products.length > 0">
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of products">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of products; trackBy: trackByFn">
             <div class="product-card h-100">
                 <div class="card border-0 h-100">
                     <!-- Product Image -->
@@ -54,9 +54,9 @@
                             </div>
 
                             <div class="d-grid">
-                                <a [routerLink]="['/product', product.id]" class="btn btn-outline-primary btn-sm">
+                                <button (click)="openAuthModal(product)" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#authModal">
                                     View Details
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -72,6 +72,43 @@
             <h4 class="text-muted">No Products Found</h4>
             <p class="text-muted mb-4">We couldn't find any {{ category }} products at the moment.</p>
             <a routerLink="/" class="btn btn-primary">Browse All Categories</a>
+        </div>
+    </div>
+</div>
+
+<!-- Authentication Modal for View Details -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-xl shadow-lg border-0">
+            <div class="modal-header bg-primary-green text-white p-3 border-0">
+                <h5 class="modal-title fw-bold" id="authModalLabel">
+                    <i class="fas fa-lock me-2"></i> Authentication Required
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user-circle fa-3x text-primary-green"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Login to Continue</h5>
+                    <p class="text-muted">Please log in to view detailed information about {{ selectedProduct?.name || 'this product' }} and make purchases.</p>
+                </div>
+                
+                <div class="d-grid gap-3">
+                    <button class="btn btn-primary-green py-2 fw-semibold shadow-sm" (click)="navigateToLogin()" data-bs-dismiss="modal">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </button>
+                    <div class="d-flex align-items-center my-1">
+                        <div class="flex-grow-1 bg-secondary" style="height: 1px; opacity: 0.2;"></div>
+                        <span class="px-3 text-muted small">OR</span>
+                        <div class="flex-grow-1 bg-secondary" style="height: 1px; opacity: 0.2;"></div>
+                    </div>
+                    <button class="btn btn-outline-secondary py-2 fw-semibold" (click)="navigateToGuest()" data-bs-dismiss="modal">
+                        <i class="fas fa-user-clock me-2"></i> Guest Login (Buyer Form)
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

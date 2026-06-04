@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface DashboardCard {
   title: string;
@@ -56,7 +58,8 @@ interface EquipmentItem {
   templateUrl: './farmer-dashboard.component.html',
   styleUrls: ['./farmer-dashboard.component.css']
 })
-export class FarmerDashboardComponent implements OnInit {
+export class FarmerDashboardComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   currentUser: User | null = null;
   dashboardCards: DashboardCard[] = [];
   quickActions: QuickAction[] = [];
@@ -65,8 +68,12 @@ export class FarmerDashboardComponent implements OnInit {
   workers: Worker[] = [];
   workerForm = { farmerName: '', mobileNumber: '', village: '', workerType: '', numberOfWorkers: 1, startDate: '', duration: '', additionalNotes: '' };
   selectedWorker: Worker | null = null;
-  currentView: 'dashboard' | 'service-form' | 'worker-form' = 'dashboard';
+  currentView: 'dashboard' | 'service-form' = 'dashboard'; // worker-form removed (unimplemented)
   selectedService: ServicePackage | null = null;
+  toastMessage = '';
+  toastType: 'success' | 'danger' | 'warning' = 'success';
+  showToastFlag = false;
+  private toastTimer: any = null;
   
   // Service form data
   serviceForm = {
@@ -85,20 +92,36 @@ export class FarmerDashboardComponent implements OnInit {
     private firebaseService: FirebaseService
   ) {}
 
-  ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      this.loadDashboardData();
-      // Pre-fill form with user data - check multiple phone field names
-      if (user) {
-        this.serviceForm.farmerName = user.name || '';
-        this.serviceForm.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
-        this.serviceForm.village = user.profileData?.village || user.location || '';
-      }
-    });
+  ngOnInit(): void {
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+        this.loadDashboardData();
+        if (user) {
+          this.serviceForm.farmerName = user.name || '';
+          this.serviceForm.mobileNumber = user.phone || user.profileData?.mobileNo || '';
+          this.serviceForm.village = user.profileData?.village || user.location || '';
+        }
+      });
   }
 
-  private loadDashboardData() {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  /** Replacement for alert() — shows an in-page toast banner */
+  showToast(message: string, type: 'success' | 'danger' | 'warning' = 'success'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToastFlag = true;
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => { this.showToastFlag = false; }, 4000);
+  }
+
+  private loadDashboardData(): void {
     this.dashboardCards = [
       {
         title: 'Total Land',
@@ -110,7 +133,12 @@ export class FarmerDashboardComponent implements OnInit {
       {
         title: 'Active Crops',
         icon: '🌱',
-        value: this.currentUser?.profileData?.typicalCrops?.split(',').length || 3,
+        // Fix #10: typicalCrops is string[], not a comma-separated string
+        value: Array.isArray(this.currentUser?.profileData?.typicalCrops)
+          ? this.currentUser!.profileData.typicalCrops.length
+          : (this.currentUser?.profileData?.typicalCrops
+              ? (this.currentUser.profileData.typicalCrops as string).split(',').filter(Boolean).length
+              : 0),
         description: 'Currently growing',
         color: '#20c997'
       },
@@ -437,11 +465,11 @@ export class FarmerDashboardComponent implements OnInit {
     ];
   }
 
-  navigateTo(route: string) {
+  navigateTo(route: string): void {
     this.router.navigate([route]);
   }
 
-  selectPackage(packageId: string) {
+  selectPackage(packageId: string): void {
     const selectedPkg = this.servicePackages.find(pkg => pkg.id === packageId);
     if (selectedPkg) {
       this.selectedService = selectedPkg;
@@ -452,25 +480,22 @@ export class FarmerDashboardComponent implements OnInit {
     }
   }
 
-  backToDashboard() {
+  backToDashboard(): void {
     this.currentView = 'dashboard';
     this.selectedService = null;
     this.resetServiceForm();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  submitServiceRequest() {
+  submitServiceRequest(): void {
     if (!this.serviceForm.farmerName || !this.serviceForm.mobileNumber || !this.serviceForm.preferredDate) {
-      alert('Please fill in all required fields');
+      this.showToast('Please fill in all required fields', 'warning');
       return;
     }
-
-    // Additional validation for equipment rental
     if (this.selectedService?.id === 'equipment-rental' && !this.serviceForm.selectedEquipment) {
-      alert('Please select an equipment');
+      this.showToast('Please select an equipment', 'warning');
       return;
     }
-
     const requestData = {
       ...this.serviceForm,
       serviceId: this.selectedService?.id,
@@ -479,23 +504,16 @@ export class FarmerDashboardComponent implements OnInit {
       farmerEmail: this.currentUser?.email,
       farmerId: this.currentUser?.id
     };
-
-    console.log('Submitting service request to Firebase:', requestData);
-    
     this.firebaseService.createServiceRequest(requestData).subscribe({
       next: (response) => {
-        console.log('Service request submitted successfully:', response);
-        alert(`Service request for ${this.serviceForm.serviceType} has been submitted successfully! Request ID: ${response.name}`);
+        this.showToast(`Service request for ${this.serviceForm.serviceType} submitted! ID: ${response.name}`, 'success');
         this.backToDashboard();
       },
-      error: (error) => {
-        console.error('Error submitting service request:', error);
-        alert('Failed to submit service request. Please try again.');
-      }
+      error: () => this.showToast('Failed to submit service request. Please try again.', 'danger')
     });
   }
 
-  resetServiceForm() {
+  resetServiceForm(): void {
     this.serviceForm = {
       farmerName: this.currentUser?.name || '',
       mobileNumber: this.currentUser?.phone || this.currentUser?.profileData?.mobileNo || this.currentUser?.profileData?.phone || '',
@@ -512,7 +530,15 @@ export class FarmerDashboardComponent implements OnInit {
     return today.toISOString().split('T')[0];
   }
 
-  logout() {
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  logout(): void {
     this.authService.logout('/homepage');
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item?.id || item?.name || item?.title || index;
   }
 }

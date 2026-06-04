@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
+import { FirebaseService } from '../../services/firebase.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-seller',
@@ -33,10 +35,12 @@ export class SellerComponent implements OnInit, OnDestroy {
   showLastSubmission: boolean = false;
 
   currentUser: User | null = null;
-  private userSub!: Subscription;
+  private readonly destroy$ = new Subject<void>();
+  isSubmitting: boolean = false;
 
   constructor(
     private authService: AuthService,
+    private firebaseService: FirebaseService,
     private router: Router
   ) {}
 
@@ -45,14 +49,17 @@ export class SellerComponent implements OnInit, OnDestroy {
   backToAPU(): void { this.router.navigate(['/apu']); }
 
   ngOnInit(): void {
-    this.userSub = this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+      });
     this.loadLastSubmission();
   }
 
   ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
   
   /**
@@ -98,17 +105,30 @@ export class SellerComponent implements OnInit, OnDestroy {
       status: 'pending'
     };
     
-    console.log('Seller offer submitted:', submissionData);
+    console.log('Submitting Seller offer...');
+    this.isSubmitting = true;
     
-    // Save to localStorage for future reference
-    localStorage.setItem('lastSellerSubmission', JSON.stringify(submissionData));
-    
-    // Store submitted data and show confirmation
-    this.submittedData = submissionData;
-    this.currentView = 'confirmation';
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.firebaseService.createSellerForm(submissionData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.isSubmitting = false;
+          // Save to localStorage for future reference
+          localStorage.setItem('lastSellerSubmission', JSON.stringify(submissionData));
+          
+          // Store submitted data and show confirmation
+          this.submittedData = submissionData;
+          this.currentView = 'confirmation';
+          
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (error) => {
+          this.isSubmitting = false;
+          console.error('Failed to submit seller form:', error);
+          alert('Failed to submit offer. Please try again.');
+        }
+      });
   }
   
   /**

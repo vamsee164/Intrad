@@ -75,7 +75,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     console.log('Loading dashboard data...');
     
     // Load all users (farmers and sellers)
-    this.firebaseService.getAllUsers().subscribe({
+    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: (users: any) => {
         console.log('Users response:', users);
         if (users) {
@@ -166,7 +166,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   loadFarmersData() {
     console.log('Loading farmers data...');
     this.loading = true;
-    this.firebaseService.getAllUsers().subscribe({
+    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: (users: any) => {
         console.log('Farmers data received:', users);
         if (users) {
@@ -196,7 +196,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     console.log('Loading buyers data...');
     this.loading = true;
     
-    this.firebaseService.getAllUsers().subscribe({
+    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: (users: any) => {
         if (users) {
           const userList = Object.values(users).flat();
@@ -257,7 +257,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     console.log('Loading service requests...');
     this.loading = true;
     
-    this.firebaseService.getAllServiceRequests().subscribe({
+    this.firebaseService.getAllServiceRequests().pipe(takeUntil(this.destroy$)).subscribe({
       next: (requests: any) => {
         console.log('Service requests received:', requests);
         if (requests) {
@@ -285,7 +285,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     console.log('Loading soil test requests...');
     this.loading = true;
     
-    this.firebaseService.getAllSoilTestRequests().subscribe({
+    this.firebaseService.getAllSoilTestRequests().pipe(takeUntil(this.destroy$)).subscribe({
       next: (requests: any) => {
         console.log('Soil test requests received:', requests);
         if (requests) {
@@ -318,7 +318,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     };
 
     if (type === 'service') {
-      this.firebaseService.updateServiceRequest(requestId, updateData).subscribe({
+      this.firebaseService.updateServiceRequest(requestId, updateData).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           alert('Request status updated successfully!');
           this.loadServiceRequests();
@@ -329,7 +329,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.firebaseService.updateSoilTestRequest(requestId, updateData).subscribe({
+      this.firebaseService.updateSoilTestRequest(requestId, updateData).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           alert('Soil test request status updated successfully!');
           this.loadSoilTestRequests();
@@ -401,5 +401,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   goToPage(page: number) {
     this.currentPage = page;
     this.updatePagination();
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item?.id || item?.userId || item?.requestId || item?.name || index;
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 }

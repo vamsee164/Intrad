@@ -1,12 +1,18 @@
-<div class="login-card">
+<div class="login-card" *ngIf="!isLoggedIn">
 
-  <!-- Header -->
-  <div class="login-header text-center">
-    <div class="login-icon mb-1">
-      <i class="fas fa-shield-alt"></i>
+  <!-- Branded Header Strip -->
+  <div class="login-brand-header">
+    <div class="login-brand-icon">🌾</div>
+    <div>
+      <div class="login-brand-name">INTRA-D</div>
+      <div class="login-brand-tagline">Empowering Indian Farmers</div>
     </div>
-    <h2 class="login-title h6 fw-bold text-dark mb-0">{{ 'login.title' | translate }}</h2>
-    <p class="login-desc text-muted small mb-0" style="font-size:0.75rem">{{ 'login.description' | translate }}</p>
+  </div>
+
+  <!-- Welcome Text -->
+  <div class="login-header text-center">
+    <h2 class="login-title h6 fw-bold mb-0">{{ 'login.title' | translate }}</h2>
+    <p class="login-desc text-muted small mb-0">{{ 'login.description' | translate }}</p>
   </div>
 
   <form (ngSubmit)="handleLogin()" #loginForm="ngForm">
@@ -17,13 +23,9 @@
         <i class="fas fa-envelope me-1 text-success"></i>{{ 'login.email' | translate }}
         <span class="text-danger">*</span>
       </label>
-      <input type="email" id="email" name="email"
-             [(ngModel)]="loginData.email"
-             #email="ngModel"
-             [class.is-invalid]="(loginForm.submitted || email.touched) && email.invalid"
-             placeholder="Enter your email"
-             class="login-input"
-             required email>
+      <input type="email" id="email" name="email" [(ngModel)]="loginData.email" #email="ngModel"
+        [class.is-invalid]="(loginForm.submitted || email.touched) && email.invalid" placeholder="Enter your email"
+        class="login-input" required email>
       <div class="invalid-feedback" *ngIf="(loginForm.submitted || email.touched) && email.invalid">
         <span *ngIf="email.errors?.['required']">Email is required</span>
         <span *ngIf="email.errors?.['email']">Enter a valid email</span>
@@ -36,21 +38,16 @@
         <i class="fas fa-lock me-1 text-success"></i>{{ 'login.password' | translate }}
         <span class="text-danger">*</span>
       </label>
-      <input type="password" id="password" name="password"
-             [(ngModel)]="loginData.password"
-             #password="ngModel"
-             [class.is-invalid]="(loginForm.submitted || password.touched) && password.invalid"
-             placeholder="Enter your password"
-             class="login-input"
-             required>
+      <input type="password" id="password" name="password" [(ngModel)]="loginData.password" #password="ngModel"
+        [class.is-invalid]="(loginForm.submitted || password.touched) && password.invalid"
+        placeholder="Enter your password" class="login-input" required>
       <div class="invalid-feedback" *ngIf="(loginForm.submitted || password.touched) && password.invalid">
         Password is required
       </div>
     </div>
 
     <!-- Submit -->
-    <button type="submit" class="btn btn-primary-green login-btn mb-2"
-        [disabled]="!loginForm.valid || isLoading">
+    <button type="submit" class="btn btn-primary-green login-btn mb-2" [disabled]="!loginForm.valid || isLoading">
       <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
       <i *ngIf="!isLoading" class="fas fa-sign-in-alt me-1"></i>
       {{ isLoading ? ('login.signingin' | translate) : ('login.submit' | translate) }}
@@ -72,15 +69,15 @@
 
   <!-- Footer -->
   <div class="login-footer text-center">
-    <a href="#" class="text-decoration-none text-success fw-medium d-block mb-1"
-        data-bs-toggle="modal" data-bs-target="#forgotPassModal">
+    <a href="#" class="text-decoration-none text-success fw-medium d-block mb-1" data-bs-toggle="modal"
+      data-bs-target="#forgotPassModal">
       <i class="fas fa-key me-1"></i>{{ 'login.forgot' | translate }}
     </a>
     <div class="border-top pt-2">
       <p class="text-muted small mb-0">
         {{ 'login.noaccount' | translate }}
         <button type="button" class="btn btn-link p-0 text-success fw-semibold text-decoration-none small"
-            data-bs-toggle="modal" data-bs-target="#signupModal">
+          data-bs-toggle="modal" data-bs-target="#signupModal">
           {{ 'login.signup' | translate }}
         </button>
       </p>

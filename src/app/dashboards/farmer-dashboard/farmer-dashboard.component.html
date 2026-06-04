@@ -1,4 +1,16 @@
 <div class="farmer-dashboard">
+  <!-- Toast Notification (replaces alert()) -->
+  <div *ngIf="showToastFlag"
+    class="alert alert-{{toastType}} alert-dismissible position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg"
+    style="z-index:9999; min-width:320px; max-width:90vw;"
+    role="alert">
+    <i class="bi"
+      [ngClass]="{'bi-check-circle-fill': toastType==='success','bi-exclamation-triangle-fill': toastType==='warning','bi-x-circle-fill': toastType==='danger'}"
+      class="me-2"></i>
+    {{ toastMessage }}
+    <button type="button" class="btn-close" (click)="showToastFlag=false" aria-label="Close"></button>
+  </div>
+
   <!-- Header -->
   <div class="dashboard-header">
     <div class="header-content">
@@ -6,9 +18,17 @@
         <h1>Welcome, {{ currentUser?.name || 'Farmer' }}! 🌾</h1>
         <p class="text-muted mb-0">{{ currentUser?.location || 'Warangal, Telangana' }}</p>
       </div>
-      <button class="btn btn-danger" (click)="logout()">
-        <i class="bi bi-box-arrow-right"></i> Logout
-      </button>
+      <!-- Profile + Logout actions inside dashboard header -->
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-profile-dash text-white border-white" (click)="goToProfile()" title="View Profile" style="color: white !important; border-color: rgba(255,255,255,0.4) !important;">
+          <i class="bi bi-person-circle me-2 text-white" style="color: white !important;"></i>
+          <span class="d-none d-sm-inline text-white" style="color: white !important;">{{ currentUser?.name || 'Profile' }}</span>
+        </button>
+        <button class="btn btn-logout-dash text-white border-white" (click)="logout()" style="color: white !important; border-color: rgba(255,255,255,0.4) !important;">
+          <i class="bi bi-box-arrow-right me-1 text-white" style="color: white !important;"></i>
+          <span class="d-none d-sm-inline text-white" style="color: white !important;">Logout</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -19,7 +39,7 @@
       <h2 class="section-title">Services & Packages 📦</h2>
       <p class="text-muted mb-4">Choose from our range of services designed to help you succeed</p>
       <div class="row g-4">
-        <div class="col-md-6 col-lg-4" *ngFor="let package of servicePackages">
+        <div class="col-md-6 col-lg-4" *ngFor="let package of servicePackages; trackBy: trackByFn">
           <div class="service-package-card" [class.popular]="package.popular">
             <div class="package-badge" *ngIf="package.popular">
               <span>⭐ Popular</span>
@@ -29,7 +49,7 @@
             <p class="package-description">{{ package.description }}</p>
             <div class="package-price">{{ package.price }}</div>
             <ul class="package-features">
-              <li *ngFor="let feature of package.features">
+              <li *ngFor="let feature of package.features; trackBy: trackByFn">
                 <i class="bi bi-check-circle-fill"></i> {{ feature }}
               </li>
             </ul>
@@ -43,7 +63,7 @@
 
     <!-- Dashboard Cards -->
     <div class="row g-4 mb-4">
-      <div class="col-md-6 col-lg-3" *ngFor="let card of dashboardCards">
+      <div class="col-md-6 col-lg-3" *ngFor="let card of dashboardCards; trackBy: trackByFn">
         <div class="dashboard-card" [style.border-left-color]="card.color">
           <div class="card-icon">{{ card.icon }}</div>
           <div class="card-content">
@@ -59,7 +79,7 @@
     <div class="section-card mb-4">
       <h2 class="section-title">Quick Actions</h2>
       <div class="row g-3">
-        <div class="col-md-4 col-lg-2" *ngFor="let action of quickActions">
+        <div class="col-md-4 col-lg-2" *ngFor="let action of quickActions; trackBy: trackByFn">
           <div class="quick-action-card" (click)="navigateTo(action.route)">
             <div class="action-icon">{{ action.icon }}</div>
             <h4>{{ action.title }}</h4>
@@ -73,7 +93,7 @@
     <div class="section-card">
       <h2 class="section-title">Recent Activity</h2>
       <div class="activity-list">
-        <div class="activity-item" *ngFor="let activity of recentActivities">
+        <div class="activity-item" *ngFor="let activity of recentActivities; trackBy: trackByFn">
           <span class="activity-icon">{{ activity.icon }}</span>
           <div class="activity-content">
             <p class="mb-0">{{ activity.action }}</p>
@@ -140,7 +160,7 @@
       <div class="equipment-catalog" *ngIf="selectedService?.id === 'equipment-rental' && selectedService?.equipmentList">
         <h3 class="mb-4">Available Equipment</h3>
         <div class="row g-4 mb-4">
-          <div class="col-md-6 col-lg-4" *ngFor="let equipment of selectedService?.equipmentList">
+          <div class="col-md-6 col-lg-4" *ngFor="let equipment of selectedService?.equipmentList; trackBy: trackByFn">
             <div class="equipment-card">
               <div class="equipment-icon">{{ equipment.icon }}</div>
               <h4 class="equipment-name">{{ equipment.name }}</h4>
@@ -149,7 +169,7 @@
               <div class="equipment-specs" *ngIf="equipment.specifications">
                 <h6>Specifications:</h6>
                 <ul>
-                  <li *ngFor="let spec of equipment.specifications">
+                  <li *ngFor="let spec of equipment.specifications; trackBy: trackByFn">
                     <i class="bi bi-check2"></i> {{ spec }}
                   </li>
                 </ul>
@@ -232,7 +252,7 @@
               name="selectedEquipment"
               required>
               <option value="">Choose equipment...</option>
-              <option *ngFor="let equipment of selectedService?.equipmentList" [value]="equipment.name">
+              <option *ngFor="let equipment of selectedService?.equipmentList; trackBy: trackByFn" [value]="equipment.name">
                 {{ equipment.name }} - {{ equipment.pricePerDay }}
               </option>
             </select>
@@ -254,7 +274,7 @@
             <div class="features-reminder">
               <h5>What's Included:</h5>
               <ul>
-                <li *ngFor="let feature of selectedService.features">
+                <li *ngFor="let feature of selectedService.features; trackBy: trackByFn">
                   <i class="bi bi-check-circle-fill text-success"></i> {{ feature }}
                 </li>
               </ul>

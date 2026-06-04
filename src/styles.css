@@ -1,349 +1,367 @@
-/* Global Styles - Agricultural Theme */
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+/* ================================================================
+   INTRA-D Global Styles — Agricultural Platform
+   Investor-Ready Premium Design System
+   ================================================================ */
 
+/* ── Fonts ───────────────────────────────────────────────────── */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+/* ── Design Tokens ───────────────────────────────────────────── */
 :root {
-  /* Agricultural Color Palette */
-  --primary-green: #2d5016;        /* Deep forest green */
-  --primary-green-light: #4a7c59;  /* Medium forest green */
-  --primary-green-dark: #1a3009;   /* Dark forest green */
-  --secondary-green: #6b8e23;      /* Olive green */
-  --accent-green: #90ee90;         /* Light green */
-  
-  --earth-brown: #8b4513;          /* Saddle brown */
-  --soil-brown: #a0522d;           /* Sienna */
-  --harvest-gold: #b8860b;         /* Darker golden rod for better contrast */
-  --wheat-yellow: #f5deb3;         /* Wheat */
-  
-  --sky-blue: #4682b4;             /* Steel blue (darker for better contrast) */
-  --water-blue: #2e5984;           /* Darker steel blue */
-  
-  --text-dark: #1a1a1a;            /* Darker text for better contrast */
-  --text-muted: #666666;           /* Darker muted text */
-  --text-light: #ffffff;           /* White text for dark backgrounds */
-  --bg-light: #f8fffe;             /* Off white */
-  --bg-cream: #faf0e6;             /* Linen */
-  
-  --border-color: #d4c5b9;         /* Light brown */
-  --shadow: 0 4px 15px rgba(45, 80, 22, 0.1);
-  --shadow-lg: 0 10px 30px rgba(45, 80, 22, 0.15);
-  
+  /* Brand Greens */
+  --green-900: #0f2a07;
+  --green-800: #1b4010;
+  --green-700: #2d5016;   /* PRIMARY */
+  --green-600: #3d6b1f;
+  --green-500: #4a7c59;
+  --green-400: #6b9e75;
+  --green-200: #c6e8c6;
+  --green-100: #e8f5e8;
+  --green-50:  #f0faf0;
+
+  /* Gold / Harvest */
+  --gold-700:  #96690a;
+  --gold-500:  #c8941a;
+  --gold-200:  #fde68a;
+  --gold-50:   #fffbeb;
+
+  /* Earth / Soil */
+  --earth-700: #7a3c1e;
+  --earth-500: #b5652a;
+  --earth-100: #fdf0e6;
+
+  /* Sky / Water */
+  --sky-700:   #1d4ed8;
+  --sky-500:   #2e6fbd;
+  --sky-100:   #dbeafe;
+
+  /* Neutrals */
+  --grey-900:  #111827;
+  --grey-800:  #1e2d1e;
+  --grey-600:  #4b5563;
+  --grey-500:  #6b7280;
+  --grey-300:  #d1d5db;
+  --grey-200:  #e5e7eb;
+  --grey-100:  #f4f6f4;
+  --grey-50:   #fafafa;
+  --white:     #ffffff;
+
+  /* Semantic */
+  --primary:   var(--green-700);
+  --text-dark: #1a2e1a;
+  --text-muted: #5a6e5a;
+  --text-light: #ffffff;
+  --bg-body:   #f8fdf8;
+  --border:    rgba(45,80,22,0.10);
+
+  /* Legacy compatibility */
+  --primary-green:       #2d5016;
+  --primary-green-light: #4a7c59;
+  --primary-green-dark:  #1a3009;
+  --secondary-green:     #6b8e23;
+  --accent-green:        #90ee90;
+  --earth-brown:         #8b4513;
+  --soil-brown:          #a0522d;
+  --harvest-gold:        #c8941a;
+  --wheat-yellow:        #f5deb3;
+  --sky-blue:            #4682b4;
+  --water-blue:          #2e5984;
+  --text-muted-legacy:   #5a6e5a;
+  --bg-light:            #f8fffe;
+  --bg-cream:            #faf0e6;
+  --border-color:        #d4c5b9;
+  --shadow:     0 4px 16px rgba(45,80,22,0.10);
+  --shadow-lg:  0 10px 32px rgba(45,80,22,0.15);
+
   /* Typography */
-  --font-primary: 'Poppins', sans-serif;
+  --font-primary:   'Plus Jakarta Sans', 'Inter', sans-serif;
   --font-secondary: 'Inter', sans-serif;
+
+  /* Spacing */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 24px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 4px rgba(45,80,22,0.06);
+  --shadow-sm: 0 2px 8px rgba(45,80,22,0.08), 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 20px rgba(45,80,22,0.11), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 32px rgba(45,80,22,0.14), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-xl: 0 16px 48px rgba(45,80,22,0.18), 0 6px 18px rgba(0,0,0,0.08);
+
+  /* Transitions */
+  --ease:          cubic-bezier(0.4,0,0.2,1);
+  --ease-spring:   cubic-bezier(0.34,1.56,0.64,1);
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 350ms;
 }
 
-* {
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(45,80,22,0.25) transparent;
+}
+
+html::-webkit-scrollbar { width: 6px; }
+html::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb {
+  background: rgba(45,80,22,0.25);
+  border-radius: 3px;
 }
 
 body {
   font-family: var(--font-primary);
   color: var(--text-dark);
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fffe 0%, #faf0e6 50%, #f0f8f0 100%);
+  background: #f7fdf7;
   background-attachment: fixed;
   line-height: 1.6;
   font-size: 16px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animated Background */
+img { max-width: 100%; height: auto; display: block; }
 
+/* ── Page Enter Animation ────────────────────────────────────── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-/* Remove excessive animations - keep only essential ones */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Remove float and pulse animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
-/* Agricultural Theme Buttons - Minimal animations */
-.btn-primary-green {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
-  border: none;
-  color: white;
-  font-weight: 600;
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Apply to router-outlet children */
+router-outlet + * { animation: pageEnter 0.35s var(--ease) both; }
+
+/* ── Typography ──────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
-  padding: 12px 24px;
-  border-radius: 25px;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: var(--shadow);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+h1 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+h2 { font-size: clamp(1.4rem,  2.5vw, 2rem); }
+h3 { font-size: clamp(1.2rem,  2vw,   1.75rem); }
+h4 { font-size: clamp(1.1rem,  1.5vw, 1.4rem); }
+h5 { font-size: 1.15rem; }
+h6 { font-size: 1rem; }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn-primary-green {
+  background: linear-gradient(135deg, var(--green-700) 0%, var(--green-500) 100%);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  padding: 11px 24px;
+  border-radius: 10px;
+  transition: all var(--duration-base) var(--ease);
+  box-shadow: 0 4px 14px rgba(45,80,22,0.28);
+  letter-spacing: 0.2px;
 }
 
 .btn-primary-green:hover {
-  background: linear-gradient(135deg, var(--primary-green-dark) 0%, var(--primary-green) 100%);
-  box-shadow: var(--shadow-lg);
-  color: white;
+  background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%);
+  box-shadow: 0 6px 20px rgba(45,80,22,0.38);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-primary-green:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary-blue {
   background: linear-gradient(135deg, var(--water-blue) 0%, var(--sky-blue) 100%);
   border: none;
-  color: white;
-  font-weight: 600;
+  color: #fff;
+  font-weight: 700;
   font-family: var(--font-primary);
-  padding: 12px 24px;
-  border-radius: 25px;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: var(--shadow);
+  padding: 11px 24px;
+  border-radius: 10px;
+  transition: all var(--duration-base) var(--ease);
+  box-shadow: 0 4px 14px rgba(46,89,132,0.25);
 }
 
 .btn-secondary-blue:hover {
-  background: linear-gradient(135deg, var(--sky-blue) 0%, var(--water-blue) 100%);
-  box-shadow: var(--shadow-lg);
-  color: white;
+  box-shadow: 0 6px 20px rgba(46,89,132,0.38);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
-/* Card Text Contrast */
-/* Card Modern - Reduced animations for agricultural theme */
+/* ── Cards ───────────────────────────────────────────────────── */
 .card-modern {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  border: 2px solid rgba(45, 80, 22, 0.1);
-  transition: box-shadow 0.2s ease;
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.97);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--border);
+  transition: box-shadow var(--duration-base) var(--ease),
+              transform var(--duration-base) var(--ease),
+              border-color var(--duration-base) var(--ease);
   color: var(--text-dark);
-}
-
-.card-modern h6 {
-  color: var(--text-dark);
-  font-weight: 600;
-}
-
-.card-modern p {
-  color: var(--text-muted);
 }
 
 .card-modern:hover {
-  box-shadow: var(--shadow-lg);
-  border-color: var(--primary-green-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: rgba(74,124,89,0.25);
 }
 
-/* Agricultural Icons - Minimal animation */
-.card-modern i {
-  transition: color 0.2s ease;
+.glass-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255,255,255,0.60);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
-.card-modern:hover i {
-  color: var(--primary-green);
-}
+/* ── Text Utilities ──────────────────────────────────────────── */
+.text-primary-green  { color: var(--green-700) !important; font-weight: 600; }
+.text-secondary-blue { color: var(--water-blue) !important; font-weight: 600; }
+.text-harvest-gold   { color: var(--harvest-gold) !important; font-weight: 600; }
+.text-earth-brown    { color: var(--earth-brown) !important; font-weight: 600; }
+.text-light          { color: var(--text-light) !important; }
+.text-dark           { color: var(--text-dark) !important; }
+.text-muted          { color: var(--text-muted) !important; }
 
-/* Text Colors with Better Contrast */
-.text-primary-green {
-  color: var(--primary-green) !important;
-  font-weight: 600;
-}
-
-.text-secondary-blue {
-  color: var(--water-blue) !important;
-  font-weight: 600;
-}
-
-.text-harvest-gold {
-  color: var(--harvest-gold) !important;
-  font-weight: 600;
-}
-
-.text-earth-brown {
-  color: var(--earth-brown) !important;
-  font-weight: 600;
-}
-
-.text-light {
-  color: var(--text-light) !important;
-}
-
-.text-dark {
-  color: var(--text-dark) !important;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-/* Background Colors with Proper Text Contrast */
+/* ── Background Utilities ────────────────────────────────────── */
 .bg-primary-green {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%) !important;
-  color: var(--text-light) !important;
+  background: linear-gradient(135deg, var(--green-700) 0%, var(--green-500) 100%) !important;
+  color: #fff !important;
 }
-
 .bg-secondary-blue {
   background: linear-gradient(135deg, var(--water-blue) 0%, var(--sky-blue) 100%) !important;
-  color: var(--text-light) !important;
+  color: #fff !important;
 }
-
 .bg-harvest-gold {
   background: linear-gradient(135deg, var(--harvest-gold) 0%, var(--wheat-yellow) 100%) !important;
   color: var(--text-dark) !important;
 }
-
 .bg-earth-brown {
   background: linear-gradient(135deg, var(--earth-brown) 0%, var(--soil-brown) 100%) !important;
-  color: var(--text-light) !important;
+  color: #fff !important;
 }
 
-/* Modern Styling */
-.rounded-modern {
-  border-radius: 20px !important;
+/* ── Badge Pills ─────────────────────────────────────────────── */
+.badge-green  { background: var(--green-100);  color: var(--green-700);  border: 1px solid var(--green-200);  }
+.badge-gold   { background: var(--gold-50);    color: var(--gold-700);   border: 1px solid var(--gold-200);   }
+.badge-sky    { background: var(--sky-100);    color: var(--sky-700);    border: 1px solid #bfdbfe;           }
+.badge-earth  { background: var(--earth-100);  color: var(--earth-700);  border: 1px solid #fcd9b5;           }
+
+.badge-green, .badge-gold, .badge-sky, .badge-earth {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
-.shadow-modern {
-  box-shadow: var(--shadow-lg) !important;
-}
+/* ── Misc Utilities ──────────────────────────────────────────── */
+.rounded-modern { border-radius: var(--radius-xl) !important; }
+.shadow-modern  { box-shadow: var(--shadow-lg) !important; }
 
-/* Form Controls with Better Contrast */
-/* Form Controls - No animations for professional look */
+/* ── Form Controls ───────────────────────────────────────────── */
 .form-control {
-  border: 2px solid var(--border-color);
-  border-radius: 15px;
-  padding: 12px 16px;
+  border: 1.5px solid var(--grey-300);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
   font-family: var(--font-secondary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  transition: border-color var(--duration-fast) var(--ease),
+              box-shadow var(--duration-fast) var(--ease);
+  background: #fff;
   color: var(--text-dark);
 }
 
 .form-control:focus {
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 0.3rem rgba(45, 80, 22, 0.25);
-  background: white;
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.12);
+  background: #fff;
   color: var(--text-dark);
   outline: none;
 }
 
-.form-control::placeholder {
-  color: var(--text-muted);
-  opacity: 0.7;
-}
+.form-control::placeholder { color: var(--grey-500); opacity: 0.75; }
 
 .form-select {
-  border: 2px solid var(--border-color);
-  border-radius: 15px;
-  padding: 12px 16px;
+  border: 1.5px solid var(--grey-300);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
   font-family: var(--font-secondary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  transition: border-color var(--duration-fast) var(--ease),
+              box-shadow var(--duration-fast) var(--ease);
+  background: #fff;
   color: var(--text-dark);
 }
 
 .form-select:focus {
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 0.3rem rgba(45, 80, 22, 0.25);
-  background: white;
-  color: var(--text-dark);
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.12);
+  background: #fff;
   outline: none;
 }
 
-/* Navbar */
-.navbar-modern {
-  background: rgba(248, 255, 254, 0.95) !important;
-  backdrop-filter: blur(15px);
-  border-bottom: 2px solid rgba(45, 80, 22, 0.1);
-  box-shadow: var(--shadow);
-}
-
-/* Homepage Sections */
-.homepage-main-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 25px;
-  box-shadow: var(--shadow-lg);
-  border: 2px solid rgba(45, 80, 22, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-primary);
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1.1rem; }
-
-/* Responsive Typography */
-@media (max-width: 768px) {
-  body { font-size: 14px; }
-  h1 { font-size: 1.75rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.25rem; }
-}
-
-@media (max-width: 576px) {
-  body { font-size: 13px; }
-  h1 { font-size: 1.5rem; }
-  h2 { font-size: 1.25rem; }
-  h3 { font-size: 1.1rem; }
-}
-
-/* Global mobile padding fix */
-@media (max-width: 576px) {
-  .container, .container-fluid {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-  .modal-dialog {
-    margin: 8px;
-  }
-  /* Only apply to standard-sized buttons, not icon/small buttons */
-  .btn:not(.btn-sm):not(.btn-lg):not(.quick-actions .btn) {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-}
-
-/* Prevent horizontal overflow on all screens */
-@media (max-width: 576px) {
-  html, body {
-    overflow-x: hidden;
-    max-width: 100vw;
-  }
-}
-
-/* Loading Animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-spinner {
-  animation: spin 1s linear infinite;
-}
-
-/* Form Validation Styles */
+/* Validation */
 .form-control.is-invalid,
 .form-select.is-invalid {
   border-color: #dc3545 !important;
-  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  box-shadow: 0 0 0 2px rgba(220,53,69,0.15) !important;
 }
 
 .invalid-feedback {
   display: block;
   width: 100%;
-  margin-top: 0.25rem;
-  font-size: 0.875em;
+  margin-top: 4px;
+  font-size: 12px;
   color: #dc3545;
+  font-weight: 500;
 }
 
-.text-danger {
-  color: #dc3545 !important;
-}
+.text-danger { color: #dc3545 !important; }
 
-/* Custom validation for soil form */
+/* Soil form */
 .soil-form input.is-invalid,
 .soil-form select.is-invalid,
 .soil-form textarea.is-invalid {
@@ -351,8 +369,45 @@ h6 { font-size: 1.1rem; }
   background-color: #fff5f5;
 }
 
-.soil-form .invalid-feedback {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+.soil-form .invalid-feedback { color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem; }
+
+/* ── Navbar ──────────────────────────────────────────────────── */
+.navbar-modern {
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Homepage helpers ────────────────────────────────────────── */
+.homepage-main-section {
+  background: rgba(255,255,255,0.92);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+/* ── Loading ─────────────────────────────────────────────────── */
+.loading-spinner { animation: spin 1s linear infinite; }
+
+/* ── Responsive Typography ───────────────────────────────────── */
+@media (max-width: 768px) {
+  body { font-size: 14px; }
+}
+
+@media (max-width: 576px) {
+  body { font-size: 13px; }
+  .container, .container-fluid { padding-left: 12px; padding-right: 12px; }
+  .modal-dialog { margin: 8px; }
+  html, body { overflow-x: hidden; max-width: 100vw; }
+}
+
+/* Prevent route animation transform stacking context from trapping bootstrap modals under backdrop */
+body.modal-open router-outlet + * {
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+  perspective: none !important;
 }

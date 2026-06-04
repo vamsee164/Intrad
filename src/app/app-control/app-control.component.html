@@ -15,7 +15,7 @@
   
   <div *ngIf="currentUser" class="app-grid">
     <div 
-      *ngFor="let app of availableApps" 
+      *ngFor="let app of availableApps; trackBy: trackByFn" 
       class="app-card"
       [class]="app.id + '-card'">
       <div class="app-icon">{{app.icon}}</div>
