@@ -301,6 +301,148 @@
   color: #374151;
 }
 
+/* ═══════════════════════════════════════════
+   SUCCESS MODAL — Credentials Display
+   ═══════════════════════════════════════════ */
+.success-modal-card {
+  border-radius: 18px !important;
+  overflow: visible !important;
+  border: none !important;
+  box-shadow: 0 20px 60px rgba(45,80,22,0.22) !important;
+}
+
+.success-modal-header {
+  background: linear-gradient(135deg, #1a5c2a 0%, #2d7a4f 55%, #3fa06a 100%);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 18px 18px 0 0;
+}
+
+.success-modal-icon-wrap {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.success-check-icon {
+  font-size: 1.6rem;
+  color: #fff;
+}
+
+.success-modal-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.success-modal-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.72);
+  margin-top: 2px;
+}
+
+/* Credential warning banner */
+.cred-warning {
+  background: #fffbeb;
+  border: 1.5px solid #fbbf24;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #92400e;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+/* Credentials card */
+.cred-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.cred-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-bottom: 1px solid #f0f0f0;
+  flex-wrap: nowrap;
+}
+
+.cred-row:last-child { border-bottom: none; }
+
+.cred-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 0 0 140px;
+  white-space: nowrap;
+}
+
+.cred-value {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-all;
+  font-family: 'Courier New', monospace;
+}
+
+.cred-password {
+  letter-spacing: 1px;
+  color: #2d5016;
+}
+
+.cred-copy-btn {
+  background: none;
+  border: 1.5px solid #d1d5db;
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.cred-copy-btn:hover {
+  background: #e8f5e8;
+  border-color: #4a7c59;
+  color: #2d5016;
+}
+
+.cred-copied {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  flex-shrink: 0;
+  min-width: 42px;
+}
+
+.cred-copied.visible { opacity: 1; }
+
+.cred-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* ── Carousel ─────────────────────────────────────────────────── */
 #homepageCarousel {
   border-radius: 18px;

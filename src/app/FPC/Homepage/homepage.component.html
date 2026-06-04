@@ -798,26 +798,84 @@
 <!-- Success Modal (shared between Homepage and Dashboard, defined here for ease) -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-lg-custom shadow-lg">
-            <div class="modal-header bg-success text-white p-3 rounded-top-custom">
-                <h5 class="modal-title h5" id="successModalLabel">{{ successModalTitle }}</h5>
+        <div class="modal-content success-modal-card">
+
+            <!-- Header -->
+            <div class="success-modal-header">
+                <div class="success-modal-icon-wrap">
+                    <i class="fas fa-check-circle success-check-icon"></i>
+                </div>
+                <div>
+                    <div class="success-modal-title" id="successModalLabel">{{ successModalTitle }}</div>
+                    <div class="success-modal-sub">Account created &amp; saved to database</div>
+                </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4 text-secondary">
-                <ng-container *ngIf="registeredEmail; else defaultSuccess">
-                    <p>Your account has been created successfully!</p>
-                    <p><strong>Email:</strong> {{ registeredEmail }}</p>
-                    <p><strong>Password:</strong> {{ registeredPassword }}</p>
-                    <p>Please save these credentials for future login.</p>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <ng-container *ngIf="registeredPassword; else defaultSuccess">
+
+                    <!-- Save-credentials warning -->
+                    <div class="cred-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Save these credentials now.</strong> You will need them to log in. They will not be shown
+                        again.
+                    </div>
+
+                    <!-- Credentials Card -->
+                    <div class="cred-card">
+                        <!-- Mobile (used for login on the login form) -->
+                        <div class="cred-row">
+                            <span class="cred-label"><i class="fas fa-mobile-alt me-2"></i>Mobile (Login ID)</span>
+                            <span class="cred-value" id="cred-mobile">{{ registeredMobileNo }}</span>
+                            <button class="cred-copy-btn" type="button" title="Copy mobile"
+                                (click)="copyToClipboard(registeredMobileNo, 'cred-mobile-copied')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <span class="cred-copied" id="cred-mobile-copied">Copied!</span>
+                        </div>
+
+                        <!-- System Email -->
+                        <div class="cred-row">
+                            <span class="cred-label"><i class="fas fa-envelope me-2"></i>System Email</span>
+                            <span class="cred-value" id="cred-email">{{ registeredEmail }}</span>
+                            <button class="cred-copy-btn" type="button" title="Copy email"
+                                (click)="copyToClipboard(registeredEmail, 'cred-email-copied')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <span class="cred-copied" id="cred-email-copied">Copied!</span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="cred-row">
+                            <span class="cred-label"><i class="fas fa-lock me-2"></i>Password</span>
+                            <span class="cred-value cred-password" id="cred-password">{{ registeredPassword }}</span>
+                            <button class="cred-copy-btn" type="button" title="Copy password"
+                                (click)="copyToClipboard(registeredPassword, 'cred-pass-copied')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <span class="cred-copied" id="cred-pass-copied">Copied!</span>
+                        </div>
+                    </div>
+
+                    <p class="cred-note">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Use your <strong>Mobile Number</strong> and the above <strong>Password</strong> on the login
+                        form.
+                    </p>
                 </ng-container>
                 <ng-template #defaultSuccess>
-                    {{ 'modal.formsuccess' | translate }}
+                    <p class="text-muted text-center mb-0">{{ 'modal.formsuccess' | translate }}</p>
                 </ng-template>
             </div>
-            <div class="modal-footer p-3 border-top border-gray-200 d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary rounded-md-custom" data-bs-dismiss="modal">{{
-                    'common.close' | translate }}</button>
+
+            <!-- Footer -->
+            <div class="modal-footer p-3 border-top d-flex justify-content-end">
+                <button type="button" class="btn btn-success px-4 fw-semibold" data-bs-dismiss="modal">
+                    <i class="fas fa-check me-2"></i>I've saved my credentials
+                </button>
             </div>
         </div>
     </div>

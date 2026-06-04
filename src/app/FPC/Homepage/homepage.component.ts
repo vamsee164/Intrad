@@ -100,6 +100,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   registeredEmail = '';
   registeredPassword = '';
+  registeredMobileNo = '';
   successModalTitle = 'Form Submission';
 
   forgotPasswordData = {
@@ -493,9 +494,21 @@ export class HomepageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response) {
+            // Set credentials BEFORE hiding so Angular bindings are ready
+            this.registeredEmail    = response.email;
+            this.registeredPassword = response.generatedPassword;
+            this.registeredMobileNo = sanitizedData.mobileNo;
+            this.successModalTitle  = 'Registration Successful';
+
+            // Wait for signup modal to FULLY close (backdrop removed) before
+            // opening success modal — prevents invisible backdrop blocking clicks
+            const signupEl = document.getElementById('signupModal');
+            if (signupEl) {
+              signupEl.addEventListener('hidden.bs.modal', () => {
+                this.showSuccessModal();
+              }, { once: true });
+            }
             this.hideModal('signupModal');
-            this.showSuccessModal(sanitizedData.name, response.generatedPassword);
-            this.resetSignupForm();
           } else {
             alert('Registration failed. Please try again.');
           }
@@ -516,20 +529,18 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private showSuccessModal(name: string, password: string): void {
+  /** Shows the success modal — credentials must already be set on the component */
+  private showSuccessModal(): void {
     try {
-      const successModalElement = document.getElementById('successModal');
-      if (successModalElement) {
-        const sanitizedName = name.replace(/[<>]/g, '').trim();
-        this.registeredPassword = password.replace(/[<>]/g, '').trim();
-        this.registeredEmail = `${sanitizedName.toLowerCase().replace(/\s+/g, '')}@intra-d.com`;
-        this.successModalTitle = 'Registration Successful';
-
-        const modal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+      const el = document.getElementById('successModal');
+      if (el) {
+        const modal = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+        // Reset signup form data only AFTER the success modal is fully closed
+        el.addEventListener('hidden.bs.modal', () => this.resetSignupForm(), { once: true });
         modal.show();
       }
-    } catch (error) {
-      console.error('Error showing success modal:', error);
+    } catch (err) {
+      console.error('Error showing success modal:', err);
     }
   }
 
@@ -640,5 +651,40 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   trackByFn(index: number, item: any): any {
     return item?.value || item?.id || index;
+  }
+
+  /** Copies text to clipboard — works on both HTTP (localhost) and HTTPS */
+  copyToClipboard(text: string, feedbackId: string): void {
+    const showFeedback = () => {
+      const el = document.getElementById(feedbackId);
+      if (el) {
+        el.classList.add('visible');
+        setTimeout(() => el.classList.remove('visible'), 2000);
+      }
+    };
+
+    // Modern clipboard API (HTTPS / secure contexts)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showFeedback).catch(() => this.fallbackCopy(text, showFeedback));
+    } else {
+      this.fallbackCopy(text, showFeedback);
+    }
+  }
+
+  private fallbackCopy(text: string, onSuccess: () => void): void {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      onSuccess();
+    } catch (e) {
+      console.warn('Copy failed', e);
+    } finally {
+      document.body.removeChild(ta);
+    }
   }
 }
