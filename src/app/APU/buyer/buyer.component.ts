@@ -159,6 +159,7 @@ export class BuyerComponent implements OnInit, OnDestroy {
   goToProfile(): void { this.router.navigate(['/profile']); }
   logout(): void { this.authService.logout('/homepage'); }
   backToAPU(): void { this.router.navigate(['/apu']); }
+  goToControl(): void { this.router.navigate(['/control']); }
 
   onPhoneInput(event: any): void {
     const input = event.target;

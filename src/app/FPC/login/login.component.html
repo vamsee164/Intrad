@@ -47,7 +47,7 @@
     </div>
 
     <!-- Submit -->
-    <button type="submit" class="btn btn-primary-green login-btn mb-2" [disabled]="!loginForm.valid || isLoading">
+    <button type="submit" class="btn btn-primary-green login-btn mb-2" [disabled]="isLoading" id="login-submit-btn">
       <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
       <i *ngIf="!isLoading" class="fas fa-sign-in-alt me-1"></i>
       {{ isLoading ? ('login.signingin' | translate) : ('login.submit' | translate) }}

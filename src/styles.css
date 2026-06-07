@@ -139,8 +139,8 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* ── Page Enter Animation ────────────────────────────────────── */
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes fadeInUp {
@@ -163,7 +163,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* Apply to router-outlet children */
-router-outlet + * { animation: pageEnter 0.35s var(--ease) both; }
+router-outlet + * { animation: pageEnter var(--duration-fast) var(--ease) both; }
 
 /* ── Typography ──────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {

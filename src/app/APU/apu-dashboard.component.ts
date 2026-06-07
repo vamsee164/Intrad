@@ -26,11 +26,11 @@ import { takeUntil } from 'rxjs/operators';
 
           <!-- Right-side actions -->
           <div class="apu-header-actions">
-            <button class="btn btn-outline-secondary btn-sm me-2"
+            <button class="btn btn-apu-control me-2"
                     (click)="backToControl()" *ngIf="isAdmin()"
                     title="Back to Admin Control">
-              <i class="bi bi-arrow-left me-1"></i>
-              <span class="d-none d-sm-inline">Admin Panel</span>
+              <i class="bi bi-speedometer2 me-1"></i>
+              <span class="d-none d-sm-inline">Control Panel</span>
             </button>
 
             <!-- Profile pill -->
@@ -138,6 +138,27 @@ import { takeUntil } from 'rxjs/operators';
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+    }
+
+    /* Control Panel pill */
+    .btn-apu-control {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.18);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      color: #fff;
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.18s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-apu-control:hover {
+      background: rgba(255,255,255,0.30);
+      color: #fff;
+      transform: translateY(-1px);
     }
 
     /* Profile pill */

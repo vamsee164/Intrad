@@ -421,7 +421,7 @@
                                 <option value="farmer">🌾 Farmer</option>
                                 <option value="seller">📦 Seller</option>
                                 <option value="buyer">🛒 Buyer</option>
-                                <option value="admin">🛡️ Admin</option>
+                                <!-- <option value="admin">🛡️ Admin</option> -->
                             </select>
                             <div class="invalid-feedback"
                                 *ngIf="(signupForm.submitted || modalRole.touched) && modalRole.invalid">Please select a
@@ -820,7 +820,8 @@
                     <!-- Save-credentials warning -->
                     <div class="cred-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Save these credentials now.</strong> You will need them to log in. They will not be shown
+                        <strong>Save these credentials now.</strong> You will need them to log in. They will not be
+                        shown
                         again.
                     </div>
 

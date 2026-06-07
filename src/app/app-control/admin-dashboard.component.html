@@ -6,6 +6,7 @@
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')" style="cursor: pointer;"><i class="bi bi-house-door"></i> Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()" style="cursor: pointer;"><i class="bi bi-person"></i> Farmers</a></li>
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()" style="cursor: pointer;"><i class="bi bi-bag"></i> Buyers</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()" style="cursor: pointer;"><i class="bi bi-shop"></i> Sellers</a></li>
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')" style="cursor: pointer;"><i class="bi bi-clipboard-check"></i> Service Requests</a></li>
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')" style="cursor: pointer;"><i class="bi bi-droplet-fill"></i> Soil Tests</a></li>
                 <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()" style="cursor: pointer;"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a></li>
@@ -19,6 +20,7 @@
                 <a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')"><i class="bi bi-house-door"></i> Home</a>
                 <a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()"><i class="bi bi-person"></i> Farmers</a>
                 <a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()"><i class="bi bi-bag"></i> Buyers</a>
+                <a class="nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()"><i class="bi bi-shop"></i> Sellers</a>
                 <a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')"><i class="bi bi-clipboard-check"></i> Services</a>
                 <a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')"><i class="bi bi-droplet-fill"></i> Soil</a>
                 <a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a>
@@ -193,19 +195,103 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
-                                    <tr><th>Company</th><th>Contact</th><th>Crop</th><th>Qty</th><th>Budget</th><th>Delivery</th></tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Email</th>
+                                        <th>Company</th>
+                                        <th>Crops Looking For</th>
+                                        <th>Village</th>
+                                        <th>Registered</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let buyer of paginatedBuyers; trackBy: trackByFn">
-                                        <td>{{ buyer.companyName }}</td>
-                                        <td>{{ buyer.contactPerson }}</td>
-                                        <td>{{ buyer.cropRequired }}</td>
-                                        <td>{{ buyer.quantity }}</td>
-                                        <td>{{ buyer.budget }}</td>
-                                        <td>{{ buyer.deliveryDate }}</td>
+                                        <td class="fw-semibold">{{ buyer.name || buyer.companyName || 'N/A' }}</td>
+                                        <td>
+                                            <a [href]="'tel:' + buyer.mobileNo" class="text-decoration-none" *ngIf="buyer.mobileNo && buyer.mobileNo !== 'N/A'">
+                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ buyer.mobileNo }}
+                                            </a>
+                                            <span class="text-muted" *ngIf="!buyer.mobileNo || buyer.mobileNo === 'N/A'">—</span>
+                                        </td>
+                                        <td>
+                                            <a [href]="'mailto:' + buyer.email" class="text-decoration-none text-primary" *ngIf="buyer.email && buyer.email !== 'N/A'">
+                                                <i class="bi bi-envelope-fill me-1"></i>{{ buyer.email }}
+                                            </a>
+                                            <span class="text-muted" *ngIf="!buyer.email || buyer.email === 'N/A'">—</span>
+                                        </td>
+                                        <td>{{ buyer.companyName || '—' }}</td>
+                                        <td>{{ buyer.typicalCrops || buyer.cropRequired || '—' }}</td>
+                                        <td>{{ buyer.village || '—' }}</td>
+                                        <td class="text-muted small">{{ buyer.createdAt ? (buyer.createdAt | date:'dd MMM yyyy') : '—' }}</td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div *ngIf="paginatedBuyers.length === 0 && !loading" class="text-center py-4 text-muted">
+                            <i class="bi bi-bag fs-3 d-block mb-2"></i>No buyers registered yet.
+                        </div>
+                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
+                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
+                            <nav><ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
+                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
+                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
+                            </ul></nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sellers View -->
+            <div *ngIf="activeView === 'sellers'">
+                <h2 class="mb-3"><i class="bi bi-shop me-2"></i>Sellers Details</h2>
+                <div *ngIf="loading" class="text-center py-5">
+                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
+                    <p class="mt-3">Loading sellers data...</p>
+                </div>
+                <div *ngIf="!loading" class="card data-card">
+                    <div class="card-body p-2">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Email</th>
+                                        <th>Village</th>
+                                        <th>Mandal</th>
+                                        <th>Crops</th>
+                                        <th>Land (Acres)</th>
+                                        <th>Registered</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let seller of paginatedSellers; trackBy: trackByFn">
+                                        <td class="fw-semibold">{{ seller.name || 'N/A' }}</td>
+                                        <td>
+                                            <a [href]="'tel:' + seller.mobileNo" class="text-decoration-none" *ngIf="seller.mobileNo && seller.mobileNo !== 'N/A'">
+                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ seller.mobileNo }}
+                                            </a>
+                                            <span class="text-muted" *ngIf="!seller.mobileNo || seller.mobileNo === 'N/A'">—</span>
+                                        </td>
+                                        <td>
+                                            <a [href]="'mailto:' + seller.email" class="text-decoration-none text-primary" *ngIf="seller.email && seller.email !== 'N/A'">
+                                                <i class="bi bi-envelope-fill me-1"></i>{{ seller.email }}
+                                            </a>
+                                            <span class="text-muted" *ngIf="!seller.email || seller.email === 'N/A'">—</span>
+                                        </td>
+                                        <td>{{ seller.village || '—' }}</td>
+                                        <td>{{ seller.mandal || '—' }}</td>
+                                        <td>{{ seller.typicalCrops || '—' }}</td>
+                                        <td>{{ seller.acreOfLand || '—' }}</td>
+                                        <td class="text-muted small">{{ seller.createdAt ? (seller.createdAt | date:'dd MMM yyyy') : '—' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div *ngIf="paginatedSellers.length === 0 && !loading" class="text-center py-4 text-muted">
+                            <i class="bi bi-shop fs-3 d-block mb-2"></i>No sellers registered yet.
                         </div>
                         <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
                             <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>

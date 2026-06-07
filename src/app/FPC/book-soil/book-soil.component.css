@@ -1,369 +1,411 @@
-/* CSS Variables for Theming */
+/* ================================================================
+   SOIL TEST BOOKING — Premium Agricultural Design
+   ================================================================ */
+
 :host {
-  /* Form background color */
-  /* A light green for the container background */
-  --benefits-bg-green: #28a745; /* A distinct green for the benefits section */
-
-  /* Text Colors */
-  --text-dark-green: #2e7d32; /* A darker green for titles */
-  --text-muted-dark: #424242; /* Darker muted text for descriptions */
-  --text-dark-green-label: #388e3c; /* Green for form labels */
-
-  /* Input/Button Colors */
-  --input-bg-color: #f0f4f0; /* Slightly off-white for input fields */
-  --input-border-color: #a5d6a7; /* Light green border for inputs */
-  --button-submit-bg: #4caf50; /* A pleasant green for the submit button */
-  --button-submit-hover: #218838; /* Darker green on hover */
-
-  /* Border Radii */
-  --border-radius-form-field: 1.5rem; /* More rounded corners for input fields */
-  --border-radius-button: 2rem; /* Even more rounded for the button (pill-like) */
-  --border-radius-container: 1.5rem; /* Rounded corners for the main container */
-  --border-radius-benefits: 1rem; /* Rounded corners for the benefits section */
-
-  /* Shadows */
-  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  --g900: #0f2a07;
+  --g800: #1b4010;
+  --g700: #2d5016;
+  --g600: #3d6b1f;
+  --g500: #4a7c59;
+  --g200: #c6e8c6;
+  --g50:  #f0faf0;
+  --gold: #c8941a;
+  --white: #ffffff;
+  --grey50:  #fafafa;
+  --grey100: #f4f6f4;
+  --grey200: #e8eceb;
+  --grey500: #6b7280;
+  --shadow-sm: 0 2px 8px rgba(45,80,22,0.06), 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(45,80,22,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(45,80,22,0.14), 0 4px 12px rgba(0,0,0,0.08);
+  --ease: cubic-bezier(0.4,0,0.2,1);
 }
 
-.bookSoilForm {
-  border-radius: var(--border-radius-container);
-  box-shadow: var(--shadow-md);
-  max-width: 800px;
-  margin: 1rem auto; /* Centering with margin */
-  padding: 2rem 3rem; /* Adjusted padding */
-}
-
-/* Benefits Section Styling */
-.benefits-section {
-  background-color: var(--benefits-bg-green);
-  border-radius: var(--border-radius-benefits);
-  color: white; /* Default text color for this section */
-}
-
-.benefits-section .display-6 {
-  color: white; /* Ensure heading is white */
-}
-
-.benefit-item h3 {
-  color: white; /* Ensure numbers are white */
-}
-
-.benefit-item p {
-  color: white; /* Ensure benefit descriptions are white */
-  font-size: 0.95rem; /* Slightly adjust font size */
-}
-
-/* Form label styling */
-.text-dark-green-label {
-  color: var(--text-dark-green-label);
-  text-align: left; /* Ensure labels align left */
-  display: block; /* Make sure it takes its own line */
-  margin-bottom: 0.5rem; /* Space below label */
-}
-
-/* Custom styling for form input fields and select elements */
-.form-control-custom,
-.form-select.form-control-custom {
-  border-radius: var(--border-radius-form-field) !important;
-  padding: 0.75rem 1.25rem; /* Increase padding for better visual */
-  background-color: var(--input-bg-color);
-  border: 1px solid var(--input-border-color);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease-in-out;
-}
-
-.form-control-custom:focus,
-.form-select.form-control-custom:focus {
-  border-color: var(
-    --button-submit-bg
-  ); /* Highlight with main green on focus */
-  box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25); /* Focus ring with green tint */
-  background-color: #ffffff; /* White background on focus */
-}
-
-/* Specific styling for the textarea */
-.form-control-custom-textarea {
-  border-radius: 1rem !important; /* Slightly less rounded than inputs */
-  padding: 1rem 1.25rem;
-  background-color: var(--input-bg-color);
-  border: 1px solid var(--input-border-color);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease-in-out;
-  resize: vertical; /* Allow vertical resizing */
-}
-.form-control-custom-textarea:focus {
-  border-color: var(--button-submit-bg);
-  box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
-  background-color: #ffffff;
-}
-
-/* Submit button styling */
-.btn-submit-green {
-  background-color: var(--button-submit-bg);
-  border-color: var(--button-submit-bg);
-  color: #fff;
-  border-radius: var(
-    --border-radius-button
-  ) !important; /* Rounded pill shape */
-  padding: 0.75rem 2.5rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.btn-submit-green:hover:not(:disabled) {
-  background-color: var(--button-submit-hover);
-  border-color: var(--button-submit-hover);
-}
-
-.btn-submit-green:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Responsive adjustments */
-@media (max-width: 767.98px) {
-  .bookSoilForm {
-    padding: 1.25rem 1.25rem;
-    margin: 0.5rem auto;
-    border-radius: 1rem;
-  }
-  .soil-test-container {
-    padding: 1.5rem;
-    margin: 1.5rem auto;
-  }
-  .col-md-6 {
-    width: 100%; /* Stack columns on small screens */
-  }
-}
-
-@media (max-width: 575.98px) {
-  .bookSoilForm {
-    padding: 1rem;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-}
-
-.benefit-item.text-white ul {
-  text-align: left;
-  list-style: circle;
-}
-.benefit-item.text-white ul li {
-  padding-block: 16px;
-  font-size: 20px;
-}
-
-/* Header */
-.header {
-  background: #1f7a4d;
-  color: white;
-  padding: 16px;
-  text-align: center;
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  gap: 10px;
-}
-
-.tab {
-  padding: 10px 16px;
-  border-radius: 20px;
-  border: none;
-  background: #e5e5e5;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: #1f7a4d;
-  color: white;
-}
-
-/* Main Layout */
+/* ── Container Layout ────────────────────── */
 .container {
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 20px;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Back Navigation */
-.back-navigation {
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.back-navigation .btn-back.ml-2{
-    margin-right: 8px ;
+@media (min-width: 992px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1.2fr 1.8fr;
+    gap: 32px;
+    padding-top: 40px;
   }
+  .back-navigation {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Back Navigation ──────────────────────── */
+.back-navigation {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
 
 .btn-back,
 .btn-dashboard {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 9px 18px;
   font-size: 13px;
-  font-weight: 600;
-  border: 2px solid #28a745;
-  background: white;
-  color: #28a745;
-  border-radius: 6px;
+  font-weight: 700;
+  border-radius: 100px;
   cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-  min-width: auto;
-  width: auto;
-  max-width: fit-content;
+  transition: all 0.18s var(--ease);
+  border: 1.5px solid rgba(45,80,22,0.25);
+  background: var(--white);
+  color: var(--g700);
 }
 
-.btn-back:hover,
-.btn-dashboard:hover {
-  background: #28a745;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+.btn-back:hover {
+  background: var(--g50);
+  border-color: var(--g500);
+  transform: translateY(-1px);
 }
 
 .btn-dashboard {
-  border-color: #007bff;
+  border-color: rgba(30,123,255,0.25);
   color: #007bff;
 }
 
 .btn-dashboard:hover {
-  background: #007bff;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  background: #f0f7ff;
+  border-color: #007bff;
+  transform: translateY(-1px);
 }
 
-.btn-back i,
-.btn-dashboard i {
-  font-size: 14px;
-}
-
-/* Content Layout */
-.container {
-  display: block;
-}
-
-.container > .left-panel,
-.container > .right-panel {
-  display: inline-block;
-}
-
-@media (min-width: 769px) {
-  .container {
-    display: flex;
-    gap: 20px;
-  }
-}
-
-/* Left Panel */
+/* ── Left Panel (Benefits) ────────────────── */
 .left-panel {
-  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-panel h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--g900);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
 }
 
 .card-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
 }
 
 .info-card {
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  flex: 1;
+  background: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(45,80,22,0.06);
+  transition: all 0.22s var(--ease);
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--g200);
 }
 
 .info-card h3 {
-  margin: 0 0 8px;
-  color: #1f7a4d;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--g700);
+  margin: 0 0 10px;
 }
 
-/* Right Panel */
+.info-card p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--grey500);
+  margin: 0;
+}
+
+/* ── Right Panel (Interactive Step Form) ────── */
 .right-panel {
-  flex: 1;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid rgba(45,80,22,0.08);
+  align-self: start;
 }
 
-.soil-form {
+/* ── Step Indicator Progress Bar ──────────── */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.step-indicator-item {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.soil-form label {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.soil-form input,
-.soil-form select,
-.soil-form textarea {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.soil-form textarea {
-  resize: none;
-  height: 80px;
-}
-
-.soil-form button {
-  margin-top: 10px;
-  padding: 12px;
-  background: #1f7a4d;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.soil-form button:hover {
-  background: #16603b;
-}
-.bottom {
+  align-items: center;
+  position: relative;
+  z-index: 2;
   flex: 1;
 }
 
-.left-panel h2 {
-  padding-bottom: 24px;
+.step-node {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--grey100);
+  border: 2px solid var(--grey200);
+  color: var(--grey500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.25s var(--ease);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--grey500);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+  transition: all 0.25s var(--ease);
+  text-align: center;
+}
 
+/* Line connectors */
+.step-progress-line {
+  position: relative;
+  height: 4px;
+  background: var(--grey100);
+  flex: 1;
+  margin: 0 -20px;
+  top: -10px; /* Aligns with middle of node */
+  z-index: 1;
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: var(--g500);
+  width: 0%;
+  transition: width 0.3s var(--ease);
+}
+
+/* Active Step States */
+.step-indicator-item.active .step-node {
+  background: var(--white);
+  border-color: var(--g700);
+  color: var(--g700);
+  box-shadow: 0 0 0 4px rgba(45,80,22,0.12);
+}
+
+.step-indicator-item.active .step-label {
+  color: var(--g700);
+}
+
+/* Completed Step States */
+.step-indicator-item.completed .step-node {
+  background: var(--g700);
+  border-color: var(--g700);
+  color: var(--white);
+}
+
+.step-indicator-item.completed .step-label {
+  color: var(--g700);
+}
+
+.step-progress-line.active {
+  background: var(--g200);
+}
+
+/* ── Form Step Panel animations ───────────── */
+.form-step-panel {
+  animation: fadeInStep 0.4s var(--ease) forwards;
+}
+
+@keyframes fadeInStep {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--g900);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 13.5px;
+  color: var(--grey500);
+  margin-bottom: 24px;
+}
+
+/* ── Form Inputs & Layouts ────────────────── */
+.form-label-custom {
+  font-weight: 700;
+  color: #1e2d1e;
+  font-size: 12px;
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.form-control-custom,
+.form-select-custom {
+  border-radius: 12px !important;
+  background: var(--white);
+  border: 1.5px solid var(--grey200);
+  padding: 11px 14px;
+  font-size: 14px;
+  color: #1e2d1e;
+  transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+
+.form-control-custom:focus,
+.form-select-custom:focus {
+  border-color: var(--g700);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.12);
+  outline: none;
+}
+
+.form-control-custom.is-invalid,
+.form-select-custom.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.form-control-custom-textarea {
+  border-radius: 12px !important;
+  padding: 11px 14px;
+  background: var(--white);
+  border: 1.5px solid var(--grey200);
+  font-size: 14px;
+  color: #1e2d1e;
+  min-height: 90px;
+  resize: none;
+  transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+
+.form-control-custom-textarea:focus {
+  border-color: var(--g700);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.12);
+  outline: none;
+}
+
+/* Validation Feedback */
+.invalid-feedback-custom {
+  font-size: 11.5px;
+  color: #dc3545;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* ── Navigation Control Buttons ───────────── */
+.btn-prev-step,
+.btn-next-step,
+.btn-submit-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px !important;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 24px;
+  transition: all 0.18s var(--ease);
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-prev-step {
+  background: var(--grey100);
+  border: 1.5px solid var(--grey200);
+  color: var(--grey500);
+}
+
+.btn-prev-step:hover {
+  background: var(--grey200);
+  color: #333;
+}
+
+.btn-next-step {
+  background: linear-gradient(135deg, var(--g700) 0%, var(--g500) 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(45,80,22,0.22);
+}
+
+.btn-next-step:hover {
+  background: linear-gradient(135deg, var(--g800) 0%, var(--g600) 100%);
+  box-shadow: 0 6px 18px rgba(45,80,22,0.30);
+  transform: translateY(-1px);
+}
+
+.btn-submit-step {
+  background: linear-gradient(135deg, #1f7a4d 0%, #115c36 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31,122,77,0.25);
+}
+
+.btn-submit-step:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16603b 0%, #0c4223 100%);
+  box-shadow: 0 6px 18px rgba(31,122,77,0.35);
+  transform: translateY(-1px);
+}
+
+.btn-submit-step:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Responsive Styling ───────────────────── */
+@media (max-width: 991.98px) {
+  .left-panel {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .right-panel {
+    padding: 20px 16px;
+    border-radius: 16px;
+    box-shadow: none;
+    border: none;
+    border-top: 1.5px solid var(--grey200);
+  }
   .card-grid {
     grid-template-columns: 1fr;
   }
-
-  .back-navigation {
-    flex-direction: row;
-    justify-content: flex-start;
+  .step-label {
+    display: none; /* Hide labels on very small screens to fit nodes */
   }
-  
-
-  .btn-back,
-  .btn-dashboard {
-    padding: 6px 12px;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  .btn-back i,
-  .btn-dashboard i {
-    font-size: 12px;
+  .step-progress-line {
+    top: 0;
   }
 }

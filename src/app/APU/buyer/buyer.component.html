@@ -13,6 +13,9 @@
             <button *ngIf="currentUser?.role === 'admin'" class="btn btn-outline-primary btn-sm" (click)="backToAPU()">
                 <i class="bi bi-arrow-left me-1"></i>Back to APU
             </button>
+            <button *ngIf="currentUser?.role === 'admin'" class="btn btn-outline-secondary btn-sm" (click)="goToControl()">
+                <i class="bi bi-speedometer2 me-1"></i>Control Panel
+            </button>
         </div>
     </div>
 

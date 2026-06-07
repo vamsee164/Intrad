@@ -21,6 +21,7 @@ export class BookSoilComponent implements OnInit, OnDestroy {
 
   @ViewChild('soilForm') soilForm!: NgForm;
   title = 'Soil Test Booking';
+  currentStep = 1;
 
   // Soil Test Form Model
   soilTestForm = {
@@ -81,6 +82,66 @@ export class BookSoilComponent implements OnInit, OnDestroy {
     this.router.navigate(['/farmer']);
   }
 
+  /** Step navigation and checks */
+  nextStep(): void {
+    if (this.currentStep === 1) {
+      if (this.isStep1Valid()) {
+        this.currentStep = 2;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        this.touchStep1Controls();
+      }
+    } else if (this.currentStep === 2) {
+      if (this.isStep2Valid()) {
+        this.currentStep = 3;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        this.touchStep2Controls();
+      }
+    }
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  isStep1Valid(): boolean {
+    return !!(
+      this.soilTestForm.farmerName?.trim() &&
+      this.soilTestForm.mobileNumber &&
+      /^[0-9]{10}$/.test(this.soilTestForm.mobileNumber) &&
+      this.soilTestForm.village?.trim()
+    );
+  }
+
+  isStep2Valid(): boolean {
+    return !!(
+      this.soilTestForm.landArea &&
+      this.soilTestForm.landArea > 0 &&
+      this.soilTestForm.irrigationType &&
+      this.soilTestForm.currentCrop
+    );
+  }
+
+  isStep3Valid(): boolean {
+    return !!this.soilTestForm.sampleDate;
+  }
+
+  private touchStep1Controls(): void {
+    this.soilForm.controls['farmerName']?.markAsTouched();
+    this.soilForm.controls['mobileNumber']?.markAsTouched();
+    this.soilForm.controls['village']?.markAsTouched();
+  }
+
+  private touchStep2Controls(): void {
+    this.soilForm.controls['landArea']?.markAsTouched();
+    this.soilForm.controls['irrigationType']?.markAsTouched();
+    this.soilForm.controls['currentCrop']?.markAsTouched();
+  }
+
   /**
    * Handle form submission
    */
@@ -93,7 +154,7 @@ export class BookSoilComponent implements OnInit, OnDestroy {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.soilForm.invalid) {
+    if (this.soilForm.invalid || !this.isStep1Valid() || !this.isStep2Valid() || !this.isStep3Valid()) {
       this.soilForm.form.markAllAsTouched();
       return;
     }
@@ -117,11 +178,11 @@ export class BookSoilComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /**
    * Reset form after submit
    */
   resetForm(): void {
+    this.currentStep = 1;
     this.soilTestForm = {
       farmerName: '',
       mobileNumber: '',

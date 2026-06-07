@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { FirebaseService } from '../services/firebase.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -22,13 +22,14 @@ interface CropData {
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule],
+  providers: [DatePipe],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   @Output() backToControl = new EventEmitter<void>();
-  activeView: 'dashboard' | 'farmers' | 'buyers' | 'service-requests' | 'soil-tests' | 'reports' = 'dashboard';
+  activeView: 'dashboard' | 'farmers' | 'buyers' | 'sellers' | 'service-requests' | 'soil-tests' | 'reports' = 'dashboard';
   stats: DashboardStats = {
     totalFarmers: 0,
     totalBuyers: 0,
@@ -42,6 +43,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   buyerDemands: any[] = [];
   farmersData: any[] = [];
   buyersData: any[] = [];
+  sellersData: any[] = [];
   serviceRequests: any[] = [];
   soilTestRequests: any[] = [];
   loading = true;
@@ -55,6 +57,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   paginatedSoilTests: any[] = [];
   paginatedFarmers: any[] = [];
   paginatedBuyers: any[] = [];
+  paginatedSellers: any[] = [];
 
   constructor(
     private router: Router,
@@ -146,7 +149,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     console.log('Dashboard data loaded');
   }
 
-  setActiveView(view: 'dashboard' | 'farmers' | 'buyers' | 'service-requests' | 'soil-tests' | 'reports') {
+  setActiveView(view: 'dashboard' | 'farmers' | 'buyers' | 'sellers' | 'service-requests' | 'soil-tests' | 'reports') {
     console.log('Setting active view to:', view);
     this.activeView = view;
     
@@ -154,6 +157,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.loadFarmersData();
     } else if (view === 'buyers') {
       this.loadBuyersData();
+    } else if (view === 'sellers') {
+      this.loadSellersData();
     } else if (view === 'service-requests') {
       this.loadServiceRequests();
     } else if (view === 'soil-tests') {
@@ -200,45 +205,19 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       next: (users: any) => {
         if (users) {
           const userList = Object.values(users).flat();
-          this.buyersData = userList.filter((user: any) => 
-            user.role === 'buyer' || user.role === 'seller'
-          ).map((buyer: any) => ({
-            ...buyer,
-            companyName: buyer.name || 'N/A',
-            contactPerson: buyer.name || 'N/A',
-            mobileNo: buyer.mobileNo || buyer.phone || 'N/A',
-            email: buyer.email || 'N/A'
-          }));
-        }
-        
-        // If no buyers found, show fallback data
-        if (this.buyersData.length === 0) {
-          this.buyersData = [
-            {
-              companyName: 'FreshMart Ltd',
-              contactPerson: 'John Smith',
-              cropRequired: 'Onions, Tomatoes',
-              quantity: '5000 Kg',
-              budget: '₹50,000',
-              deliveryDate: '2024-01-15'
-            },
-            {
-              companyName: 'AgriCorp',
-              contactPerson: 'Sarah Johnson',
-              cropRequired: 'Chilli, Garlic',
-              quantity: '3000 Kg',
-              budget: '₹30,000',
-              deliveryDate: '2024-01-20'
-            },
-            {
-              companyName: 'GreenMarket',
-              contactPerson: 'Mike Wilson',
-              cropRequired: 'Potatoes',
-              quantity: '8000 Kg',
-              budget: '₹80,000',
-              deliveryDate: '2024-01-25'
-            }
-          ];
+          this.buyersData = userList
+            .filter((user: any) => user.role === 'buyer')
+            .map((buyer: any) => ({
+              ...buyer,
+              name: buyer.name || 'N/A',
+              mobileNo: buyer.mobileNo || buyer.phone || 'N/A',
+              email: buyer.email || 'N/A',
+              companyName: buyer.companyName || buyer.name || 'N/A',
+              village: buyer.village || 'N/A',
+              typicalCrops: Array.isArray(buyer.typicalCrops)
+                ? buyer.typicalCrops.join(', ')
+                : (buyer.typicalCrops || 'N/A')
+            }));
         }
         
         console.log('Processed buyers data:', this.buyersData);
@@ -248,6 +227,42 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       },
       error: (error: any) => {
         console.error('Error loading buyers:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadSellersData() {
+    console.log('Loading sellers data...');
+    this.loading = true;
+
+    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (users: any) => {
+        if (users) {
+          const userList = Object.values(users).flat();
+          this.sellersData = userList
+            .filter((user: any) => user.role === 'seller')
+            .map((seller: any) => ({
+              ...seller,
+              name: seller.name || 'N/A',
+              mobileNo: seller.mobileNo || seller.phone || 'N/A',
+              email: seller.email || 'N/A',
+              village: seller.village || 'N/A',
+              mandal: seller.mandal || 'N/A',
+              typicalCrops: Array.isArray(seller.typicalCrops)
+                ? seller.typicalCrops.join(', ')
+                : (seller.typicalCrops || 'N/A'),
+              acreOfLand: seller.acreOfLand || 'N/A'
+            }));
+        }
+
+        console.log('Processed sellers data:', this.sellersData);
+        this.currentPage = 1;
+        this.updatePagination();
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading sellers:', error);
         this.loading = false;
       }
     });
@@ -352,6 +367,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.setActiveView('buyers');
   }
 
+  navigateToSellers() {
+    console.log('Switching to sellers view');
+    this.setActiveView('sellers');
+  }
+
   navigateToReports() {
     console.log('Switching to reports view');
     this.setActiveView('reports');
@@ -370,7 +390,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       'service-requests': this.serviceRequests,
       'soil-tests': this.soilTestRequests,
       'farmers': this.farmersData,
-      'buyers': this.buyersData
+      'buyers': this.buyersData,
+      'sellers': this.sellersData
     };
     const source = sourceMap[this.activeView] || [];
     this.totalItems = source.length;
@@ -382,6 +403,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     else if (this.activeView === 'soil-tests') this.paginatedSoilTests = sliced;
     else if (this.activeView === 'farmers') this.paginatedFarmers = sliced;
     else if (this.activeView === 'buyers') this.paginatedBuyers = sliced;
+    else if (this.activeView === 'sellers') this.paginatedSellers = sliced;
   }
 
   prevPage() {

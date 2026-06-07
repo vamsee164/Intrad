@@ -86,10 +86,12 @@
 
 /* Active link */
 .navbar-nav .nav-item.active > .nav-link,
-.navbar-nav .nav-item > .nav-link.active {
-  background: var(--g700);
+.navbar-nav .nav-item > .nav-link.active,
+.navbar-nav .nav-item.active > .nav-link.btn-outline-primary-green,
+.navbar-nav .nav-item > .nav-link.btn-outline-primary-green.active {
+  background: var(--g700) !important;
   color: #fff !important;
-  border-color: var(--g700);
+  border-color: var(--g700) !important;
   box-shadow: 0 3px 12px rgba(45, 80, 22, 0.28);
 }
 

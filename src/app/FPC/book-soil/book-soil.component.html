@@ -54,111 +54,192 @@
 
     <!-- Right Panel -->
     <section class="right-panel">
-        <form class="soil-form" (ngSubmit)="onSubmit()" #soilForm="ngForm">
-            <h2>{{ 'soil.request' | translate }}</h2>
-    
-            <!-- Farmer Details -->
-             <label>{{ 'soil.name' | translate }} <span class="text-danger">*</span></label>
-            <input type="text" name="farmerName" 
-                   [class.is-invalid]="(soilForm.submitted || farmerName.touched) && farmerName.invalid"
-                   #farmerName="ngModel" [(ngModel)]="soilTestForm.farmerName" 
-                   [placeholder]="'soil.name.placeholder' | translate" required />
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || farmerName.touched) && farmerName.invalid">
-                Farmer name is required
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step-indicator-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+                <div class="step-node">
+                    <span *ngIf="currentStep <= 1">1</span>
+                    <i *ngIf="currentStep > 1" class="bi bi-check-lg"></i>
+                </div>
+                <div class="step-label">Farmer</div>
+            </div>
+            <div class="step-progress-line" [class.active]="currentStep > 1">
+                <div class="step-progress-fill" [style.width]="currentStep === 2 ? '50%' : (currentStep === 3 ? '100%' : '0%')"></div>
+            </div>
+            <div class="step-indicator-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+                <div class="step-node">
+                    <span *ngIf="currentStep <= 2">2</span>
+                    <i *ngIf="currentStep > 2" class="bi bi-check-lg"></i>
+                </div>
+                <div class="step-label">Land</div>
+            </div>
+            <div class="step-progress-line" [class.active]="currentStep > 2">
+                <div class="step-progress-fill" [style.width]="currentStep === 3 ? '100%' : '0%'"></div>
+            </div>
+            <div class="step-indicator-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+                <div class="step-node">3</div>
+                <div class="step-label">Sample</div>
+            </div>
+        </div>
+
+        <form class="soil-form" (ngSubmit)="onSubmit()" #soilForm="ngForm" novalidate>
+            <!-- STEP 1: Farmer Details -->
+            <div *ngIf="currentStep === 1" class="form-step-panel">
+                <h3 class="step-title">👤 {{ 'soil.request' | translate }}</h3>
+                <p class="step-desc">Please provide your contact information to schedule sample collection.</p>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.name' | translate }} <span class="text-danger">*</span></label>
+                    <input type="text" name="farmerName" 
+                           class="form-control-custom w-100"
+                           [class.is-invalid]="(soilForm.submitted || farmerName.touched) && farmerName.invalid"
+                           #farmerName="ngModel" [(ngModel)]="soilTestForm.farmerName" 
+                           [placeholder]="'soil.name.placeholder' | translate" required />
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || farmerName.touched) && farmerName.invalid">
+                        Farmer name is required
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.mobile' | translate }} <span class="text-danger">*</span></label>
+                    <input type="tel" name="mobileNumber" 
+                           class="form-control-custom w-100"
+                           [class.is-invalid]="(soilForm.submitted || mobileNumber.touched) && mobileNumber.invalid"
+                           #mobileNumber="ngModel" [(ngModel)]="soilTestForm.mobileNumber" 
+                           [placeholder]="'soil.mobile.placeholder' | translate" 
+                           (input)="onPhoneInput($event)"
+                           pattern="[0-9]{10}" maxlength="10" minlength="10" required />
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || mobileNumber.touched) && mobileNumber.invalid">
+                        <span *ngIf="mobileNumber.errors?.['required']">Mobile number is required</span>
+                        <span *ngIf="mobileNumber.errors?.['pattern'] || mobileNumber.errors?.['minlength'] || mobileNumber.errors?.['maxlength']">Mobile number must be exactly 10 digits</span>
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.village' | translate }} <span class="text-danger">*</span></label>
+                    <input type="text" name="village" 
+                           class="form-control-custom w-100"
+                           [class.is-invalid]="(soilForm.submitted || village.touched) && village.invalid"
+                           #village="ngModel" [(ngModel)]="soilTestForm.village" 
+                           [placeholder]="'soil.village.placeholder' | translate" required />
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || village.touched) && village.invalid">
+                        Village/Area is required
+                    </div>
+                </div>
             </div>
     
-            <label>{{ 'soil.mobile' | translate }} <span class="text-danger">*</span></label>
-            <input type="tel" name="mobileNumber" 
-                   [class.is-invalid]="(soilForm.submitted || mobileNumber.touched) && mobileNumber.invalid"
-                   #mobileNumber="ngModel" [(ngModel)]="soilTestForm.mobileNumber" 
-                   [placeholder]="'soil.mobile.placeholder' | translate" 
-                   (input)="onPhoneInput($event)"
-                   pattern="[0-9]{10}" maxlength="10" minlength="10" required />
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || mobileNumber.touched) && mobileNumber.invalid">
-                <span *ngIf="mobileNumber.errors?.['required']">Mobile number is required</span>
-                <span *ngIf="mobileNumber.errors?.['pattern'] || mobileNumber.errors?.['minlength'] || mobileNumber.errors?.['maxlength']">Mobile number must be exactly 10 digits</span>
+            <!-- STEP 2: Land & Crop Details -->
+            <div *ngIf="currentStep === 2" class="form-step-panel">
+                <h3 class="step-title">🌾 Land & Crops</h3>
+                <p class="step-desc">Provide details about your agricultural land and crop history.</p>
+
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.landarea' | translate }} <span class="text-danger">*</span></label>
+                    <input type="number" name="landArea" 
+                           class="form-control-custom w-100"
+                           [class.is-invalid]="(soilForm.submitted || landArea.touched) && landArea.invalid"
+                           #landArea="ngModel" [(ngModel)]="soilTestForm.landArea" 
+                           [placeholder]="'soil.landarea.placeholder' | translate" step="0.1" min="0" required />
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || landArea.touched) && landArea.invalid">
+                        Land area is required
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.irrigation' | translate }} <span class="text-danger">*</span></label>
+                    <select name="irrigationType" 
+                            class="form-select-custom w-100"
+                            [class.is-invalid]="(soilForm.submitted || irrigationType.touched) && irrigationType.invalid"
+                            #irrigationType="ngModel" [(ngModel)]="soilTestForm.irrigationType" required>
+                        <option value="">{{ 'soil.irrigation.select' | translate }}</option>
+                        <option value="rainfed">{{ 'soil.irrigation.rainfed' | translate }}</option>
+                        <option value="borewell">{{ 'soil.irrigation.borewell' | translate }}</option>
+                        <option value="canal">{{ 'soil.irrigation.canal' | translate }}</option>
+                        <option value="drip">{{ 'soil.irrigation.drip' | translate }}</option>
+                    </select>
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || irrigationType.touched) && irrigationType.invalid">
+                        Please select irrigation type
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.currentcrop' | translate }} <span class="text-danger">*</span></label>
+                    <select name="currentCrop" 
+                            class="form-select-custom w-100"
+                            [class.is-invalid]="(soilForm.submitted || currentCrop.touched) && currentCrop.invalid"
+                            #currentCrop="ngModel" [(ngModel)]="soilTestForm.currentCrop" required>
+                        <option value="">{{ 'soil.currentcrop.select' | translate }}</option>
+                        <option value="mango">{{ 'soil.crop.mango' | translate }}</option>
+                        <option value="papaya">{{ 'soil.crop.papaya' | translate }}</option>
+                        <option value="tomato">{{ 'soil.crop.tomato' | translate }}</option>
+                        <option value="vegetables">{{ 'soil.crop.vegetables' | translate }}</option>
+                    </select>
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || currentCrop.touched) && currentCrop.invalid">
+                        Please select current crop
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.previouscrop' | translate }}</label>
+                    <input type="text" name="previousCrop" [(ngModel)]="soilTestForm.previousCrop"
+                           class="form-control-custom w-100"
+                           [placeholder]="'soil.previouscrop.placeholder' | translate" />
+                </div>
             </div>
     
-            <label>{{ 'soil.village' | translate }} <span class="text-danger">*</span></label>
-            <input type="text" name="village" 
-                   [class.is-invalid]="(soilForm.submitted || village.touched) && village.invalid"
-                   #village="ngModel" [(ngModel)]="soilTestForm.village" 
-                   [placeholder]="'soil.village.placeholder' | translate" required />
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || village.touched) && village.invalid">
-                Village/Area is required
+            <!-- STEP 3: Soil Sample Details -->
+            <div *ngIf="currentStep === 3" class="form-step-panel">
+                <h3 class="step-title">🧪 Sample Details</h3>
+                <p class="step-desc">Tell us about the collected soil sample specifications.</p>
+
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.sampledate' | translate }} <span class="text-danger">*</span></label>
+                    <input type="date" name="sampleDate" 
+                           class="form-control-custom w-100"
+                           [class.is-invalid]="(soilForm.submitted || sampleDate.touched) && sampleDate.invalid"
+                           #sampleDate="ngModel" [(ngModel)]="soilTestForm.sampleDate" required />
+                    <div class="invalid-feedback-custom" *ngIf="(soilForm.submitted || sampleDate.touched) && sampleDate.invalid">
+                        Sample date is required
+                    </div>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.sampledepth' | translate }}</label>
+                    <select name="sampleDepth" [(ngModel)]="soilTestForm.sampleDepth" class="form-select-custom w-100">
+                        <option value="0_15">0–15 cm</option>
+                        <option value="15_30">15–30 cm</option>
+                    </select>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.fieldcondition' | translate }}</label>
+                    <select name="fieldCondition" [(ngModel)]="soilTestForm.fieldCondition" class="form-select-custom w-100">
+                        <option value="dry">{{ 'soil.condition.dry' | translate }}</option>
+                        <option value="moist">{{ 'soil.condition.moist' | translate }}</option>
+                        <option value="wet">{{ 'soil.condition.wet' | translate }}</option>
+                    </select>
+                </div>
+        
+                <div class="form-group mb-3">
+                    <label class="form-label-custom">{{ 'soil.problem' | translate }}</label>
+                    <textarea name="problemDescription" [(ngModel)]="soilTestForm.problemDescription"
+                              class="form-control-custom-textarea w-100"
+                              [placeholder]="'soil.problem.placeholder' | translate"></textarea>
+                </div>
             </div>
     
-            <!-- Land & Crop Details -->
-            <label>{{ 'soil.landarea' | translate }} <span class="text-danger">*</span></label>
-            <input type="number" name="landArea" 
-                   [class.is-invalid]="(soilForm.submitted || landArea.touched) && landArea.invalid"
-                   #landArea="ngModel" [(ngModel)]="soilTestForm.landArea" 
-                   [placeholder]="'soil.landarea.placeholder' | translate" step="0.1" min="0" required />
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || landArea.touched) && landArea.invalid">
-                Land area is required
+            <!-- Navigation Action Buttons -->
+            <div class="form-actions d-flex gap-2 mt-4">
+                <button type="button" class="btn-prev-step w-50" (click)="prevStep()" *ngIf="currentStep > 1">
+                    <i class="bi bi-arrow-left"></i> Prev
+                </button>
+                <button type="button" class="btn-next-step" [class.w-100]="currentStep === 1" [class.w-50]="currentStep > 1" (click)="nextStep()" *ngIf="currentStep < 3">
+                    Next <i class="bi bi-arrow-right"></i>
+                </button>
+                <button type="submit" class="btn-submit-step w-50" *ngIf="currentStep === 3" [disabled]="soilForm.invalid || !isStep1Valid() || !isStep2Valid() || !isStep3Valid()">
+                    {{ 'soil.submit' | translate }}
+                </button>
             </div>
-    
-            <label>{{ 'soil.irrigation' | translate }} <span class="text-danger">*</span></label>
-            <select name="irrigationType" 
-                    [class.is-invalid]="(soilForm.submitted || irrigationType.touched) && irrigationType.invalid"
-                    #irrigationType="ngModel" [(ngModel)]="soilTestForm.irrigationType" required>
-                <option value="">{{ 'soil.irrigation.select' | translate }}</option>
-                <option value="rainfed">{{ 'soil.irrigation.rainfed' | translate }}</option>
-                <option value="borewell">{{ 'soil.irrigation.borewell' | translate }}</option>
-                <option value="canal">{{ 'soil.irrigation.canal' | translate }}</option>
-                <option value="drip">{{ 'soil.irrigation.drip' | translate }}</option>
-            </select>
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || irrigationType.touched) && irrigationType.invalid">
-                Please select irrigation type
-            </div>
-    
-            <label>{{ 'soil.currentcrop' | translate }} <span class="text-danger">*</span></label>
-            <select name="currentCrop" 
-                    [class.is-invalid]="(soilForm.submitted || currentCrop.touched) && currentCrop.invalid"
-                    #currentCrop="ngModel" [(ngModel)]="soilTestForm.currentCrop" required>
-                <option value="">{{ 'soil.currentcrop.select' | translate }}</option>
-                <option value="mango">{{ 'soil.crop.mango' | translate }}</option>
-                <option value="papaya">{{ 'soil.crop.papaya' | translate }}</option>
-                <option value="tomato">{{ 'soil.crop.tomato' | translate }}</option>
-                <option value="vegetables">{{ 'soil.crop.vegetables' | translate }}</option>
-            </select>
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || currentCrop.touched) && currentCrop.invalid">
-                Please select current crop
-            </div>
-    
-            <label>{{ 'soil.previouscrop' | translate }}</label>
-            <input type="text" name="previousCrop" [(ngModel)]="soilTestForm.previousCrop"
-                [placeholder]="'soil.previouscrop.placeholder' | translate" />
-    
-            <!-- Soil Sample Details -->
-            <label>{{ 'soil.sampledate' | translate }} <span class="text-danger">*</span></label>
-            <input type="date" name="sampleDate" 
-                   [class.is-invalid]="(soilForm.submitted || sampleDate.touched) && sampleDate.invalid"
-                   #sampleDate="ngModel" [(ngModel)]="soilTestForm.sampleDate" required />
-            <div class="invalid-feedback" *ngIf="(soilForm.submitted || sampleDate.touched) && sampleDate.invalid">
-                Sample date is required
-            </div>
-    
-            <label>{{ 'soil.sampledepth' | translate }}</label>
-            <select name="sampleDepth" [(ngModel)]="soilTestForm.sampleDepth">
-                <option value="0_15">0–15 cm</option>
-                <option value="15_30">15–30 cm</option>
-            </select>
-    
-            <label>{{ 'soil.fieldcondition' | translate }}</label>
-            <select name="fieldCondition" [(ngModel)]="soilTestForm.fieldCondition">
-                <option value="dry">{{ 'soil.condition.dry' | translate }}</option>
-                <option value="moist">{{ 'soil.condition.moist' | translate }}</option>
-                <option value="wet">{{ 'soil.condition.wet' | translate }}</option>
-            </select>
-    
-            <label>{{ 'soil.problem' | translate }}</label>
-            <textarea name="problemDescription" [(ngModel)]="soilTestForm.problemDescription"
-                [placeholder]="'soil.problem.placeholder' | translate"></textarea>
-    
-            <button type="submit" [disabled]="soilForm.invalid">
-                {{ 'soil.submit' | translate }}
-            </button>
         </form>
     </section>
 

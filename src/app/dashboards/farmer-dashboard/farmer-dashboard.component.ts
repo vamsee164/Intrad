@@ -68,7 +68,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
   workers: Worker[] = [];
   workerForm = { farmerName: '', mobileNumber: '', village: '', workerType: '', numberOfWorkers: 1, startDate: '', duration: '', additionalNotes: '' };
   selectedWorker: Worker | null = null;
-  currentView: 'dashboard' | 'service-form' = 'dashboard'; // worker-form removed (unimplemented)
+  currentView: 'dashboard' | 'service-form' = 'dashboard';
   selectedService: ServicePackage | null = null;
   toastMessage = '';
   toastType: 'success' | 'danger' | 'warning' = 'success';
@@ -465,8 +465,25 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
     ];
   }
 
+  /** Navigate to a route — blocks routes outside the farmer's allowed scope */
   navigateTo(route: string): void {
+    // Admin bypasses navigation blocks
+    if (this.currentUser?.role === 'admin') {
+      this.router.navigate([route]);
+      return;
+    }
+    // Routes that belong to other roles — redirect to homepage instead
+    const restrictedPrefixes = ['/control', '/apu', '/buyer', '/report'];
+    const isRestricted = restrictedPrefixes.some(prefix => route.startsWith(prefix));
+    if (isRestricted) {
+      this.router.navigate(['/homepage']);
+      return;
+    }
     this.router.navigate([route]);
+  }
+
+  goToControl(): void {
+    this.router.navigate(['/control']);
   }
 
   selectPackage(packageId: string): void {

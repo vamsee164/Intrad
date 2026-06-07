@@ -8,6 +8,7 @@ export const RoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
   const requiredRole: string | undefined = route.data['role'];
 
+  // Not logged in → go to homepage
   if (!auth.isAuthenticated()) {
     return router.createUrlTree(['/homepage']);
   }
@@ -17,8 +18,9 @@ export const RoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
+  // Wrong role → redirect to homepage (do NOT show the dashboard or unauthorized page)
   if (requiredRole && !auth.hasRole(requiredRole)) {
-    return router.createUrlTree(['/unauthorized']);
+    return router.createUrlTree(['/homepage']);
   }
 
   return true;
