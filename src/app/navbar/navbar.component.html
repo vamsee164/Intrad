@@ -1,9 +1,12 @@
 <nav class="navbar navbar-expand-lg shadow-modern p-3 z-2">
-    <a class="navbar-brand d-flex align-items-center fw-bold" (click)="handleHomeNavigation($event)" style="cursor: pointer;">
-        <img src="assets/images/logo.jpg" alt="Intra-d Logo" class="me-2" width="52" height="52" style="border-radius:8px;object-fit:contain;">
+    <a class="navbar-brand d-flex align-items-center fw-bold" (click)="handleHomeNavigation($event)"
+        style="cursor: pointer;">
+        <img src="assets/images/logo.jpg" alt="Intra-d Logo" class="me-2" width="52" height="52"
+            style="border-radius:8px;object-fit:contain;">
         <div class="d-flex align-items-center flex-column">
-            <span class="text-primary-green" style="font-size: 1.5rem;">{{ 'home.title' | translate }}</span>
-            <span class="text-primary-green" style="font-size: .8rem;">{{ 'home.subtitle' | translate }}</span>
+            <span class="text-primary-green logo-text" style="font-size: 1.5rem;">{{ 'home.title' | translate }}</span>
+            <span class="text-primary-green logo-text" style="font-size: .8rem;">{{ 'home.subtitle' | translate
+                }}</span>
         </div>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
@@ -15,17 +18,15 @@
             <!-- Home -->
             <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a (click)="handleHomeNavigation($event)"
-                   class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                   role="button"
-                   style="cursor: pointer;">
-                   <i class="fas fa-home me-2"></i>{{ 'nav.home' | translate }}
+                    class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" role="button"
+                    style="cursor: pointer;">
+                    <i class="fas fa-home me-2"></i>{{ 'nav.home' | translate }}
                 </a>
             </li>
             <!-- We Hire -->
             <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                   [routerLink]="['/career']">
-                   <i class="fas fa-briefcase me-2"></i>{{ 'nav.wehire' | translate }}
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/career']">
+                    <i class="fas fa-briefcase me-2"></i>{{ 'nav.wehire' | translate }}
                 </a>
             </li>
             <!-- Crops Dropdown -->
@@ -38,7 +39,8 @@
                 </a>
                 <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarCropsDropdown">
                     <li routerLinkActive="active">
-                        <a class="dropdown-item" [routerLink]="['/crops', 'vegetables']">{{ 'nav.vegetables' | translate }}</a>
+                        <a class="dropdown-item" [routerLink]="['/crops', 'vegetables']">{{ 'nav.vegetables' | translate
+                            }}</a>
                     </li>
                     <li routerLinkActive="active">
                         <a class="dropdown-item" [routerLink]="['/crops', 'fruits']">{{ 'nav.fruits' | translate }}</a>
@@ -47,25 +49,21 @@
             </li>
             <!-- About Us -->
             <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                   [routerLink]="['/about']">
-                   <i class="fas fa-info-circle me-2"></i>{{ 'nav.about' | translate }}
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/about']">
+                    <i class="fas fa-info-circle me-2"></i>{{ 'nav.about' | translate }}
                 </a>
             </li>
             <!-- Contact -->
             <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium"
-                   [routerLink]="['/contact']">
-                   <i class="fas fa-envelope me-2"></i>{{ 'nav.contact' | translate }}
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/contact']">
+                    <i class="fas fa-envelope me-2"></i>{{ 'nav.contact' | translate }}
                 </a>
             </li>
             <!-- Sign Up CTA (non-authenticated only) -->
             <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="!isAuthenticated">
-                <a class="nav-link btn btn-signup-cta rounded-modern px-4 py-2 fw-bold"
-                   role="button"
-                   (click)="openSignupModal($event)"
-                   style="cursor:pointer;">
-                   <i class="fas fa-user-plus me-2"></i>Sign Up
+                <a class="nav-link btn btn-signup-cta rounded-modern px-4 py-2 fw-bold" role="button"
+                    (click)="openSignupModal($event)" style="cursor:pointer;">
+                    <i class="fas fa-user-plus me-2"></i>Sign Up
                 </a>
             </li>
             <!-- Language Switcher -->
