@@ -44,14 +44,9 @@
                             {{ product.description }}
                         </p>
 
-                        <!-- Price & Actions -->
+                        <!-- Actions -->
                         <div class="mt-auto">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="h6 fw-bold text-success mb-0">₹{{ product.price }}</span>
-                                <small class="text-muted text-decoration-line-through" *ngIf="product.originalPrice">
-                                    ₹{{ product.originalPrice }}
-                                </small>
-                            </div>
+                            <div class="mb-3"></div>
 
                             <div class="d-grid">
                                 <button (click)="openAuthModal(product)" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#authModal">

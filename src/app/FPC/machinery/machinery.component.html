@@ -1,0 +1,397 @@
+<div class="machinery-wrapper py-5">
+  <div class="container">
+    
+    <!-- Breadcrumb & Back navigation -->
+    <nav class="mb-4" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a (click)="navigateToHome()" class="back-link pointer-link"><i class="fas fa-home me-2"></i>{{ 'nav.home' | translate }}</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">{{ 'nav.machinery' | translate }}</li>
+      </ol>
+    </nav>
+
+    <!-- Header Banner Section -->
+    <div class="machinery-header-card text-center mb-5 position-relative overflow-hidden">
+      <div class="header-overlay"></div>
+      <div class="position-relative z-1 py-5 px-3">
+        <span class="badge bg-success-soft text-uppercase fw-bold letter-spacing-md mb-3 px-3 py-2 rounded-pill">
+          <i class="fas fa-tractor me-2"></i>{{ 'nav.machinery' | translate }}
+        </span>
+        <h1 class="display-4 fw-bold text-white mb-3">{{ 'machinery.title' | translate }}</h1>
+        <p class="lead text-white-80 mx-auto max-width-lg">{{ 'machinery.subtitle' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Category Filters Navigation -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="category-tabs-container d-flex flex-wrap justify-content-center gap-2 p-2 rounded-lg-custom shadow-xs bg-card-dark">
+          <button 
+            *ngFor="let cat of categories; trackBy: trackByFn"
+            class="btn category-tab-btn px-4 py-2 text-capitalize" 
+            [class.active]="selectedCategory === cat.code"
+            (click)="selectCategory(cat.code)">
+            {{ cat.labelKey | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Machinery Grid -->
+    <div class="row g-4 justify-content-center" *ngIf="filteredMachinery.length > 0">
+      <div 
+        class="col-xl-4 col-lg-4 col-md-6" 
+        *ngFor="let item of filteredMachinery; trackBy: trackByFn">
+        <div class="machinery-card h-100 shadow-md transition-all">
+          
+          <!-- Image Wrapper with Lightbox click overlay -->
+          <div class="image-zoom-container position-relative overflow-hidden cursor-zoom" (click)="openLightbox(item)">
+            <img [src]="item.image" [alt]="item.name" class="img-fluid machinery-img w-100" loading="lazy" />
+            
+            <!-- Availability Badge -->
+            <span 
+              class="badge position-absolute top-3 start-3 shadow-sm px-3 py-2 rounded-pill"
+              [class.bg-success]="item.available"
+              [class.bg-danger]="!item.available">
+              <i class="fas" [class.fa-check-circle]="item.available" [class.fa-times-circle]="!item.available"></i> 
+              {{ item.available ? 'Available' : 'Rented Out' }}
+            </span>
+            
+            <!-- Hover Expand Button -->
+            <div class="hover-overlay d-flex align-items-center justify-content-center">
+              <div class="expand-icon-wrap shadow-lg">
+                <i class="fas fa-search-plus"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="card-body p-4 d-flex flex-column bg-card-dark text-white border-top border-dark">
+            <!-- Category Tag -->
+            <span class="badge align-self-start bg-success-soft text-success text-capitalize mb-2 px-2 py-1 rounded">
+              {{ item.category }}
+            </span>
+
+            <!-- Title -->
+            <h4 class="card-title fw-bold mb-3 text-white-glow">{{ item.name }}</h4>
+
+            <!-- Short Description -->
+            <p class="card-text text-muted-custom small mb-4 flex-grow-1 line-clamp-3">
+              {{ item.description }}
+            </p>
+
+            <!-- Specifications Preview -->
+            <div class="mb-4">
+              <h6 class="small text-uppercase fw-bold letter-spacing-md text-success-light mb-2">Key Specs</h6>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge spec-badge" *ngFor="let spec of item.specs.slice(0, 2); trackBy: trackByFn">
+                  {{ spec }}
+                </span>
+                <span class="badge spec-badge bg-secondary" *ngIf="item.specs.length > 2">
+                  +{{ item.specs.length - 2 }} More
+                </span>
+              </div>
+            </div>
+
+            <!-- Price & Button Actions -->
+            <div class="mt-auto pt-3 border-top border-dark-soft">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <small class="text-muted-custom d-block">{{ 'machinery.rate' | translate }}</small>
+                  <span class="h4 fw-bold text-success">₹{{ item.price }}</span>
+                  <small class="text-muted-custom">/{{ item.rateType === 'hour' ? ('machinery.perHour' | translate) : ('machinery.perDay' | translate) }}</small>
+                </div>
+              </div>
+              
+              <div class="row g-2">
+                <div class="col-6">
+                  <button (click)="openLightbox(item)" class="btn btn-outline-success-custom w-100 rounded-md-custom py-2">
+                    <i class="fas fa-eye me-1"></i> {{ 'machinery.viewDetails' | translate }}
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button 
+                    [disabled]="!item.available" 
+                    (click)="openInquiry(item, $event)" 
+                    class="btn btn-success-custom w-100 rounded-md-custom py-2">
+                    <i class="fas fa-calendar-alt me-1"></i> {{ 'machinery.rentNow' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="row py-5 text-center" *ngIf="filteredMachinery.length === 0">
+      <div class="col-12 text-white">
+        <i class="fas fa-tractor fa-4x text-muted mb-3 opacity-50"></i>
+        <h3 class="fw-bold mb-2">No Machinery Available</h3>
+        <p class="text-muted-custom mb-4">We currently do not have machinery in this specific category. Please browse other categories.</p>
+        <button (click)="selectCategory('all')" class="btn btn-success-custom px-4 py-2 rounded-md-custom">
+          Browse All Equipment
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==========================================
+     LIGHTBOX / DETAILS OVERLAY MODAL
+     ========================================== -->
+<div class="modal fade custom-dark-modal" id="lightboxModal" tabindex="-1" aria-labelledby="lightboxModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 overflow-hidden shadow-lg bg-card-dark text-white rounded-lg-custom">
+      <div class="modal-header border-0 bg-dark-header p-3 justify-content-between align-items-center">
+        <h5 class="modal-title fw-bold text-white" id="lightboxModalLabel">
+          <i class="fas fa-info-circle text-success me-2"></i>{{ selectedMachine?.name }} Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeLightbox()"></button>
+      </div>
+      
+      <div class="modal-body p-0">
+        <div class="row g-0">
+          
+          <!-- Image Section with carousel arrows -->
+          <div class="col-lg-7 bg-black d-flex align-items-center justify-content-center position-relative min-height-md">
+            <!-- Left Arrow -->
+            <button class="btn nav-arrow-btn left-arrow shadow-md" (click)="prevImage()">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <img [src]="selectedMachine?.image" [alt]="selectedMachine?.name" class="img-fluid lightbox-img zoom-effect" />
+            
+            <!-- Right Arrow -->
+            <button class="btn nav-arrow-btn right-arrow shadow-md" (click)="nextImage()">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          
+          <!-- Details Description Section -->
+          <div class="col-lg-5 p-4 p-md-5 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-success-soft text-success text-capitalize px-3 py-1 fs-6 rounded">
+                  {{ selectedMachine?.category }}
+                </span>
+                <span class="badge px-3 py-1 fs-6 rounded" [class.bg-success]="selectedMachine?.available" [class.bg-danger]="!selectedMachine?.available">
+                  {{ selectedMachine?.available ? 'Available' : 'Rented Out' }}
+                </span>
+              </div>
+              
+              <h2 class="fw-bold mb-3 text-white-glow">{{ selectedMachine?.name }}</h2>
+              <p class="text-muted-custom mb-4">{{ selectedMachine?.description }}</p>
+              
+              <!-- Specifications List -->
+              <div class="mb-4">
+                <h5 class="fw-bold text-success-light mb-3"><i class="fas fa-cogs me-2"></i>{{ 'machinery.specs' | translate }}</h5>
+                <ul class="list-unstyled spec-list">
+                  <li *ngFor="let spec of selectedMachine?.specs; trackBy: trackByFn" class="mb-2 d-flex align-items-start">
+                    <i class="fas fa-check text-success me-2 mt-1"></i>
+                    <span>{{ spec }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Action Block -->
+            <div class="pt-4 border-top border-dark-soft">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <small class="text-muted-custom d-block">{{ 'machinery.rate' | translate }}</small>
+                  <span class="display-6 fw-bold text-success">₹{{ selectedMachine?.price }}</span>
+                  <span class="text-muted-custom">/{{ selectedMachine?.rateType === 'hour' ? ('machinery.perHour' | translate) : ('machinery.perDay' | translate) }}</span>
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <button 
+                  [disabled]="!selectedMachine?.available" 
+                  (click)="openInquiry(selectedMachine!, $event)" 
+                  class="btn btn-success-custom btn-lg py-3 fw-bold rounded-md-custom shadow-md">
+                  <i class="fas fa-calendar-check me-2"></i>{{ 'machinery.rentNow' | translate }}
+                </button>
+              </div>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     RENT INQUIRY FORM MODAL
+     ========================================== -->
+<div class="modal fade custom-dark-modal" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg bg-card-dark text-white rounded-lg-custom">
+      <div class="modal-header border-0 bg-dark-header p-3 justify-content-between align-items-center">
+        <h5 class="modal-title fw-bold text-white" id="inquiryModalLabel">
+          <i class="fas fa-calendar-plus text-success me-2"></i>{{ 'machinery.inquiryTitle' | translate }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form (ngSubmit)="submitInquiry()" #inquiryForm="ngForm" novalidate>
+        <div class="modal-body p-4">
+          
+          <!-- Machinery details banner in form -->
+          <div class="d-flex align-items-center bg-dark-header p-3 rounded-md-custom mb-4 border border-dark-soft">
+            <img [src]="selectedMachine?.image" [alt]="selectedMachine?.name" class="img-fluid rounded me-3" style="width: 70px; height: 50px; object-fit: cover;" />
+            <div>
+              <h6 class="fw-bold text-white mb-1">{{ selectedMachine?.name }}</h6>
+              <span class="text-success small fw-semibold">
+                ₹{{ selectedMachine?.price }}/{{ selectedMachine?.rateType === 'hour' ? ('machinery.perHour' | translate) : ('machinery.perDay' | translate) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Dynamic fields for Logged In vs Guest -->
+          <div *ngIf="!isLoggedIn" class="row g-3 mb-3">
+            <div class="col-12">
+              <label for="guestName" class="form-label small fw-bold text-muted-custom mb-1">Your Full Name <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control custom-input rounded-md-custom" 
+                id="guestName" 
+                [(ngModel)]="inquiryData.guestName" 
+                name="guestName" 
+                required 
+                #gName="ngModel"
+                [class.is-invalid]="gName.touched && gName.invalid">
+              <div class="invalid-feedback">Full name is required.</div>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="guestPhone" class="form-label small fw-bold text-muted-custom mb-1">Mobile Number <span class="text-danger">*</span></label>
+              <input 
+                type="tel" 
+                class="form-control custom-input rounded-md-custom" 
+                id="guestPhone" 
+                [(ngModel)]="inquiryData.guestPhone" 
+                name="guestPhone" 
+                required 
+                pattern="^[0-9]{10}$"
+                #gPhone="ngModel"
+                [class.is-invalid]="gPhone.touched && gPhone.invalid">
+              <div class="invalid-feedback">Enter a valid 10-digit mobile number.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="guestEmail" class="form-label small fw-bold text-muted-custom mb-1">Email Address <span class="text-danger">*</span></label>
+              <input 
+                type="email" 
+                class="form-control custom-input rounded-md-custom" 
+                id="guestEmail" 
+                [(ngModel)]="inquiryData.guestEmail" 
+                name="guestEmail" 
+                required 
+                email
+                #gEmail="ngModel"
+                [class.is-invalid]="gEmail.touched && gEmail.invalid">
+              <div class="invalid-feedback">Enter a valid email address.</div>
+            </div>
+          </div>
+
+          <!-- Logged In User Display -->
+          <div *ngIf="isLoggedIn" class="bg-dark-header p-3 rounded-md-custom mb-3 border border-dark-soft small text-muted-custom">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Farmer Name:</span>
+              <strong class="text-white">{{ currentUser?.name }}</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span>Mobile No:</span>
+              <strong class="text-white">{{ currentUser?.phone }}</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Email:</span>
+              <strong class="text-white">{{ currentUser?.email }}</strong>
+            </div>
+          </div>
+
+          <!-- Common Inquiry fields -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="startDate" class="form-label small fw-bold text-muted-custom mb-1">Start Date <span class="text-danger">*</span></label>
+              <input 
+                type="date" 
+                class="form-control custom-input rounded-md-custom" 
+                id="startDate" 
+                [(ngModel)]="inquiryData.startDate" 
+                name="startDate" 
+                required
+                #sDate="ngModel"
+                [class.is-invalid]="sDate.touched && sDate.invalid">
+              <div class="invalid-feedback">Start date is required.</div>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="duration" class="form-label small fw-bold text-muted-custom mb-1">Duration <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control custom-input rounded-md-custom" 
+                id="duration" 
+                placeholder="e.g., 5 Hours or 3 Days" 
+                [(ngModel)]="inquiryData.duration" 
+                name="duration" 
+                required
+                #dur="ngModel"
+                [class.is-invalid]="dur.touched && dur.invalid">
+              <div class="invalid-feedback">Duration is required.</div>
+            </div>
+
+            <div class="col-12">
+              <label for="notes" class="form-label small fw-bold text-muted-custom mb-1">Special Requirements (Optional)</label>
+              <textarea 
+                class="form-control custom-input rounded-md-custom" 
+                id="notes" 
+                rows="3" 
+                placeholder="Describe your location, soil type, crop types or any custom requirements..." 
+                [(ngModel)]="inquiryData.notes" 
+                name="notes"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer border-0 p-3 bg-dark-header d-flex gap-2">
+          <button type="button" class="btn btn-outline-light rounded-md-custom px-4" data-bs-dismiss="modal">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit" [disabled]="inquiryForm.invalid" class="btn btn-success-custom rounded-md-custom px-4">
+            <i class="fas fa-paper-plane me-1"></i>{{ 'machinery.inquirySubmit' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     SUCCESS RESPONSE MODAL
+     ========================================== -->
+<div class="modal fade custom-dark-modal" id="successModalMachinery" tabindex="-1" aria-labelledby="successModalMachineryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg bg-card-dark text-white rounded-lg-custom text-center">
+      <div class="modal-body p-5">
+        <!-- Success Icon -->
+        <div class="success-icon-container bg-success-soft rounded-circle d-inline-flex align-items-center justify-content-center mb-4">
+          <i class="fas fa-check-circle fa-4x text-success"></i>
+        </div>
+        
+        <h3 class="fw-bold mb-3 text-white-glow">{{ successTitle }}</h3>
+        <p class="text-muted-custom mb-4">{{ successMessage }}</p>
+        
+        <button type="button" class="btn btn-success-custom btn-lg rounded-md-custom px-5 py-2 shadow-sm" data-bs-dismiss="modal">
+          {{ 'common.gotit' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

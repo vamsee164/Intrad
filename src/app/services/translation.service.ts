@@ -140,7 +140,43 @@ export class TranslationService {
       // Farmers Modal
       'farmers.total': 'Total Farmers',
       'farmers.active': 'Active Farmers',
-      'farmers.new': 'New This Month'
+      'farmers.new': 'New This Month',
+      
+      // Machinery
+      'nav.machinery': 'Machinery',
+      'machinery.title': 'Agricultural Machinery & Equipment',
+      'machinery.subtitle': 'Modern and efficient machinery for all your farming needs',
+      'machinery.rentNow': 'Rent Now',
+      'machinery.viewDetails': 'View Details',
+      'machinery.specs': 'Specifications',
+      'machinery.rate': 'Rental Rate',
+      'machinery.perHour': 'per hour',
+      'machinery.perDay': 'per day',
+      'machinery.category.all': 'All Equipment',
+      'machinery.category.tractors': 'Tractors',
+      'machinery.category.harvesting': 'Harvesting',
+      'machinery.category.cultivation': 'Cultivation',
+      'machinery.category.sowing': 'Sowing',
+      'machinery.category.protection': 'Crop Protection',
+      'machinery.category.logistics': 'Logistics',
+      'machinery.backToHome': 'Back to Homepage',
+      'machinery.inquiryTitle': 'Rent Inquiry',
+      'machinery.inquirySubmit': 'Submit Rent Inquiry',
+      
+      // Products
+      'nav.products': 'Products',
+      'products.title': 'Processed Agricultural Products',
+      'products.subtitle': 'Explore our premium fresh and freeze-dried processed agricultural products',
+      'products.searchPlaceholder': 'Search agricultural products...',
+      'products.state.fresh': 'Fresh',
+      'products.state.slice': 'Freeze Dried Slice',
+      'products.state.granule': 'Freeze Dried Granule',
+      'products.category.all': 'All Products',
+      'products.category.fruits': 'Fruits',
+      'products.category.vegetables': 'Vegetables',
+      'products.category.herbs': 'Herbs & Leaves',
+      'products.category.flowers': 'Flowers',
+      'products.orderNow': 'Inquire Order'
     },
     te: {
       // Navigation
@@ -268,7 +304,42 @@ export class TranslationService {
       // Farmers Modal
       'farmers.total': 'మొత్తం రైతులు',
       'farmers.active': 'సక్రియ రైతులు',
-      'farmers.new': 'ఈ నెలలో కొత్తవారు'
+      'farmers.new': 'ఈ నెలలో కొత్తవారు',
+      
+      // Machinery
+      'nav.machinery': 'యంత్రాలు',
+      'machinery.title': 'వ్యవసాయ యంత్రాలు & పరికరాలు',
+      'machinery.subtitle': 'మీ వ్యవసాయ అవసరాల కోసం ఆధునిక మరియు సమర్థవంతమైన యంత్రాలు',
+      'machinery.rentNow': 'ఇప్పుడే అద్దెకు తీసుకోండి',
+      'machinery.viewDetails': 'వివరాలు చూడండి',
+      'machinery.specs': 'స్పెసిఫికేషన్లు',
+      'machinery.rate': 'అద్దె ధర',
+      'machinery.perHour': 'గంటకు',
+      'machinery.perDay': 'రోజుకు',
+      'machinery.category.all': 'అన్ని పరికరాలు',
+      'machinery.category.tractors': 'ట్రాక్టర్లు',
+      'machinery.category.harvesting': 'కోత యంత్రాలు',
+      'machinery.category.cultivation': 'దున్నే యంత్రాలు',
+      'machinery.category.sowing': 'విత్తే యంత్రాలు',
+      'machinery.category.protection': 'పంట రక్షణ',
+      'machinery.category.logistics': 'రవాణా',
+      'machinery.inquiryTitle': 'అద్దె విచారణ',
+      'machinery.inquirySubmit': 'అద్దె విచారణను సమర్పించండి',
+      
+      // Products
+      'nav.products': 'ఉత్పత్తులు',
+      'products.title': 'వ్యవసాయ ఉత్పత్తులు & ప్రాసెసింగ్',
+      'products.subtitle': 'మా ప్రీమియం తాజా మరియు ఫ్రీజ్-డ్రైడ్ ప్రాసెస్డ్ వ్యవసాయ ఉత్పత్తులను అన్వేషించండి',
+      'products.searchPlaceholder': 'వ్యవసాయ ఉత్పత్తులను శోధించండి...',
+      'products.state.fresh': 'తాజా',
+      'products.state.slice': 'ఫ్రీజ్ డ్రైడ్ స్లైస్',
+      'products.state.granule': 'ఫ్రీజ్ డ్రైడ్ గ్రాన్యూల్',
+      'products.category.all': 'అన్ని ఉత్పత్తులు',
+      'products.category.fruits': 'పండ్లు',
+      'products.category.vegetables': 'కూరగాయలు',
+      'products.category.herbs': 'ఆకులు & మూలికలు',
+      'products.category.flowers': 'పూలు',
+      'products.orderNow': 'ఆర్డర్ విచారణ'
     }
   };
 

@@ -6,8 +6,7 @@
         <!-- Category Quick Access Cards -->
         <div id="category-buttons-section" class="row text-center gx-3 gy-3 mb-4 justify-content-center">
             <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" data-bs-toggle="modal" data-bs-target="#comingSoonModal"
-                    (click)="setComingSoonFeature('Machinery')">
+                <div class="category-card" [routerLink]="['/machinery']" style="cursor: pointer;">
                     <div class="cat-icon-wrap cat-green">
                         <i class="fas fa-tractor"></i>
                     </div>
@@ -25,8 +24,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" data-bs-toggle="modal" data-bs-target="#comingSoonModal"
-                    (click)="setComingSoonFeature('Products')">
+                <div class="category-card" [routerLink]="['/products']" style="cursor: pointer;">
                     <div class="cat-icon-wrap cat-gold">
                         <i class="fas fa-shopping-basket"></i>
                     </div>
@@ -189,105 +187,48 @@
             <!-- SVG Curved Path + Hover Tooltip Cards -->
             <div class="roadmap-svg-wrapper">
 
-                <!-- Phase 1 Tooltip -->
+                <!-- Phase 1 Tooltip: Soil Testing -->
                 <div class="phase-tooltip phase-tooltip-1" [class.visible]="hoveredPhase === 1" role="tooltip"
                     aria-live="polite">
+                    <div class="pt-icon">🧪</div>
                     <div class="pt-phase">Phase 1</div>
-                    <span class="pt-tag done">Completed</span>
-                    <div class="pt-title">Site &amp; Infrastructure</div>
-                    <ul class="pt-features">
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Site Selection</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Land Acquisition</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Regulatory Approvals</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Infrastructure Planning</li>
-                    </ul>
-                    <div class="pt-date"><i class="fas fa-calendar-alt me-1"></i>Q1 2025</div>
+                    <div class="pt-title">Soil Testing</div>
                     <div class="pt-arrow"></div>
                 </div>
 
-                <!-- Phase 2 Tooltip -->
+                <!-- Phase 2 Tooltip: Seed Procurement -->
                 <div class="phase-tooltip phase-tooltip-2" [class.visible]="hoveredPhase === 2" role="tooltip"
                     aria-live="polite">
+                    <div class="pt-icon">🌱</div>
                     <div class="pt-phase">Phase 2</div>
-                    <span class="pt-tag done">Completed</span>
-                    <div class="pt-title">Processing Unit Setup</div>
-                    <ul class="pt-features">
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Vacuum Freeze Dryer Installation
-                        </li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Technical Specifications</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Quality Systems</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Support Infrastructure</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Cooling Requirements</li>
-                        <li><i class="fas fa-check-circle" style="color:#2d5016"></i>Expert Commissioning</li>
-                    </ul>
-                    <div class="pt-date"><i class="fas fa-calendar-alt me-1"></i>Q2–Q3 2025</div>
+                    <div class="pt-title">Seed Procurement</div>
                     <div class="pt-arrow"></div>
                 </div>
 
-                <!-- Phase 3 Tooltip -->
+                <!-- Phase 3 Tooltip: Suggestion & Feedback -->
                 <div class="phase-tooltip phase-tooltip-3" [class.visible]="hoveredPhase === 3" role="tooltip"
                     aria-live="polite">
+                    <div class="pt-icon">💬</div>
                     <div class="pt-phase">Phase 3</div>
-                    <span class="pt-tag active">In Progress</span>
-                    <div class="pt-title">Farming Practices</div>
-                    <ul class="pt-features">
-                        <li><i class="fas fa-circle" style="color:#c8941a;font-size:0.5rem;margin-top:5px"></i>Soil
-                            Testing</li>
-                        <li><i class="fas fa-circle" style="color:#c8941a;font-size:0.5rem;margin-top:5px"></i>Certified
-                            High Yield Seeds</li>
-                        <li><i class="fas fa-circle" style="color:#c8941a;font-size:0.5rem;margin-top:5px"></i>Crop
-                            Selection &amp; Pest Management</li>
-                        <li><i class="fas fa-circle" style="color:#c8941a;font-size:0.5rem;margin-top:5px"></i>Modern
-                            Farm Equipment</li>
-                        <li><i class="fas fa-circle"
-                                style="color:#c8941a;font-size:0.5rem;margin-top:5px"></i>Sustainable Farming Practices
-                        </li>
-                    </ul>
-                    <div class="pt-date"><i class="fas fa-calendar-alt me-1"></i>Q4 2025</div>
+                    <div class="pt-title">Suggestion &amp; Feedback</div>
                     <div class="pt-arrow pt-arrow-top"></div>
                 </div>
 
-                <!-- Phase 4 Tooltip -->
+                <!-- Phase 4 Tooltip: Harvesting -->
                 <div class="phase-tooltip phase-tooltip-4" [class.visible]="hoveredPhase === 4" role="tooltip"
                     aria-live="polite">
+                    <div class="pt-icon">🌾</div>
                     <div class="pt-phase">Phase 4</div>
-                    <span class="pt-tag upcoming">Upcoming</span>
-                    <div class="pt-title">Pilot Launch</div>
-                    <ul class="pt-features">
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Pilot
-                            Batch: 200 Farmers</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Sample
-                            Production</li>
-                        <li><i class="fas fa-circle"
-                                style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Distribution</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Feedback
-                            Collection</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Product
-                            Refinement</li>
-                        <li><i class="fas fa-circle"
-                                style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Pre-Orders</li>
-                    </ul>
-                    <div class="pt-date"><i class="fas fa-calendar-alt me-1"></i>2026</div>
+                    <div class="pt-title">Harvesting</div>
                     <div class="pt-arrow"></div>
                 </div>
 
-                <!-- Phase 5 Tooltip -->
+                <!-- Phase 5 Tooltip: Processing & Marketing -->
                 <div class="phase-tooltip phase-tooltip-5" [class.visible]="hoveredPhase === 5" role="tooltip"
                     aria-live="polite">
+                    <div class="pt-icon">📦</div>
                     <div class="pt-phase">Phase 5</div>
-                    <span class="pt-tag upcoming">Future</span>
-                    <div class="pt-title">Scale &amp; Expand</div>
-                    <ul class="pt-features">
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>National
-                            Distribution</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Export
-                            Markets</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>1000+
-                            Farmer Network</li>
-                        <li><i class="fas fa-circle" style="color:#94a3b8;font-size:0.5rem;margin-top:5px"></i>Tech
-                            Integration</li>
-                    </ul>
-                    <div class="pt-date"><i class="fas fa-calendar-alt me-1"></i>2027+</div>
+                    <div class="pt-title">Processing &amp; Marketing</div>
                     <div class="pt-arrow"></div>
                 </div>
 
