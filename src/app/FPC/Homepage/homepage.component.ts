@@ -62,7 +62,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   farmersData = {
     totalFarmers: 0,
     activeFarmers: 0,
-    newThisMonth: 0
+    newThisMonth: 0,
+    totalLandAcres: 0
   };
 
   signupData: SignupFormData = {
@@ -171,6 +172,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
           if (users) {
             let farmerCount = 0;
             let newThisMonth = 0;
+            let totalLand = 0;
             const now = new Date();
             const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
@@ -180,11 +182,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
               if (user?.role === 'farmer') {
                 farmerCount++;
                 if (user.createdAt && user.createdAt >= startOfMonth) newThisMonth++;
+                const acres = parseFloat(user.acreOfLand);
+                if (!isNaN(acres) && acres > 0) {
+                  totalLand += acres;
+                }
               }
             }
             this.farmersData.totalFarmers = farmerCount;
             this.farmersData.activeFarmers = farmerCount;
             this.farmersData.newThisMonth = newThisMonth;
+            this.farmersData.totalLandAcres = Math.round(totalLand * 10) / 10;
           }
         },
         error: () => {

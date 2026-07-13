@@ -171,6 +171,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div *ngIf="paginatedFarmers.length === 0 && !loading" class="text-center py-4 text-muted">
+                            <i class="bi bi-person fs-3 d-block mb-2"></i>No farmers registered yet.
+                        </div>
                         <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
                             <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
                             <nav><ul class="pagination pagination-sm mb-0">
@@ -319,27 +322,98 @@
                 <div *ngIf="!loading && serviceRequests.length > 0" class="card data-card">
                     <div class="card-body p-2">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
                                 <thead class="table-light">
-                                    <tr><th>ID</th><th>Farmer</th><th>Mobile</th><th>Service</th><th>Equipment</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Mobile</th>
+                                        <th>Village</th>
+                                        <th>Service Package</th>
+                                        <th>Service Type</th>
+                                        <th>Equipment</th>
+                                        <th>Price</th>
+                                        <th>Preferred Date</th>
+                                        <th>Notes</th>
+                                        <th>Submitted On</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let request of paginatedServiceRequests; trackBy: trackByFn">
-                                        <td><code>{{ request.requestId || request.id }}</code></td>
-                                        <td>{{ request.farmerName }}</td>
-                                        <td>{{ request.mobileNumber }}</td>
-                                        <td><span class="badge bg-primary">{{ request.serviceName }}</span></td>
-                                        <td>{{ request.selectedEquipment || 'N/A' }}</td>
-                                        <td>{{ request.preferredDate }}</td>
+                                        <!-- Farmer Name -->
+                                        <td class="fw-semibold">{{ request.farmerName || '—' }}</td>
+
+                                        <!-- Mobile — clickable -->
                                         <td>
-                                            <span class="badge" [ngClass]="{'bg-warning':request.status==='pending','bg-success':request.status==='approved','bg-danger':request.status==='rejected','bg-info':request.status==='completed'}">
+                                            <a [href]="'tel:' + request.mobileNumber" class="text-decoration-none text-dark" *ngIf="request.mobileNumber">
+                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ request.mobileNumber }}
+                                            </a>
+                                            <span *ngIf="!request.mobileNumber" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Village -->
+                                        <td>{{ request.village || '—' }}</td>
+
+                                        <!-- Service Package (serviceName = package title e.g. "Soil Testing") -->
+                                        <td>
+                                            <span class="badge bg-primary" *ngIf="request.serviceName">{{ request.serviceName }}</span>
+                                            <span *ngIf="!request.serviceName" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Service Type (serviceType = same as package name, set from form) -->
+                                        <td>
+                                            <span class="badge bg-info text-dark" *ngIf="request.serviceType && request.serviceType !== request.serviceName">{{ request.serviceType }}</span>
+                                            <span *ngIf="!request.serviceType || request.serviceType === request.serviceName" class="text-muted small">Same as package</span>
+                                        </td>
+
+                                        <!-- Equipment (only for equipment-rental) -->
+                                        <td>{{ request.selectedEquipment || '—' }}</td>
+
+                                        <!-- Price -->
+                                        <td>
+                                            <span class="fw-semibold text-success" *ngIf="request.servicePrice">{{ request.servicePrice }}</span>
+                                            <span *ngIf="!request.servicePrice" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Preferred Date -->
+                                        <td>{{ request.preferredDate || '—' }}</td>
+
+                                        <!-- Additional Notes -->
+                                        <td style="max-width:150px;">
+                                            <span class="text-muted small" style="white-space:normal;word-break:break-word;" *ngIf="request.additionalNotes">{{ request.additionalNotes }}</span>
+                                            <span *ngIf="!request.additionalNotes" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Submitted On -->
+                                        <td class="text-muted small">{{ request.submittedAt ? (request.submittedAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
+
+                                        <!-- Status Badge -->
+                                        <td>
+                                            <span class="badge"
+                                                [ngClass]="{
+                                                    'bg-warning text-dark': request.status === 'pending' || !request.status,
+                                                    'bg-success': request.status === 'approved',
+                                                    'bg-danger': request.status === 'rejected',
+                                                    'bg-info text-dark': request.status === 'completed'
+                                                }">
                                                 {{ request.status || 'pending' }}
                                             </span>
                                         </td>
+
+                                        <!-- Actions -->
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-success" (click)="updateRequestStatus(request.id,'approved','service')" [disabled]="request.status==='approved'"><i class="bi bi-check"></i></button>
-                                                <button class="btn btn-danger" (click)="updateRequestStatus(request.id,'rejected','service')" [disabled]="request.status==='rejected'"><i class="bi bi-x"></i></button>
+                                                <button class="btn btn-success" title="Approve"
+                                                    (click)="updateRequestStatus(request.id, 'approved', 'service')"
+                                                    [disabled]="request.status === 'approved'">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                                <button class="btn btn-danger" title="Reject"
+                                                    (click)="updateRequestStatus(request.id, 'rejected', 'service')"
+                                                    [disabled]="request.status === 'rejected'">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -430,7 +504,7 @@
                                     <tr *ngFor="let crop of cropsAvailable; trackBy: trackByFn">
                                         <td>{{ crop.name }}</td>
                                         <td>{{ crop.quantity | number }} Kg</td>
-                                        <td>{{ (crop.quantity / 1000) | number:'1.0-0' }}</td>
+                                        <td>{{ crop.quantity > 0 ? (crop.quantity / 1000 | number:'1.0-0') : '—' }}</td>
                                     </tr>
                                 </tbody>
                             </table>

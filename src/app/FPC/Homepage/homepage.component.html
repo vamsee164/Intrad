@@ -899,26 +899,36 @@
                 <div class="text-center mb-4">
                     <h4 class="text-primary mb-3">{{ 'modal.connected' | translate }}</h4>
                 </div>
-                <div class="row text-center">
-                    <div class="col-4">
+                <div class="row text-center g-3">
+                    <div class="col-6">
                         <div class="p-3 border rounded">
                             <i class="fas fa-users text-primary mb-2" style="font-size: 2rem;"></i>
                             <div class="h4 text-primary mb-1">{{farmersData.totalFarmers}}</div>
                             <small class="text-muted">{{ 'farmers.total' | translate }}</small>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="p-3 border rounded">
                             <i class="fas fa-user-check text-success mb-2" style="font-size: 2rem;"></i>
                             <div class="h4 text-success mb-1">{{farmersData.activeFarmers}}</div>
                             <small class="text-muted">{{ 'farmers.active' | translate }}</small>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="p-3 border rounded">
                             <i class="fas fa-user-plus text-info mb-2" style="font-size: 2rem;"></i>
                             <div class="h4 text-info mb-1">{{farmersData.newThisMonth}}</div>
                             <small class="text-muted">{{ 'farmers.new' | translate }}</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border rounded border-warning">
+                            <i class="fas fa-map text-warning mb-2" style="font-size: 2rem;"></i>
+                            <div class="h4 text-warning mb-1">
+                                {{farmersData.totalLandAcres > 0 ? farmersData.totalLandAcres : '—'}}
+                                <small class="fs-6 fw-normal" *ngIf="farmersData.totalLandAcres > 0">ac</small>
+                            </div>
+                            <small class="text-muted">Total Land Registered</small>
                         </div>
                     </div>
                 </div>
