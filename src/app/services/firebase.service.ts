@@ -226,7 +226,8 @@ export class FirebaseService {
       status: 'pending',
       submittedAt: new Date().toISOString()
     };
-    return this.http.post(`${this.baseUrl}/buyerForms/${formId}.json`, formWithId);
+    // Use PUT (not POST) — POST wraps data in an extra Firebase auto-key, breaking Object.entries() reads
+    return this.http.put(`${this.baseUrl}/buyerForms/${formId}.json`, formWithId);
   }
 
   getAllBuyerForms(): Observable<any> {
@@ -241,7 +242,8 @@ export class FirebaseService {
       status: 'pending',
       submittedAt: new Date().toISOString()
     };
-    return this.http.post(`${this.baseUrl}/sellerForms/${formId}.json`, formWithId);
+    // Use PUT (not POST) — POST wraps data in an extra Firebase auto-key, breaking Object.entries() reads
+    return this.http.put(`${this.baseUrl}/sellerForms/${formId}.json`, formWithId);
   }
 
   getAllSellerForms(): Observable<any> {

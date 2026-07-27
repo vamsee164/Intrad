@@ -37,6 +37,7 @@ export class SellerComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   private readonly destroy$ = new Subject<void>();
   isSubmitting: boolean = false;
+  submitError: string = '';
 
   constructor(
     private authService: AuthService,
@@ -106,7 +107,6 @@ export class SellerComponent implements OnInit, OnDestroy {
       status: 'pending'
     };
     
-    console.log('Submitting Seller offer...');
     this.isSubmitting = true;
     
     this.firebaseService.createSellerForm(submissionData)
@@ -114,6 +114,7 @@ export class SellerComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.isSubmitting = false;
+          this.submitError = '';
           // Save to localStorage for future reference
           localStorage.setItem('lastSellerSubmission', JSON.stringify(submissionData));
           
@@ -124,10 +125,9 @@ export class SellerComponent implements OnInit, OnDestroy {
           // Scroll to top
           window.scrollTo({ top: 0, behavior: 'smooth' });
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isSubmitting = false;
-          console.error('Failed to submit seller form:', error);
-          alert('Failed to submit offer. Please try again.');
+          this.submitError = 'Failed to submit offer. Please check your connection and try again.';
         }
       });
   }
