@@ -6,4 +6,4 @@ Disallow: /farmer
 Disallow: /profile
 Disallow: /report
 
-Sitemap: https://intra-d.web.app/sitemap.xml
+Sitemap: https://intra-d.com/sitemap.xml
