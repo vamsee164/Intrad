@@ -171,6 +171,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div *ngIf="paginatedFarmers.length === 0 && !loading" class="text-center py-4 text-muted">
+                            <i class="bi bi-person fs-3 d-block mb-2"></i>No farmers registered yet.
+                        </div>
                         <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
                             <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
                             <nav><ul class="pagination pagination-sm mb-0">
@@ -185,51 +188,69 @@
 
             <!-- Buyers View -->
             <div *ngIf="activeView === 'buyers'">
-                <h2 class="mb-3">Buyers Details</h2>
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
+                    <h2 class="mb-0"><i class="bi bi-bag me-2"></i>Buyer Inquiries</h2>
+                    <span class="badge bg-success fs-6">{{ buyersData.length }} Total</span>
+                </div>
                 <div *ngIf="loading" class="text-center py-5">
                     <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading buyers data...</p>
+                    <p class="mt-3">Loading buyer inquiries...</p>
                 </div>
-                <div *ngIf="!loading" class="card data-card">
+                <div *ngIf="!loading && buyersData.length === 0" class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>No buyer inquiries submitted yet.
+                </div>
+                <div *ngIf="!loading && buyersData.length > 0" class="card data-card">
                     <div class="card-body p-2">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Name</th>
-                                        <th>Mobile</th>
-                                        <th>Email</th>
-                                        <th>Company</th>
-                                        <th>Crops Looking For</th>
-                                        <th>Village</th>
-                                        <th>Registered</th>
+                                        <th>📱 Mobile</th>
+                                        <th>✉️ Personal Email</th>
+                                        <th>Category</th>
+                                        <th>Product Type</th>
+                                        <th>Details</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Submitted On</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let buyer of paginatedBuyers; trackBy: trackByFn">
-                                        <td class="fw-semibold">{{ buyer.name || buyer.companyName || 'N/A' }}</td>
+                                        <td class="fw-semibold">{{ buyer.name }}</td>
                                         <td>
-                                            <a [href]="'tel:' + buyer.mobileNo" class="text-decoration-none" *ngIf="buyer.mobileNo && buyer.mobileNo !== 'N/A'">
+                                            <a [href]="'tel:' + buyer.mobileNo" class="text-decoration-none"
+                                               *ngIf="buyer.mobileNo && buyer.mobileNo !== 'N/A'">
                                                 <i class="bi bi-telephone-fill text-success me-1"></i>{{ buyer.mobileNo }}
                                             </a>
                                             <span class="text-muted" *ngIf="!buyer.mobileNo || buyer.mobileNo === 'N/A'">—</span>
                                         </td>
                                         <td>
-                                            <a [href]="'mailto:' + buyer.email" class="text-decoration-none text-primary" *ngIf="buyer.email && buyer.email !== 'N/A'">
+                                            <a [href]="'mailto:' + buyer.email" class="text-decoration-none text-primary"
+                                               *ngIf="buyer.email && buyer.email !== 'N/A'">
                                                 <i class="bi bi-envelope-fill me-1"></i>{{ buyer.email }}
                                             </a>
                                             <span class="text-muted" *ngIf="!buyer.email || buyer.email === 'N/A'">—</span>
                                         </td>
-                                        <td>{{ buyer.companyName || '—' }}</td>
-                                        <td>{{ buyer.typicalCrops || buyer.cropRequired || '—' }}</td>
-                                        <td>{{ buyer.village || '—' }}</td>
-                                        <td class="text-muted small">{{ buyer.createdAt ? (buyer.createdAt | date:'dd MMM yyyy') : '—' }}</td>
+                                        <td><span class="badge bg-secondary">{{ buyer.mainCategory || '—' }}</span></td>
+                                        <td class="fw-semibold text-primary">{{ buyer.productType || '—' }}</td>
+                                        <td>{{ buyer.details || '—' }}</td>
+                                        <td><span class="badge bg-info text-dark">{{ buyer.quantity || '—' }}</span></td>
+                                        <td>
+                                            <span class="badge"
+                                                [ngClass]="{
+                                                    'bg-warning text-dark': buyer.status === 'pending' || !buyer.status,
+                                                    'bg-success': buyer.status === 'approved',
+                                                    'bg-danger': buyer.status === 'rejected'
+                                                }">
+                                                {{ buyer.status || 'pending' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-muted small">{{ buyer.createdAt ? (buyer.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div *ngIf="paginatedBuyers.length === 0 && !loading" class="text-center py-4 text-muted">
-                            <i class="bi bi-bag fs-3 d-block mb-2"></i>No buyers registered yet.
                         </div>
                         <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
                             <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
@@ -245,53 +266,85 @@
 
             <!-- Sellers View -->
             <div *ngIf="activeView === 'sellers'">
-                <h2 class="mb-3"><i class="bi bi-shop me-2"></i>Sellers Details</h2>
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
+                    <h2 class="mb-0"><i class="bi bi-shop me-2"></i>Seller Offers</h2>
+                    <span class="badge bg-success fs-6">{{ sellersData.length }} Total</span>
+                </div>
                 <div *ngIf="loading" class="text-center py-5">
                     <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading sellers data...</p>
+                    <p class="mt-3">Loading seller offers...</p>
                 </div>
-                <div *ngIf="!loading" class="card data-card">
+                <div *ngIf="!loading && sellersData.length === 0" class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>No seller offers submitted yet.
+                </div>
+                <div *ngIf="!loading && sellersData.length > 0" class="card data-card">
                     <div class="card-body p-2">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Name</th>
-                                        <th>Mobile</th>
-                                        <th>Email</th>
-                                        <th>Village</th>
-                                        <th>Mandal</th>
-                                        <th>Crops</th>
-                                        <th>Land (Acres)</th>
-                                        <th>Registered</th>
+                                        <th>📱 Mobile</th>
+                                        <th>✉️ Personal Email</th>
+                                        <th>Raw Material</th>
+                                        <th>Quantity</th>
+                                        <th>Location</th>
+                                        <th>Price/Unit</th>
+                                        <th>Harvest Date</th>
+                                        <th>Quality</th>
+                                        <th>Status</th>
+                                        <th>Submitted On</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let seller of paginatedSellers; trackBy: trackByFn">
-                                        <td class="fw-semibold">{{ seller.name || 'N/A' }}</td>
+                                        <td class="fw-semibold">{{ seller.name }}</td>
                                         <td>
-                                            <a [href]="'tel:' + seller.mobileNo" class="text-decoration-none" *ngIf="seller.mobileNo && seller.mobileNo !== 'N/A'">
+                                            <a [href]="'tel:' + seller.mobileNo" class="text-decoration-none"
+                                               *ngIf="seller.mobileNo && seller.mobileNo !== 'N/A'">
                                                 <i class="bi bi-telephone-fill text-success me-1"></i>{{ seller.mobileNo }}
                                             </a>
                                             <span class="text-muted" *ngIf="!seller.mobileNo || seller.mobileNo === 'N/A'">—</span>
                                         </td>
                                         <td>
-                                            <a [href]="'mailto:' + seller.email" class="text-decoration-none text-primary" *ngIf="seller.email && seller.email !== 'N/A'">
+                                            <a [href]="'mailto:' + seller.email" class="text-decoration-none text-primary"
+                                               *ngIf="seller.email && seller.email !== 'N/A'">
                                                 <i class="bi bi-envelope-fill me-1"></i>{{ seller.email }}
                                             </a>
                                             <span class="text-muted" *ngIf="!seller.email || seller.email === 'N/A'">—</span>
                                         </td>
-                                        <td>{{ seller.village || '—' }}</td>
-                                        <td>{{ seller.mandal || '—' }}</td>
-                                        <td>{{ seller.typicalCrops || '—' }}</td>
-                                        <td>{{ seller.acreOfLand || '—' }}</td>
-                                        <td class="text-muted small">{{ seller.createdAt ? (seller.createdAt | date:'dd MMM yyyy') : '—' }}</td>
+                                        <td class="fw-semibold text-success">{{ seller.rawMaterialType || '—' }}</td>
+                                        <td><span class="badge bg-info text-dark">{{ seller.quantity || '—' }}</span></td>
+                                        <td>{{ seller.location || seller.village || '—' }}</td>
+                                        <td>
+                                            <span class="fw-semibold text-success" *ngIf="seller.pricePerUnit && seller.pricePerUnit !== 'N/A'">₹{{ seller.pricePerUnit }}</span>
+                                            <span class="text-muted" *ngIf="!seller.pricePerUnit || seller.pricePerUnit === 'N/A'">—</span>
+                                        </td>
+                                        <td>{{ seller.harvestDate ? (seller.harvestDate | date:'dd MMM yyyy') : '—' }}</td>
+                                        <td>
+                                            <span class="badge"
+                                                [ngClass]="{
+                                                    'bg-warning text-dark': seller.qualityGrade === 'basic',
+                                                    'bg-info text-dark': seller.qualityGrade === 'standard',
+                                                    'bg-success': seller.qualityGrade === 'premium'
+                                                }">
+                                                {{ seller.qualityGrade ? (seller.qualityGrade | uppercase) : '—' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge"
+                                                [ngClass]="{
+                                                    'bg-warning text-dark': seller.status === 'pending' || !seller.status,
+                                                    'bg-success': seller.status === 'approved',
+                                                    'bg-danger': seller.status === 'rejected'
+                                                }">
+                                                {{ seller.status || 'pending' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-muted small">{{ seller.createdAt ? (seller.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div *ngIf="paginatedSellers.length === 0 && !loading" class="text-center py-4 text-muted">
-                            <i class="bi bi-shop fs-3 d-block mb-2"></i>No sellers registered yet.
                         </div>
                         <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
                             <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
@@ -319,27 +372,98 @@
                 <div *ngIf="!loading && serviceRequests.length > 0" class="card data-card">
                     <div class="card-body p-2">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
                                 <thead class="table-light">
-                                    <tr><th>ID</th><th>Farmer</th><th>Mobile</th><th>Service</th><th>Equipment</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Mobile</th>
+                                        <th>Village</th>
+                                        <th>Service Package</th>
+                                        <th>Service Type</th>
+                                        <th>Equipment</th>
+                                        <th>Price</th>
+                                        <th>Preferred Date</th>
+                                        <th>Notes</th>
+                                        <th>Submitted On</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let request of paginatedServiceRequests; trackBy: trackByFn">
-                                        <td><code>{{ request.requestId || request.id }}</code></td>
-                                        <td>{{ request.farmerName }}</td>
-                                        <td>{{ request.mobileNumber }}</td>
-                                        <td><span class="badge bg-primary">{{ request.serviceName }}</span></td>
-                                        <td>{{ request.selectedEquipment || 'N/A' }}</td>
-                                        <td>{{ request.preferredDate }}</td>
+                                        <!-- Farmer Name -->
+                                        <td class="fw-semibold">{{ request.farmerName || '—' }}</td>
+
+                                        <!-- Mobile — clickable -->
                                         <td>
-                                            <span class="badge" [ngClass]="{'bg-warning':request.status==='pending','bg-success':request.status==='approved','bg-danger':request.status==='rejected','bg-info':request.status==='completed'}">
+                                            <a [href]="'tel:' + request.mobileNumber" class="text-decoration-none text-dark" *ngIf="request.mobileNumber">
+                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ request.mobileNumber }}
+                                            </a>
+                                            <span *ngIf="!request.mobileNumber" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Village -->
+                                        <td>{{ request.village || '—' }}</td>
+
+                                        <!-- Service Package (serviceName = package title e.g. "Soil Testing") -->
+                                        <td>
+                                            <span class="badge bg-primary" *ngIf="request.serviceName">{{ request.serviceName }}</span>
+                                            <span *ngIf="!request.serviceName" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Service Type (serviceType = same as package name, set from form) -->
+                                        <td>
+                                            <span class="badge bg-info text-dark" *ngIf="request.serviceType && request.serviceType !== request.serviceName">{{ request.serviceType }}</span>
+                                            <span *ngIf="!request.serviceType || request.serviceType === request.serviceName" class="text-muted small">Same as package</span>
+                                        </td>
+
+                                        <!-- Equipment (only for equipment-rental) -->
+                                        <td>{{ request.selectedEquipment || '—' }}</td>
+
+                                        <!-- Price -->
+                                        <td>
+                                            <span class="fw-semibold text-success" *ngIf="request.servicePrice">{{ request.servicePrice }}</span>
+                                            <span *ngIf="!request.servicePrice" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Preferred Date -->
+                                        <td>{{ request.preferredDate || '—' }}</td>
+
+                                        <!-- Additional Notes -->
+                                        <td style="max-width:150px;">
+                                            <span class="text-muted small" style="white-space:normal;word-break:break-word;" *ngIf="request.additionalNotes">{{ request.additionalNotes }}</span>
+                                            <span *ngIf="!request.additionalNotes" class="text-muted">—</span>
+                                        </td>
+
+                                        <!-- Submitted On -->
+                                        <td class="text-muted small">{{ request.submittedAt ? (request.submittedAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
+
+                                        <!-- Status Badge -->
+                                        <td>
+                                            <span class="badge"
+                                                [ngClass]="{
+                                                    'bg-warning text-dark': request.status === 'pending' || !request.status,
+                                                    'bg-success': request.status === 'approved',
+                                                    'bg-danger': request.status === 'rejected',
+                                                    'bg-info text-dark': request.status === 'completed'
+                                                }">
                                                 {{ request.status || 'pending' }}
                                             </span>
                                         </td>
+
+                                        <!-- Actions -->
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-success" (click)="updateRequestStatus(request.id,'approved','service')" [disabled]="request.status==='approved'"><i class="bi bi-check"></i></button>
-                                                <button class="btn btn-danger" (click)="updateRequestStatus(request.id,'rejected','service')" [disabled]="request.status==='rejected'"><i class="bi bi-x"></i></button>
+                                                <button class="btn btn-success" title="Approve"
+                                                    (click)="updateRequestStatus(request.id, 'approved', 'service')"
+                                                    [disabled]="request.status === 'approved'">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                                <button class="btn btn-danger" title="Reject"
+                                                    (click)="updateRequestStatus(request.id, 'rejected', 'service')"
+                                                    [disabled]="request.status === 'rejected'">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -430,7 +554,7 @@
                                     <tr *ngFor="let crop of cropsAvailable; trackBy: trackByFn">
                                         <td>{{ crop.name }}</td>
                                         <td>{{ crop.quantity | number }} Kg</td>
-                                        <td>{{ (crop.quantity / 1000) | number:'1.0-0' }}</td>
+                                        <td>{{ crop.quantity > 0 ? (crop.quantity / 1000 | number:'1.0-0') : '—' }}</td>
                                     </tr>
                                 </tbody>
                             </table>

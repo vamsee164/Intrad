@@ -188,6 +188,10 @@
                     [disabled]="!sellerForm.valid || isSubmitting">{{ isSubmitting ? 'Submitting...' : 'Submit Offer' }}</button>
             </div>
         </div>
+        <!-- Inline submit error -->
+        <div class="alert alert-danger mt-3" role="alert" *ngIf="submitError">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ submitError }}
+        </div>
     </form>
     </div>
 

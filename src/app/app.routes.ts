@@ -29,6 +29,14 @@ export const routes: Routes = [
     loadComponent: () => import('./FPC/contact-us/contact-us.component').then(m => m.ContactUsComponent)
   },
   {
+    path: 'machinery',
+    loadComponent: () => import('./FPC/machinery/machinery.component').then(m => m.MachineryComponent)
+  },
+  {
+    path: 'products',
+    loadComponent: () => import('./FPC/products/products.component').then(m => m.ProductsComponent)
+  },
+  {
     path: 'crops/:category',
     loadComponent: () => import('./FPC/product-list/product-list.component').then(m => m.ProductListComponent)
   },

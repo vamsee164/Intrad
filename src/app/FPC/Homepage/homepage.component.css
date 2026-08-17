@@ -772,10 +772,10 @@
 /* ── Phase Tooltip Cards ──────────────────── */
 .phase-tooltip {
   position: absolute;
-  width: 188px;
+  width: 150px;
   background: #fff;
   border-radius: 12px;
-  padding: 12px 13px 10px;
+  padding: 10px 12px 8px;
   border: 1.5px solid var(--border);
   box-shadow: 0 8px 28px rgba(45, 80, 22, 0.16), 0 2px 8px rgba(0, 0, 0, 0.06);
   z-index: 10;
@@ -783,6 +783,7 @@
   opacity: 0;
   transform: translateY(6px) scale(0.97);
   transition: opacity 0.18s ease, transform 0.18s ease;
+  text-align: center;
 }
 
 .phase-tooltip.visible {
@@ -855,7 +856,8 @@
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--text-muted);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+  text-align: center;
 }
 
 .pt-tag {
@@ -883,12 +885,20 @@
   color: #475569;
 }
 
+.pt-icon {
+  font-size: 1.6rem;
+  text-align: center;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
 .pt-title {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   line-height: 1.25;
+  text-align: center;
 }
 
 .pt-features {

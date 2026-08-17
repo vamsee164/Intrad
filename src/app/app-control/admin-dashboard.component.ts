@@ -21,7 +21,7 @@ interface CropData {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   providers: [DatePipe],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
@@ -75,14 +75,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   loadDashboardData() {
     this.loading = true;
-    console.log('Loading dashboard data...');
     
     // Load all users (farmers and sellers)
     this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: (users: any) => {
-        console.log('Users response:', users);
         if (users) {
-          const userList = Object.values(users).flat();
+          const userList = Object.values(users) as any[];
           const farmers = userList.filter((user: any) => user.role === 'farmer');
           const sellers = userList.filter((user: any) => user.role === 'seller' || user.role === 'user');
           
@@ -96,18 +94,17 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           const cropMap = new Map();
           
           farmers.forEach((farmer: any) => {
-            if (farmer.typicalCrops) {
-              const crops = farmer.typicalCrops.split(',');
+            const rawCrops = farmer.typicalCrops;
+            if (rawCrops) {
+              const crops = Array.isArray(rawCrops)
+                ? rawCrops
+                : String(rawCrops).split(',');
               crops.forEach((crop: string) => {
                 const cropName = crop.trim();
-                const quantity = farmer.acreOfLand ? farmer.acreOfLand * 1000 : 1000;
+                if (!cropName) return;
+                const quantity = farmer.acreOfLand ? parseFloat(farmer.acreOfLand) * 1000 : 1000;
                 totalCrops += quantity;
-                
-                if (cropMap.has(cropName)) {
-                  cropMap.set(cropName, cropMap.get(cropName) + quantity);
-                } else {
-                  cropMap.set(cropName, quantity);
-                }
+                cropMap.set(cropName, (cropMap.get(cropName) || 0) + quantity);
               });
             }
           });
@@ -119,13 +116,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           
           this.stats.cropsAvailable = totalCrops;
           this.stats.urgentCrops = Math.floor(totalCrops * 0.18);
-          
-          console.log('Stats updated:', this.stats);
         }
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading users:', error);
         this.stats.totalFarmers = 0;
         this.stats.totalBuyers = 0;
         this.stats.activeBuyers = 0;
@@ -146,11 +140,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       { name: 'Tomato', quantity: 2200, timeframe: '72 hrs' }
     ];
     
-    console.log('Dashboard data loaded');
   }
 
   setActiveView(view: 'dashboard' | 'farmers' | 'buyers' | 'sellers' | 'service-requests' | 'soil-tests' | 'reports') {
-    console.log('Setting active view to:', view);
     this.activeView = view;
     
     if (view === 'farmers') {
@@ -169,22 +161,21 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadFarmersData() {
-    console.log('Loading farmers data...');
     this.loading = true;
     this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: (users: any) => {
-        console.log('Farmers data received:', users);
         if (users) {
-          const userList = Object.values(users).flat();
+          const userList = Object.values(users) as any[];
           this.farmersData = userList.filter((user: any) => user.role === 'farmer').map((farmer: any) => ({
             ...farmer,
             totalLand: farmer.acreOfLand || 0,
-            cropsProduced: farmer.typicalCrops || 'N/A',
+            cropsProduced: Array.isArray(farmer.typicalCrops)
+              ? farmer.typicalCrops.join(', ')
+              : (farmer.typicalCrops || 'N/A'),
             waterSource: farmer.waterSource || 'N/A',
             soilType: farmer.soilType || 'N/A',
             fertilizers: farmer.fertilizers || 'N/A'
           }));
-          console.log('Processed farmers data:', this.farmersData);
         }
         this.currentPage = 1;
         this.updatePagination();
@@ -198,83 +189,93 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadBuyersData() {
-    console.log('Loading buyers data...');
     this.loading = true;
-    
-    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (users: any) => {
-        if (users) {
-          const userList = Object.values(users).flat();
-          this.buyersData = userList
-            .filter((user: any) => user.role === 'buyer')
-            .map((buyer: any) => ({
-              ...buyer,
-              name: buyer.name || 'N/A',
-              mobileNo: buyer.mobileNo || buyer.phone || 'N/A',
-              email: buyer.email || 'N/A',
-              companyName: buyer.companyName || buyer.name || 'N/A',
-              village: buyer.village || 'N/A',
-              typicalCrops: Array.isArray(buyer.typicalCrops)
-                ? buyer.typicalCrops.join(', ')
-                : (buyer.typicalCrops || 'N/A')
-            }));
+
+    // Read from buyerForms collection — personal email & phone from the APU buyer form submission
+    this.firebaseService.getAllBuyerForms().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (forms: any) => {
+        if (forms) {
+          this.buyersData = Object.entries(forms).map(([key, value]: [string, any]) => ({
+            id: key,
+            name: value.buyer?.name || 'N/A',
+            // Personal email submitted in buyer form — NOT the auto-generated @intra-d.com email
+            email: value.buyer?.email || 'N/A',
+            // Personal phone submitted in buyer form
+            mobileNo: value.buyer?.phone || 'N/A',
+            mainCategory: value.mainCategory || 'N/A',
+            subCategory: value.subCategory || 'N/A',
+            productType: value.productType || 'N/A',
+            details: value.details || 'N/A',
+            quantity: value.buyer?.quantity || 'N/A',
+            status: value.status || 'pending',
+            submittedAt: value.submittedAt || value.timestamp || null,
+            cropRequired: value.productType || value.mainCategory || 'N/A',
+            companyName: value.buyer?.name || 'N/A',
+            village: 'N/A',
+            createdAt: value.submittedAt || value.timestamp || null
+          }));
+        } else {
+          this.buyersData = [];
         }
-        
-        console.log('Processed buyers data:', this.buyersData);
         this.currentPage = 1;
         this.updatePagination();
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading buyers:', error);
+        console.error('Error loading buyer forms:', error);
+        this.buyersData = [];
         this.loading = false;
       }
     });
   }
 
   loadSellersData() {
-    console.log('Loading sellers data...');
     this.loading = true;
 
-    this.firebaseService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (users: any) => {
-        if (users) {
-          const userList = Object.values(users).flat();
-          this.sellersData = userList
-            .filter((user: any) => user.role === 'seller')
-            .map((seller: any) => ({
-              ...seller,
-              name: seller.name || 'N/A',
-              mobileNo: seller.mobileNo || seller.phone || 'N/A',
-              email: seller.email || 'N/A',
-              village: seller.village || 'N/A',
-              mandal: seller.mandal || 'N/A',
-              typicalCrops: Array.isArray(seller.typicalCrops)
-                ? seller.typicalCrops.join(', ')
-                : (seller.typicalCrops || 'N/A'),
-              acreOfLand: seller.acreOfLand || 'N/A'
-            }));
+    // Read from sellerForms collection — personal email & phone from the APU seller form submission
+    this.firebaseService.getAllSellerForms().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (forms: any) => {
+        if (forms) {
+          this.sellersData = Object.entries(forms).map(([key, value]: [string, any]) => ({
+            id: key,
+            name: value.sellerName || 'N/A',
+            // Personal email submitted in seller form — NOT the auto-generated @intra-d.com email
+            email: value.email || 'N/A',
+            // Personal mobile submitted in seller form
+            mobileNo: value.contactNo || 'N/A',
+            rawMaterialType: value.rawMaterialType || 'N/A',
+            typicalCrops: value.rawMaterialType || 'N/A',
+            quantity: value.quantity || 'N/A',
+            location: value.location || 'N/A',
+            village: value.location || 'N/A',
+            mandal: 'N/A',
+            pricePerUnit: value.pricePerUnit || 'N/A',
+            harvestDate: value.harvestDate || 'N/A',
+            qualityGrade: value.qualityGrade || 'N/A',
+            status: value.status || 'pending',
+            acreOfLand: 'N/A',
+            createdAt: value.submittedAt || value.timestamp || null
+          }));
+        } else {
+          this.sellersData = [];
         }
-
-        console.log('Processed sellers data:', this.sellersData);
         this.currentPage = 1;
         this.updatePagination();
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading sellers:', error);
+        console.error('Error loading seller forms:', error);
+        this.sellersData = [];
         this.loading = false;
       }
     });
   }
 
   loadServiceRequests() {
-    console.log('Loading service requests...');
     this.loading = true;
     
     this.firebaseService.getAllServiceRequests().pipe(takeUntil(this.destroy$)).subscribe({
       next: (requests: any) => {
-        console.log('Service requests received:', requests);
         if (requests) {
           this.serviceRequests = Object.entries(requests).map(([key, value]: [string, any]) => ({
             id: key,
@@ -285,7 +286,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }
         this.currentPage = 1;
         this.updatePagination();
-        console.log('Processed service requests:', this.serviceRequests);
         this.loading = false;
       },
       error: (error: any) => {
@@ -297,12 +297,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadSoilTestRequests() {
-    console.log('Loading soil test requests...');
     this.loading = true;
     
     this.firebaseService.getAllSoilTestRequests().pipe(takeUntil(this.destroy$)).subscribe({
       next: (requests: any) => {
-        console.log('Soil test requests received:', requests);
         if (requests) {
           this.soilTestRequests = Object.entries(requests).map(([key, value]: [string, any]) => ({
             id: key,
@@ -313,7 +311,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }
         this.currentPage = 1;
         this.updatePagination();
-        console.log('Processed soil test requests:', this.soilTestRequests);
         this.loading = false;
       },
       error: (error: any) => {
@@ -325,8 +322,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   updateRequestStatus(requestId: string, status: string, type: 'service' | 'soil') {
-    console.log(`Updating ${type} request ${requestId} to status: ${status}`);
-    
     const updateData = {
       status,
       updatedAt: new Date().toISOString()
@@ -334,55 +329,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
     if (type === 'service') {
       this.firebaseService.updateServiceRequest(requestId, updateData).pipe(takeUntil(this.destroy$)).subscribe({
-        next: () => {
-          alert('Request status updated successfully!');
-          this.loadServiceRequests();
-        },
-        error: (error) => {
-          console.error('Error updating request:', error);
-          alert('Failed to update request status');
-        }
+        next: () => { this.loadServiceRequests(); },
+        error: () => { /* silent — handled by Firestore */ }
       });
     } else {
       this.firebaseService.updateSoilTestRequest(requestId, updateData).pipe(takeUntil(this.destroy$)).subscribe({
-        next: () => {
-          alert('Soil test request status updated successfully!');
-          this.loadSoilTestRequests();
-        },
-        error: (error) => {
-          console.error('Error updating soil test request:', error);
-          alert('Failed to update soil test request status');
-        }
+        next: () => { this.loadSoilTestRequests(); },
+        error: () => { /* silent — handled by Firestore */ }
       });
     }
   }
 
-  navigateToFarmers() {
-    console.log('Switching to farmers view');
-    this.setActiveView('farmers');
-  }
-
-  navigateToBuyers() {
-    console.log('Switching to buyers view');
-    this.setActiveView('buyers');
-  }
-
-  navigateToSellers() {
-    console.log('Switching to sellers view');
-    this.setActiveView('sellers');
-  }
-
-  navigateToReports() {
-    console.log('Switching to reports view');
-    this.setActiveView('reports');
-  }
+  navigateToFarmers() { this.setActiveView('farmers'); }
+  navigateToBuyers() { this.setActiveView('buyers'); }
+  navigateToSellers() { this.setActiveView('sellers'); }
+  navigateToReports() { this.setActiveView('reports'); }
 
   goBackToControl() {
     this.backToControl.emit();
   }
 
   matchBuyerSeller() {
-    console.log('Matching buyers and sellers...');
+    // TODO: Implement buyer-seller matching logic
   }
 
   private updatePagination() {
