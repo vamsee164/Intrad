@@ -102,30 +102,30 @@ export class BuyerComponent implements OnInit {
         },
       },
     },
-    cereals: {
-      label: 'Cereals',
-      subCategories: {
-        wheat: {
-          label: 'Wheat',
-          // productTypes: {
-          //   flour: 'Flour',
-          //   grains: 'Grains',
-          // },
-        },
-      },
-    },
-    pulses: {
-      label: 'Pulses',
-      subCategories: {
-        lentils: {
-          label: 'Lentils',
-          // productTypes: {
-          //   whole: 'Whole',
-          //   split: 'Split',
-          // },
-        },
-      },
-    },
+    // cereals: {
+    //   label: 'Cereals',
+    //   subCategories: {
+    //     wheat: {
+    //       label: 'Wheat',
+    //       // productTypes: {
+    //       //   flour: 'Flour',
+    //       //   grains: 'Grains',
+    //       // },
+    //     },
+    //   },
+    // },
+    // pulses: {
+    //   label: 'Pulses',
+    //   subCategories: {
+    //     lentils: {
+    //       label: 'Lentils',
+    //       // productTypes: {
+    //       //   whole: 'Whole',
+    //       //   split: 'Split',
+    //       // },
+    //     },
+    //   },
+    // },
   };
 
   // Dropdown options for the template
@@ -174,7 +174,7 @@ export class BuyerComponent implements OnInit {
         (key) => ({
           label: selectedCategory.subCategories![key].label,
           value: key,
-        })
+        }),
       );
     }
   }
@@ -198,7 +198,7 @@ export class BuyerComponent implements OnInit {
         (key) => ({
           label: selectedSubCategory.productTypes![key].label,
           value: key,
-        })
+        }),
       );
     }
   }
@@ -222,7 +222,7 @@ export class BuyerComponent implements OnInit {
         (key) => ({
           label: selectedProductType.details![key],
           value: key,
-        })
+        }),
       );
     }
   }
@@ -246,19 +246,19 @@ export class BuyerComponent implements OnInit {
     console.log('Buyer Inquiry Submitted!');
     console.log(
       'Main Category:',
-      this.getLabel(this.mainCategories, this.selectedMainCategory)
+      this.getLabel(this.mainCategories, this.selectedMainCategory),
     );
     console.log(
       'Sub-Category:',
-      this.getLabel(this.subCategories, this.selectedSubCategory)
+      this.getLabel(this.subCategories, this.selectedSubCategory),
     );
     console.log(
       'Product Type:',
-      this.getLabel(this.productTypes, this.selectedProductType)
+      this.getLabel(this.productTypes, this.selectedProductType),
     );
     console.log(
       'Details:',
-      this.getLabel(this.detailsOptions, this.selectedDetails)
+      this.getLabel(this.detailsOptions, this.selectedDetails),
     );
 
     // In a real application, you would send this data to a backend.
