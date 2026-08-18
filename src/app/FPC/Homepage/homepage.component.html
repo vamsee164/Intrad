@@ -1,116 +1,166 @@
 <!-- src/app/homepage/homepage.component.html -->
 <!-- Main Container for Homepage Content -->
 <div class="homepage-content-wrapper">
-    <!-- Pre-Login Content -->
-    <div *ngIf="!isLoggedIn">
-        <!-- Category Quick Access Cards -->
-        <div id="category-buttons-section" class="row text-center gx-3 gy-3 mb-4 justify-content-center">
-            <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" [routerLink]="['/machinery']" style="cursor: pointer;">
-                    <div class="cat-icon-wrap cat-green">
-                        <i class="fas fa-tractor"></i>
-                    </div>
-                    <h6 class="cat-label">Machinery</h6>
-                    <p class="cat-sub">Equipment &amp; tools</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" (click)="showFarmers()">
-                    <div class="cat-icon-wrap cat-blue">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h6 class="cat-label">Farmers</h6>
-                    <p class="cat-sub">Connect farmers</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" [routerLink]="['/products']" style="cursor: pointer;">
-                    <div class="cat-icon-wrap cat-gold">
-                        <i class="fas fa-shopping-basket"></i>
-                    </div>
-                    <h6 class="cat-label">Products</h6>
-                    <p class="cat-sub">Agri products</p>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 col-lg-2">
-                <div class="category-card" (click)="showWeather()">
-                    <div class="cat-icon-wrap cat-sky">
-                        <i class="fas fa-cloud-sun"></i>
-                    </div>
-                    <h6 class="cat-label">Weather</h6>
-                    <p class="cat-sub">Weather forecast</p>
-                </div>
-            </div>
+  <!-- Pre-Login Content -->
+  <div *ngIf="!isLoggedIn">
+    <!-- Category Quick Access Cards -->
+    <div
+      id="category-buttons-section"
+      class="row text-center gx-3 gy-3 mb-4 justify-content-center"
+    >
+      <div class="col-6 col-md-3 col-lg-2">
+        <div
+          class="category-card"
+          [routerLink]="['/machinery']"
+          style="cursor: pointer"
+        >
+          <div class="cat-icon-wrap cat-green">
+            <i class="fas fa-tractor"></i>
+          </div>
+          <h6 class="cat-label">Machinery</h6>
+          <p class="cat-sub">Equipment &amp; tools</p>
         </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="category-card" (click)="showFarmers()">
+          <div class="cat-icon-wrap cat-blue">
+            <i class="fas fa-users"></i>
+          </div>
+          <h6 class="cat-label">Farmers</h6>
+          <p class="cat-sub">Connect farmers</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div
+          class="category-card"
+          [routerLink]="['/products']"
+          style="cursor: pointer"
+        >
+          <div class="cat-icon-wrap cat-gold">
+            <i class="fas fa-shopping-basket"></i>
+          </div>
+          <h6 class="cat-label">Products</h6>
+          <p class="cat-sub">Agri products</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <div class="category-card" (click)="showWeather()">
+          <div class="cat-icon-wrap cat-sky">
+            <i class="fas fa-cloud-sun"></i>
+          </div>
+          <h6 class="cat-label">Weather</h6>
+          <p class="cat-sub">Weather forecast</p>
+        </div>
+      </div>
+    </div>
 
-        <!-- Carousel and Login Section -->
-        <div id="pre-login-content" class="row gx-3 ">
-            <!-- Login: top on mobile, right on desktop -->
-            <div class="col-sm-12 col-md-5 col-lg-4 order-first order-md-last mb-2 mb-md-0">
-                <app-login (loginSuccess)="onLoginSuccess()"></app-login>
-            </div>
-            <!-- Carousel: bottom on mobile, left on desktop -->
-            <div class="col-sm-12 col-md-7 col-lg-8 order-last order-md-first">
-                <div id="homepageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel"
-                    data-bs-interval="3500">
-                    <!-- Indicator dots -->
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Mangoes"></button>
-                        <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="1"
-                            aria-label="Tomato"></button>
-                        <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="2"
-                            aria-label="Papaya"></button>
-                        <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="3"
-                            aria-label="Onion"></button>
-                        <!-- <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="4"
+    <!-- Carousel and Login Section -->
+    <div id="pre-login-content" class="row gx-3">
+      <!-- Login: top on mobile, right on desktop -->
+      <div
+        class="col-sm-12 col-md-5 col-lg-4 order-first order-md-last mb-2 mb-md-0"
+      >
+        <app-login (loginSuccess)="onLoginSuccess()"></app-login>
+      </div>
+      <!-- Carousel: bottom on mobile, left on desktop -->
+      <div class="col-sm-12 col-md-7 col-lg-8 order-last order-md-first">
+        <div
+          id="homepageCarousel"
+          class="carousel slide carousel-fade"
+          data-bs-ride="carousel"
+          data-bs-interval="3500"
+        >
+          <!-- Indicator dots -->
+          <div class="carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#homepageCarousel"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Mangoes"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#homepageCarousel"
+              data-bs-slide-to="1"
+              aria-label="Tomato"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#homepageCarousel"
+              data-bs-slide-to="2"
+              aria-label="Papaya"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#homepageCarousel"
+              data-bs-slide-to="3"
+              aria-label="Onion"
+            ></button>
+            <!-- <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="4"
                             aria-label="Ginger"></button>
                         <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="5"
                             aria-label="Garlic"></button> -->
-                    </div>
-                    <div class="carousel-inner">
-                        <!-- Slide 1: Mangoes -->
-                        <div class="carousel-item active">
-                            <img src="assets/images/mangobunch.jpg" class="d-block slide-img"
-                                alt="Fresh ripe mangoes on tree branch">
-                            <div class="carousel-caption slide-caption">
-                                <span class="slide-tag">🥭 Mangoes</span>
-                                <h5>Sun-Ripened Alphonso Mangoes</h5>
-                                <p>Directly sourced from orchards — sweet, juicy & naturally grown</p>
-                            </div>
-                        </div>
-                        <!-- Slide 2: Tomato -->
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
-                                class="d-block slide-img" alt="Fresh red tomatoes on the vine in field">
-                            <div class="carousel-caption slide-caption">
-                                <span class="slide-tag">🍅 Tomatoes</span>
-                                <h5>Farm-Fresh Vine Tomatoes</h5>
-                                <p>Harvested at peak ripeness from local farms to your table</p>
-                            </div>
-                        </div>
-                        <!-- Slide 3: Papaya -->
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
-                                class="d-block slide-img" alt="Ripe papaya fruit cut open showing seeds">
-                            <div class="carousel-caption slide-caption">
-                                <span class="slide-tag">🍈 Papaya</span>
-                                <h5>Tropical Papaya Harvest</h5>
-                                <p>Naturally ripened papayas rich in vitamins and enzymes</p>
-                            </div>
-                        </div>
-                        <!-- Slide 4: Onion -->
-                        <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
-                                class="d-block slide-img" alt="Fresh red onions harvested in a field">
-                            <div class="carousel-caption slide-caption">
-                                <span class="slide-tag">🧅 Onions</span>
-                                <h5>Premium Red Onions</h5>
-                                <p>Naturally cured and sun-dried — straight from the farm</p>
-                            </div>
-                        </div>
-                        <!-- Slide 5: Ginger -->
-                        <!-- <div class="carousel-item">
+          </div>
+          <div class="carousel-inner">
+            <!-- Slide 1: Mangoes -->
+            <div class="carousel-item active">
+              <img
+                src="assets/images/mangobunch.jpg"
+                class="d-block slide-img"
+                alt="Fresh ripe mangoes on tree branch"
+              />
+              <div class="carousel-caption slide-caption">
+                <span class="slide-tag">🥭 Mangoes</span>
+                <h5>Sun-Ripened Alphonso Mangoes</h5>
+                <p>
+                  Directly sourced from orchards — sweet, juicy & naturally
+                  grown
+                </p>
+              </div>
+            </div>
+            <!-- Slide 2: Tomato -->
+            <div class="carousel-item">
+              <img
+                src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
+                class="d-block slide-img"
+                alt="Fresh red tomatoes on the vine in field"
+              />
+              <div class="carousel-caption slide-caption">
+                <span class="slide-tag">🍅 Tomatoes</span>
+                <h5>Farm-Fresh Vine Tomatoes</h5>
+                <p>Harvested at peak ripeness from local farms to your table</p>
+              </div>
+            </div>
+            <!-- Slide 3: Papaya -->
+            <div class="carousel-item">
+              <img
+                src="https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
+                class="d-block slide-img"
+                alt="Ripe papaya fruit cut open showing seeds"
+              />
+              <div class="carousel-caption slide-caption">
+                <span class="slide-tag">🍈 Papaya</span>
+                <h5>Tropical Papaya Harvest</h5>
+                <p>Naturally ripened papayas rich in vitamins and enzymes</p>
+              </div>
+            </div>
+            <!-- Slide 4: Onion -->
+            <div class="carousel-item">
+              <img
+                src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
+                class="d-block slide-img"
+                alt="Fresh red onions harvested in a field"
+              />
+              <div class="carousel-caption slide-caption">
+                <span class="slide-tag">🧅 Onions</span>
+                <h5>Premium Red Onions</h5>
+                <p>Naturally cured and sun-dried — straight from the farm</p>
+              </div>
+            </div>
+            <!-- Slide 5: Ginger -->
+            <!-- <div class="carousel-item">
                             <img src="https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
                                 class="d-block slide-img" alt="Fresh ginger roots on wooden surface">
                             <div class="carousel-caption slide-caption">
@@ -119,8 +169,8 @@
                                 <p>Freshly harvested ginger roots packed with natural goodness</p>
                             </div>
                         </div> -->
-                        <!-- Slide 6: Garlic -->
-                        <!-- <div class="carousel-item">
+            <!-- Slide 6: Garlic -->
+            <!-- <div class="carousel-item">
                             <img src="https://images.unsplash.com/photo-1501430654243-c934cec2e1c0?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
                                 class="d-block slide-img" alt="Fresh garlic bulbs and cloves on a farm">
                             <div class="carousel-caption slide-caption">
@@ -129,798 +179,1481 @@
                                 <p>Pungent, potent and pesticide-free — from our partner farmers</p>
                             </div>
                         </div> -->
-                    </div>
-                    <!-- Carousel Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#homepageCarousel"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#homepageCarousel"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
+          </div>
+          <!-- Carousel Controls -->
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#homepageCarousel"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#homepageCarousel"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== IMPACT NUMBERS STRIP ===== -->
+    <section class="impact-strip">
+      <div class="impact-strip-inner">
+        <div class="impact-item">
+          <div class="impact-icon">🌾</div>
+          <div class="impact-number">200<span class="impact-plus">+</span></div>
+          <div class="impact-label">Farmers Registered</div>
+        </div>
+        <div class="impact-divider"></div>
+        <div class="impact-item">
+          <div class="impact-icon">🌿</div>
+          <div class="impact-number">15<span class="impact-plus">+</span></div>
+          <div class="impact-label">Crops Supported</div>
+        </div>
+        <div class="impact-divider"></div>
+        <div class="impact-item">
+          <div class="impact-icon">🏭</div>
+          <div class="impact-number">500<span class="impact-plus">+</span></div>
+          <div class="impact-label">Tonnes Processed</div>
+        </div>
+        <div class="impact-divider"></div>
+        <div class="impact-item">
+          <div class="impact-icon">📍</div>
+          <div class="impact-number">5<span class="impact-plus">+</span></div>
+          <div class="impact-label">Districts Covered</div>
+        </div>
+      </div>
+    </section>
+    <!-- ===== END IMPACT STRIP ===== -->
+
+    <!-- ===== CURVED ROADMAP SECTION ===== -->
+    <section class="roadmap-section" id="roadmap">
+      <div class="roadmap-header text-center">
+        <span class="roadmap-badge">Our Journey</span>
+        <h2 class="roadmap-title">Platform Roadmap</h2>
+        <p class="roadmap-subtitle">
+          Hover over a phase to explore our milestones and what's ahead for
+          Intra-D
+        </p>
+      </div>
+
+      <!-- SVG Curved Path + Hover Tooltip Cards -->
+      <div class="roadmap-svg-wrapper">
+        <!-- Phase 1 Tooltip: Soil Testing -->
+        <div
+          class="phase-tooltip phase-tooltip-1"
+          [class.visible]="hoveredPhase === 1"
+          role="tooltip"
+          aria-live="polite"
+        >
+          <div class="pt-icon">🧪</div>
+          <div class="pt-phase">Phase 1</div>
+          <div class="pt-title">Soil Testing</div>
+          <div class="pt-arrow"></div>
         </div>
 
-        <!-- ===== IMPACT NUMBERS STRIP ===== -->
-        <section class="impact-strip">
-            <div class="impact-strip-inner">
-                <div class="impact-item">
-                    <div class="impact-icon">🌾</div>
-                    <div class="impact-number">200<span class="impact-plus">+</span></div>
-                    <div class="impact-label">Farmers Registered</div>
-                </div>
-                <div class="impact-divider"></div>
-                <div class="impact-item">
-                    <div class="impact-icon">🌿</div>
-                    <div class="impact-number">15<span class="impact-plus">+</span></div>
-                    <div class="impact-label">Crops Supported</div>
-                </div>
-                <div class="impact-divider"></div>
-                <div class="impact-item">
-                    <div class="impact-icon">🏭</div>
-                    <div class="impact-number">500<span class="impact-plus">+</span></div>
-                    <div class="impact-label">Tonnes Processed</div>
-                </div>
-                <div class="impact-divider"></div>
-                <div class="impact-item">
-                    <div class="impact-icon">📍</div>
-                    <div class="impact-number">5<span class="impact-plus">+</span></div>
-                    <div class="impact-label">Districts Covered</div>
-                </div>
-            </div>
-        </section>
-        <!-- ===== END IMPACT STRIP ===== -->
+        <!-- Phase 2 Tooltip: Seed Procurement -->
+        <div
+          class="phase-tooltip phase-tooltip-2"
+          [class.visible]="hoveredPhase === 2"
+          role="tooltip"
+          aria-live="polite"
+        >
+          <div class="pt-icon">🌱</div>
+          <div class="pt-phase">Phase 2</div>
+          <div class="pt-title">Seed Procurement</div>
+          <div class="pt-arrow"></div>
+        </div>
 
-        <!-- ===== CURVED ROADMAP SECTION ===== -->
-        <section class="roadmap-section" id="roadmap">
-            <div class="roadmap-header text-center">
-                <span class="roadmap-badge">Our Journey</span>
-                <h2 class="roadmap-title">Platform Roadmap</h2>
-                <p class="roadmap-subtitle">Hover over a phase to explore our milestones and what's ahead for Intra-D
-                </p>
-            </div>
+        <!-- Phase 3 Tooltip: Suggestion & Feedback -->
+        <div
+          class="phase-tooltip phase-tooltip-3"
+          [class.visible]="hoveredPhase === 3"
+          role="tooltip"
+          aria-live="polite"
+        >
+          <div class="pt-icon">💬</div>
+          <div class="pt-phase">Phase 3</div>
+          <div class="pt-title">Suggestion &amp; Feedback</div>
+          <div class="pt-arrow pt-arrow-top"></div>
+        </div>
 
-            <!-- SVG Curved Path + Hover Tooltip Cards -->
-            <div class="roadmap-svg-wrapper">
+        <!-- Phase 4 Tooltip: Harvesting -->
+        <div
+          class="phase-tooltip phase-tooltip-4"
+          [class.visible]="hoveredPhase === 4"
+          role="tooltip"
+          aria-live="polite"
+        >
+          <div class="pt-icon">🌾</div>
+          <div class="pt-phase">Phase 4</div>
+          <div class="pt-title">Harvesting</div>
+          <div class="pt-arrow"></div>
+        </div>
 
-                <!-- Phase 1 Tooltip: Soil Testing -->
-                <div class="phase-tooltip phase-tooltip-1" [class.visible]="hoveredPhase === 1" role="tooltip"
-                    aria-live="polite">
-                    <div class="pt-icon">🧪</div>
-                    <div class="pt-phase">Phase 1</div>
-                    <div class="pt-title">Soil Testing</div>
-                    <div class="pt-arrow"></div>
-                </div>
+        <!-- Phase 5 Tooltip: Processing & Marketing -->
+        <div
+          class="phase-tooltip phase-tooltip-5"
+          [class.visible]="hoveredPhase === 5"
+          role="tooltip"
+          aria-live="polite"
+        >
+          <div class="pt-icon">📦</div>
+          <div class="pt-phase">Phase 5</div>
+          <div class="pt-title">Processing &amp; Marketing</div>
+          <div class="pt-arrow"></div>
+        </div>
 
-                <!-- Phase 2 Tooltip: Seed Procurement -->
-                <div class="phase-tooltip phase-tooltip-2" [class.visible]="hoveredPhase === 2" role="tooltip"
-                    aria-live="polite">
-                    <div class="pt-icon">🌱</div>
-                    <div class="pt-phase">Phase 2</div>
-                    <div class="pt-title">Seed Procurement</div>
-                    <div class="pt-arrow"></div>
-                </div>
+        <svg
+          class="roadmap-svg"
+          viewBox="0 0 860 160"
+          preserveAspectRatio="xMidYMid meet"
+          aria-label="Platform roadmap with 5 phases"
+        >
+          <!-- Background road (wide, grey) -->
+          <path
+            d="M 60,120 C 150,120 170,40 280,40 C 390,40 410,120 520,120 C 630,120 650,40 760,40 L 800,40"
+            fill="none"
+            stroke="#e5e7eb"
+            stroke-width="10"
+            stroke-linecap="round"
+          />
+          <!-- Progress road (green for done, amber for active) -->
+          <path
+            d="M 60,120 C 150,120 170,40 280,40 C 390,40 410,120 520,120"
+            fill="none"
+            stroke="#4a7c59"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-dasharray="0"
+          />
+          <!-- Active segment (amber) -->
+          <path
+            d="M 520,120 C 600,120 620,80 660,60"
+            fill="none"
+            stroke="#c8941a"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-dasharray="6 4"
+          />
 
-                <!-- Phase 3 Tooltip: Suggestion & Feedback -->
-                <div class="phase-tooltip phase-tooltip-3" [class.visible]="hoveredPhase === 3" role="tooltip"
-                    aria-live="polite">
-                    <div class="pt-icon">💬</div>
-                    <div class="pt-phase">Phase 3</div>
-                    <div class="pt-title">Suggestion &amp; Feedback</div>
-                    <div class="pt-arrow pt-arrow-top"></div>
-                </div>
+          <!-- Phase 1 — Done (60, 120) -->
+          <g
+            class="milestone-group"
+            role="button"
+            aria-label="Phase 1 - Completed"
+            (mouseenter)="onPhaseHover(1)"
+            (mouseleave)="onPhaseLeave()"
+          >
+            <circle
+              cx="60"
+              cy="120"
+              r="22"
+              fill="#2d5016"
+              class="milestone-circle"
+            />
+            <text
+              x="60"
+              y="125"
+              text-anchor="middle"
+              font-size="14"
+              fill="#fff"
+              font-family="sans-serif"
+            >
+              ✓
+            </text>
+            <text
+              x="60"
+              y="150"
+              text-anchor="middle"
+              font-size="10"
+              fill="#2d5016"
+              font-weight="700"
+              font-family="sans-serif"
+            >
+              Phase 1
+            </text>
+          </g>
 
-                <!-- Phase 4 Tooltip: Harvesting -->
-                <div class="phase-tooltip phase-tooltip-4" [class.visible]="hoveredPhase === 4" role="tooltip"
-                    aria-live="polite">
-                    <div class="pt-icon">🌾</div>
-                    <div class="pt-phase">Phase 4</div>
-                    <div class="pt-title">Harvesting</div>
-                    <div class="pt-arrow"></div>
-                </div>
+          <!-- Phase 2 — Done (280, 40) -->
+          <g
+            class="milestone-group"
+            role="button"
+            aria-label="Phase 2 - Completed"
+            (mouseenter)="onPhaseHover(2)"
+            (mouseleave)="onPhaseLeave()"
+          >
+            <circle
+              cx="280"
+              cy="40"
+              r="22"
+              fill="#2d5016"
+              class="milestone-circle"
+            />
+            <text
+              x="280"
+              y="45"
+              text-anchor="middle"
+              font-size="14"
+              fill="#fff"
+              font-family="sans-serif"
+            >
+              ✓
+            </text>
+            <text
+              x="280"
+              y="70"
+              text-anchor="middle"
+              font-size="10"
+              fill="#2d5016"
+              font-weight="700"
+              font-family="sans-serif"
+            >
+              Phase 2
+            </text>
+          </g>
 
-                <!-- Phase 5 Tooltip: Processing & Marketing -->
-                <div class="phase-tooltip phase-tooltip-5" [class.visible]="hoveredPhase === 5" role="tooltip"
-                    aria-live="polite">
-                    <div class="pt-icon">📦</div>
-                    <div class="pt-phase">Phase 5</div>
-                    <div class="pt-title">Processing &amp; Marketing</div>
-                    <div class="pt-arrow"></div>
-                </div>
+          <!-- Phase 3 — Active (520, 120) -->
+          <g
+            class="milestone-group"
+            role="button"
+            aria-label="Phase 3 - In Progress"
+            (mouseenter)="onPhaseHover(3)"
+            (mouseleave)="onPhaseLeave()"
+          >
+            <circle
+              cx="520"
+              cy="120"
+              r="22"
+              fill="#c8941a"
+              class="milestone-circle"
+            />
+            <text
+              x="520"
+              y="125"
+              text-anchor="middle"
+              font-size="12"
+              fill="#fff"
+              font-family="sans-serif"
+            >
+              ▶
+            </text>
+            <text
+              x="520"
+              y="150"
+              text-anchor="middle"
+              font-size="10"
+              fill="#96690a"
+              font-weight="700"
+              font-family="sans-serif"
+            >
+              Phase 3
+            </text>
+          </g>
 
-                <svg class="roadmap-svg" viewBox="0 0 860 160" preserveAspectRatio="xMidYMid meet"
-                    aria-label="Platform roadmap with 5 phases">
-                    <!-- Background road (wide, grey) -->
-                    <path d="M 60,120 C 150,120 170,40 280,40 C 390,40 410,120 520,120 C 630,120 650,40 760,40 L 800,40"
-                        fill="none" stroke="#e5e7eb" stroke-width="10" stroke-linecap="round" />
-                    <!-- Progress road (green for done, amber for active) -->
-                    <path d="M 60,120 C 150,120 170,40 280,40 C 390,40 410,120 520,120" fill="none" stroke="#4a7c59"
-                        stroke-width="5" stroke-linecap="round" stroke-dasharray="0" />
-                    <!-- Active segment (amber) -->
-                    <path d="M 520,120 C 600,120 620,80 660,60" fill="none" stroke="#c8941a" stroke-width="5"
-                        stroke-linecap="round" stroke-dasharray="6 4" />
+          <!-- Phase 4 — Upcoming (700, 40) -->
+          <g
+            class="milestone-group"
+            role="button"
+            aria-label="Phase 4 - Upcoming"
+            (mouseenter)="onPhaseHover(4)"
+            (mouseleave)="onPhaseLeave()"
+          >
+            <circle
+              cx="700"
+              cy="40"
+              r="20"
+              fill="#f1f5f9"
+              stroke="#cbd5e1"
+              stroke-width="2"
+              class="milestone-circle"
+            />
+            <text
+              x="700"
+              y="45"
+              text-anchor="middle"
+              font-size="13"
+              fill="#94a3b8"
+              font-family="sans-serif"
+            >
+              ◇
+            </text>
+            <text
+              x="700"
+              y="70"
+              text-anchor="middle"
+              font-size="10"
+              fill="#64748b"
+              font-weight="700"
+              font-family="sans-serif"
+            >
+              Phase 4
+            </text>
+          </g>
 
-                    <!-- Phase 1 — Done (60, 120) -->
-                    <g class="milestone-group" role="button" aria-label="Phase 1 - Completed"
-                        (mouseenter)="onPhaseHover(1)" (mouseleave)="onPhaseLeave()">
-                        <circle cx="60" cy="120" r="22" fill="#2d5016" class="milestone-circle" />
-                        <text x="60" y="125" text-anchor="middle" font-size="14" fill="#fff"
-                            font-family="sans-serif">✓</text>
-                        <text x="60" y="150" text-anchor="middle" font-size="10" fill="#2d5016" font-weight="700"
-                            font-family="sans-serif">Phase 1</text>
-                    </g>
+          <!-- Phase 5 — Future (820, 40) -->
+          <g
+            class="milestone-group"
+            role="button"
+            aria-label="Phase 5 - Future"
+            (mouseenter)="onPhaseHover(5)"
+            (mouseleave)="onPhaseLeave()"
+          >
+            <circle
+              cx="820"
+              cy="40"
+              r="18"
+              fill="#f8fafc"
+              stroke="#e2e8f0"
+              stroke-width="2"
+              stroke-dasharray="4 3"
+              class="milestone-circle"
+            />
+            <text
+              x="820"
+              y="45"
+              text-anchor="middle"
+              font-size="12"
+              fill="#94a3b8"
+              font-family="sans-serif"
+            >
+              ★
+            </text>
+            <text
+              x="820"
+              y="65"
+              text-anchor="middle"
+              font-size="10"
+              fill="#94a3b8"
+              font-weight="700"
+              font-family="sans-serif"
+            >
+              Phase 5
+            </text>
+          </g>
+        </svg>
 
-                    <!-- Phase 2 — Done (280, 40) -->
-                    <g class="milestone-group" role="button" aria-label="Phase 2 - Completed"
-                        (mouseenter)="onPhaseHover(2)" (mouseleave)="onPhaseLeave()">
-                        <circle cx="280" cy="40" r="22" fill="#2d5016" class="milestone-circle" />
-                        <text x="280" y="45" text-anchor="middle" font-size="14" fill="#fff"
-                            font-family="sans-serif">✓</text>
-                        <text x="280" y="70" text-anchor="middle" font-size="10" fill="#2d5016" font-weight="700"
-                            font-family="sans-serif">Phase 2</text>
-                    </g>
+        <!-- Hover hint -->
+        <p class="roadmap-hover-hint" [class.hidden]="hoveredPhase !== null">
+          <i class="fas fa-hand-pointer me-1"></i> Hover over a phase to see
+          details
+        </p>
+      </div>
+    </section>
+    <!-- ===== END ROADMAP ===== -->
+  </div>
 
-                    <!-- Phase 3 — Active (520, 120) -->
-                    <g class="milestone-group" role="button" aria-label="Phase 3 - In Progress"
-                        (mouseenter)="onPhaseHover(3)" (mouseleave)="onPhaseLeave()">
-                        <circle cx="520" cy="120" r="22" fill="#c8941a" class="milestone-circle" />
-                        <text x="520" y="125" text-anchor="middle" font-size="12" fill="#fff"
-                            font-family="sans-serif">▶</text>
-                        <text x="520" y="150" text-anchor="middle" font-size="10" fill="#96690a" font-weight="700"
-                            font-family="sans-serif">Phase 3</text>
-                    </g>
-
-                    <!-- Phase 4 — Upcoming (700, 40) -->
-                    <g class="milestone-group" role="button" aria-label="Phase 4 - Upcoming"
-                        (mouseenter)="onPhaseHover(4)" (mouseleave)="onPhaseLeave()">
-                        <circle cx="700" cy="40" r="20" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"
-                            class="milestone-circle" />
-                        <text x="700" y="45" text-anchor="middle" font-size="13" fill="#94a3b8"
-                            font-family="sans-serif">◇</text>
-                        <text x="700" y="70" text-anchor="middle" font-size="10" fill="#64748b" font-weight="700"
-                            font-family="sans-serif">Phase 4</text>
-                    </g>
-
-                    <!-- Phase 5 — Future (820, 40) -->
-                    <g class="milestone-group" role="button" aria-label="Phase 5 - Future"
-                        (mouseenter)="onPhaseHover(5)" (mouseleave)="onPhaseLeave()">
-                        <circle cx="820" cy="40" r="18" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"
-                            stroke-dasharray="4 3" class="milestone-circle" />
-                        <text x="820" y="45" text-anchor="middle" font-size="12" fill="#94a3b8"
-                            font-family="sans-serif">★</text>
-                        <text x="820" y="65" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="700"
-                            font-family="sans-serif">Phase 5</text>
-                    </g>
-                </svg>
-
-                <!-- Hover hint -->
-                <p class="roadmap-hover-hint" [class.hidden]="hoveredPhase !== null">
-                    <i class="fas fa-hand-pointer me-1"></i> Hover over a phase to see details
-                </p>
-            </div>
-        </section>
-        <!-- ===== END ROADMAP ===== -->
-
-
-    </div>
-
-    <!-- Post-Login Content -->
-    <div *ngIf="isLoggedIn && currentUser?.role !== 'farmer'">
-        <app-service-info></app-service-info>
-    </div>
+  <!-- Post-Login Content -->
+  <div *ngIf="isLoggedIn && currentUser?.role !== 'farmer'">
+    <app-service-info></app-service-info>
+  </div>
 </div>
-
-
-
-
-
-
 
 <!-- Signup Modal -->
-<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content signup-modal-card">
+<div
+  class="modal fade"
+  id="signupModal"
+  tabindex="-1"
+  aria-labelledby="signupModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content signup-modal-card">
+      <!-- ═══ Branded Header ═══ -->
+      <div class="signup-modal-header">
+        <div class="signup-modal-brand">
+          <span class="signup-modal-emoji">🌾</span>
+          <div>
+            <div class="signup-modal-title" id="signupModalLabel">
+              Join INTRA-D
+            </div>
+            <div class="signup-modal-subtitle">
+              Connect with India's agricultural network
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="resetSignupForm()"
+        ></button>
+      </div>
 
-            <!-- ═══ Branded Header ═══ -->
-            <div class="signup-modal-header">
-                <div class="signup-modal-brand">
-                    <span class="signup-modal-emoji">🌾</span>
-                    <div>
-                        <div class="signup-modal-title" id="signupModalLabel">Join INTRA-D</div>
-                        <div class="signup-modal-subtitle">Connect with India's agricultural network</div>
-                    </div>
+      <!-- ═══ Body ═══ -->
+      <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto">
+        <form
+          (ngSubmit)="handleSignup()"
+          #signupForm="ngForm"
+          id="signupFormEl"
+          novalidate
+        >
+          <div class="row g-3">
+            <!-- ── Section Header: Personal Info ── -->
+            <div class="col-12">
+              <div class="form-section-label">
+                <span class="form-section-icon">👤</span> Personal Info
+              </div>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6">
+              <label for="modalRole" class="form-label fw-semibold"
+                >Role <span class="text-danger">*</span></label
+              >
+              <select
+                class="form-select"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalRole.touched) &&
+                  modalRole.invalid
+                "
+                [class.is-valid]="modalRole.touched && modalRole.valid"
+                id="modalRole"
+                #modalRole="ngModel"
+                [(ngModel)]="signupData.role"
+                name="role"
+                required
+              >
+                <option selected disabled value="">Select your role</option>
+                <option value="farmer">🌾 Farmer</option>
+                <option value="seller">📦 Seller</option>
+                <option value="buyer">🛒 Buyer</option>
+                <!-- <option value="admin">🛡️ Admin</option> -->
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalRole.touched) &&
+                  modalRole.invalid
+                "
+              >
+                Please select a role
+              </div>
+            </div>
+
+            <!-- Full Name -->
+            <div class="col-md-6">
+              <label for="modalName" class="form-label fw-semibold"
+                >Full Name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalName.touched) &&
+                  modalName.invalid
+                "
+                [class.is-valid]="modalName.touched && modalName.valid"
+                id="modalName"
+                #modalName="ngModel"
+                [(ngModel)]="signupData.name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+                minlength="2"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalName.touched) &&
+                  modalName.invalid
+                "
+              >
+                <span *ngIf="modalName.errors?.['required']"
+                  >Full name is required</span
+                >
+                <span *ngIf="modalName.errors?.['minlength']"
+                  >Name must be at least 2 characters</span
+                >
+              </div>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="col-md-6">
+              <label for="modalMobileNo" class="form-label fw-semibold"
+                >Mobile No <span class="text-danger">*</span></label
+              >
+              <input
+                type="tel"
+                class="form-control"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalMobileNo.touched) &&
+                  modalMobileNo.invalid
+                "
+                [class.is-valid]="modalMobileNo.touched && modalMobileNo.valid"
+                id="modalMobileNo"
+                #modalMobileNo="ngModel"
+                [(ngModel)]="signupData.mobileNo"
+                name="mobileNo"
+                placeholder="10-digit mobile number"
+                (input)="onPhoneInput($event)"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                minlength="10"
+                required
+              />
+              <div
+                class="form-text text-muted"
+                *ngIf="!modalMobileNo.invalid || !modalMobileNo.touched"
+              >
+                {{ signupData.mobileNo.length || 0 }}/10 digits
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalMobileNo.touched) &&
+                  modalMobileNo.invalid
+                "
+              >
+                <span *ngIf="modalMobileNo.errors?.['required']"
+                  >Mobile number is required</span
+                >
+                <span
+                  *ngIf="
+                    modalMobileNo.errors?.['pattern'] ||
+                    modalMobileNo.errors?.['minlength']
+                  "
+                  >Must be exactly 10 digits (numbers only)</span
+                >
+              </div>
+            </div>
+
+            <!-- Personal Email (for receiving credentials) -->
+            <div class="col-md-6">
+              <label for="modalPersonalEmail" class="form-label fw-semibold"
+                >Personal Email
+                <span class="text-muted small fw-normal"
+                  >(to receive login credentials)</span
+                >
+              </label>
+              <input
+                type="email"
+                class="form-control"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalPersonalEmail.touched) &&
+                  modalPersonalEmail.invalid
+                "
+                [class.is-valid]="
+                  modalPersonalEmail.touched && modalPersonalEmail.valid
+                "
+                id="modalPersonalEmail"
+                #modalPersonalEmail="ngModel"
+                [(ngModel)]="signupData.personalEmail"
+                name="personalEmail"
+                placeholder="yourname@gmail.com"
+              />
+              <div class="form-text text-muted">
+                <i class="fas fa-envelope me-1"></i>Your login credentials will
+                be emailed here.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalPersonalEmail.touched) &&
+                  modalPersonalEmail.invalid
+                "
+              >
+                Enter a valid email address
+              </div>
+            </div>
+
+            <!-- Company Name (buyer only) -->
+            <div class="col-md-6" *ngIf="signupData.role === 'buyer'">
+              <label for="modalCompanyName" class="form-label fw-semibold"
+                >Company Name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalCompanyName.touched) &&
+                  modalCompanyName.invalid
+                "
+                [class.is-valid]="
+                  modalCompanyName.touched && modalCompanyName.valid
+                "
+                id="modalCompanyName"
+                #modalCompanyName="ngModel"
+                [(ngModel)]="signupData.companyName"
+                name="companyName"
+                placeholder="Enter company name"
+                required
+                minlength="2"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalCompanyName.touched) &&
+                  modalCompanyName.invalid
+                "
+              >
+                Company Name is required
+              </div>
+            </div>
+
+            <!-- Village (farmer / seller) -->
+            <div
+              class="col-md-6"
+              *ngIf="
+                signupData.role === 'farmer' || signupData.role === 'seller'
+              "
+            >
+              <label for="modalVillage" class="form-label fw-semibold"
+                >Village <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="
+                  (signupForm.submitted || modalVillage.touched) &&
+                  modalVillage.invalid
+                "
+                [class.is-valid]="modalVillage.touched && modalVillage.valid"
+                id="modalVillage"
+                #modalVillage="ngModel"
+                [(ngModel)]="signupData.village"
+                name="village"
+                placeholder="Enter your village name"
+                required
+                minlength="2"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (signupForm.submitted || modalVillage.touched) &&
+                  modalVillage.invalid
+                "
+              >
+                Village is required
+              </div>
+            </div>
+
+            <!-- Crops -->
+            <div
+              class="col-12"
+              *ngIf="
+                signupData.role === 'farmer' ||
+                signupData.role === 'seller' ||
+                signupData.role === 'buyer'
+              "
+            >
+              <label class="form-label fw-semibold">
+                {{
+                  signupData.role === "buyer"
+                    ? "Crops Looking For"
+                    : "Typical Crops"
+                }}
+                <span class="text-danger">*</span>
+              </label>
+              <div
+                class="crops-checkbox-grid p-3 border rounded"
+                [class.border-danger]="
+                  signupForm.submitted && signupData.typicalCrops.length === 0
+                "
+              >
+                <div
+                  class="form-check"
+                  *ngFor="let crop of cropOptions; trackBy: trackByFn"
+                >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'crop-' + crop.value"
+                    [checked]="signupData.typicalCrops.includes(crop.value)"
+                    (change)="onCropChange(crop.value, $event)"
+                  />
+                  <label
+                    class="form-check-label"
+                    [for]="'crop-' + crop.value"
+                    >{{ crop.label }}</label
+                  >
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"
-                    (click)="resetSignupForm()"></button>
+              </div>
+              <div
+                class="text-danger small mt-1"
+                *ngIf="
+                  signupForm.submitted && signupData.typicalCrops.length === 0
+                "
+              >
+                Please select at least one crop
+              </div>
             </div>
 
-            <!-- ═══ Body ═══ -->
-            <div class="modal-body p-4" style="max-height:70vh; overflow-y:auto;">
-                <form (ngSubmit)="handleSignup()" #signupForm="ngForm" id="signupFormEl" novalidate>
-                    <div class="row g-3">
+            <!-- ── Section Header: Farm Details (farmer only) ── -->
+            <ng-container *ngIf="signupData.role === 'farmer'">
+              <div class="col-12">
+                <div class="form-section-label mt-1">
+                  <span class="form-section-icon">🌱</span> Farm Details
+                </div>
+              </div>
 
-                        <!-- ── Section Header: Personal Info ── -->
-                        <div class="col-12">
-                            <div class="form-section-label">
-                                <span class="form-section-icon">👤</span> Personal Info
-                            </div>
-                        </div>
+              <!-- Water Source -->
+              <div class="col-md-6">
+                <label for="modalWaterSource" class="form-label fw-semibold"
+                  >Water Source <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  [class.is-invalid]="
+                    (signupForm.submitted || modalWaterSource.touched) &&
+                    modalWaterSource.invalid
+                  "
+                  [class.is-valid]="
+                    modalWaterSource.touched && modalWaterSource.valid
+                  "
+                  id="modalWaterSource"
+                  #modalWaterSource="ngModel"
+                  [(ngModel)]="signupData.waterSource"
+                  name="waterSource"
+                  required
+                >
+                  <option selected disabled value="">
+                    Select water source
+                  </option>
+                  <option value="well">Well</option>
+                  <option value="borewell">Borewell</option>
+                  <option value="canal">Canal</option>
+                  <option value="river">River</option>
+                  <option value="rainfed">Rainfed</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (signupForm.submitted || modalWaterSource.touched) &&
+                    modalWaterSource.invalid
+                  "
+                >
+                  Water source is required
+                </div>
+              </div>
 
-                        <!-- Role -->
-                        <div class="col-md-6">
-                            <label for="modalRole" class="form-label fw-semibold">Role <span
-                                    class="text-danger">*</span></label>
-                            <select class="form-select"
-                                [class.is-invalid]="(signupForm.submitted || modalRole.touched) && modalRole.invalid"
-                                [class.is-valid]="modalRole.touched && modalRole.valid" id="modalRole"
-                                #modalRole="ngModel" [(ngModel)]="signupData.role" name="role" required>
-                                <option selected disabled value="">Select your role</option>
-                                <option value="farmer">🌾 Farmer</option>
-                                <option value="seller">📦 Seller</option>
-                                <option value="buyer">🛒 Buyer</option>
-                                <!-- <option value="admin">🛡️ Admin</option> -->
-                            </select>
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalRole.touched) && modalRole.invalid">Please select a
-                                role</div>
-                        </div>
+              <!-- Mandal -->
+              <div class="col-md-6">
+                <label for="modalMandal" class="form-label fw-semibold"
+                  >Mandal <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  [class.is-invalid]="
+                    (signupForm.submitted || modalMandal.touched) &&
+                    modalMandal.invalid
+                  "
+                  [class.is-valid]="modalMandal.touched && modalMandal.valid"
+                  id="modalMandal"
+                  #modalMandal="ngModel"
+                  [(ngModel)]="signupData.mandal"
+                  name="mandal"
+                  placeholder="Enter your mandal"
+                  required
+                  minlength="2"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (signupForm.submitted || modalMandal.touched) &&
+                    modalMandal.invalid
+                  "
+                >
+                  Mandal is required
+                </div>
+              </div>
 
-                        <!-- Full Name -->
-                        <div class="col-md-6">
-                            <label for="modalName" class="form-label fw-semibold">Full Name <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                [class.is-invalid]="(signupForm.submitted || modalName.touched) && modalName.invalid"
-                                [class.is-valid]="modalName.touched && modalName.valid" id="modalName"
-                                #modalName="ngModel" [(ngModel)]="signupData.name" name="name"
-                                placeholder="Enter your full name" required minlength="2">
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalName.touched) && modalName.invalid">
-                                <span *ngIf="modalName.errors?.['required']">Full name is required</span>
-                                <span *ngIf="modalName.errors?.['minlength']">Name must be at least 2 characters</span>
-                            </div>
-                        </div>
+              <!-- Soil Test -->
+              <div class="col-md-6">
+                <label for="modalSoilTest" class="form-label fw-semibold"
+                  >Soil Test <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  [class.is-invalid]="
+                    (signupForm.submitted || modalSoilTest.touched) &&
+                    modalSoilTest.invalid
+                  "
+                  [class.is-valid]="
+                    modalSoilTest.touched && modalSoilTest.valid
+                  "
+                  id="modalSoilTest"
+                  #modalSoilTest="ngModel"
+                  [(ngModel)]="signupData.soilTest"
+                  name="soilTest"
+                  required
+                >
+                  <option selected disabled value="">
+                    Select soil test result
+                  </option>
+                  <option value="tested-high">Tested — High Nutrients</option>
+                  <option value="tested-medium">
+                    Tested — Medium Nutrients
+                  </option>
+                  <option value="tested-low">Tested — Low Nutrients</option>
+                  <option value="not-tested">Not Tested</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (signupForm.submitted || modalSoilTest.touched) &&
+                    modalSoilTest.invalid
+                  "
+                >
+                  Soil test is required
+                </div>
+              </div>
 
-                        <!-- Mobile Number -->
-                        <div class="col-md-6">
-                            <label for="modalMobileNo" class="form-label fw-semibold">Mobile No <span
-                                    class="text-danger">*</span></label>
-                            <input type="tel" class="form-control"
-                                [class.is-invalid]="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid"
-                                [class.is-valid]="modalMobileNo.touched && modalMobileNo.valid" id="modalMobileNo"
-                                #modalMobileNo="ngModel" [(ngModel)]="signupData.mobileNo" name="mobileNo"
-                                placeholder="10-digit mobile number" (input)="onPhoneInput($event)" pattern="[0-9]{10}"
-                                maxlength="10" minlength="10" required>
-                            <div class="form-text text-muted" *ngIf="!modalMobileNo.invalid || !modalMobileNo.touched">
-                                {{ signupData.mobileNo.length || 0 }}/10 digits
-                            </div>
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalMobileNo.touched) && modalMobileNo.invalid">
-                                <span *ngIf="modalMobileNo.errors?.['required']">Mobile number is required</span>
-                                <span
-                                    *ngIf="modalMobileNo.errors?.['pattern'] || modalMobileNo.errors?.['minlength']">Must
-                                    be exactly 10 digits (numbers only)</span>
-                            </div>
-                        </div>
+              <!-- Soil Type -->
+              <div class="col-md-6">
+                <label for="modalSoilType" class="form-label fw-semibold"
+                  >Soil Type <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  [class.is-invalid]="
+                    (signupForm.submitted || modalSoilType.touched) &&
+                    modalSoilType.invalid
+                  "
+                  [class.is-valid]="
+                    modalSoilType.touched && modalSoilType.valid
+                  "
+                  id="modalSoilType"
+                  #modalSoilType="ngModel"
+                  [(ngModel)]="signupData.soilType"
+                  name="soilType"
+                  required
+                >
+                  <option selected disabled value="">Select soil type</option>
+                  <option value="black">Black</option>
+                  <option value="Red">Red</option>
+                  <option value="laterite">Laterite</option>
+                  <option value="sandy">Sandy</option>
+                  <option value="forest">Forest</option>
+                  <option value="alluvial">Alluvial</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (signupForm.submitted || modalSoilType.touched) &&
+                    modalSoilType.invalid
+                  "
+                >
+                  Soil type is required
+                </div>
+              </div>
 
-                        <!-- Personal Email (for receiving credentials) -->
-                        <div class="col-md-6">
-                            <label for="modalPersonalEmail" class="form-label fw-semibold">Personal Email
-                                <span class="text-muted small fw-normal">(to receive login credentials)</span>
-                            </label>
-                            <input type="email" class="form-control"
-                                [class.is-invalid]="(signupForm.submitted || modalPersonalEmail.touched) && modalPersonalEmail.invalid"
-                                [class.is-valid]="modalPersonalEmail.touched && modalPersonalEmail.valid"
-                                id="modalPersonalEmail" #modalPersonalEmail="ngModel"
-                                [(ngModel)]="signupData.personalEmail" name="personalEmail"
-                                placeholder="yourname@gmail.com">
-                            <div class="form-text text-muted">
-                                <i class="fas fa-envelope me-1"></i>Your login credentials will be emailed here.
-                            </div>
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalPersonalEmail.touched) && modalPersonalEmail.invalid">
-                                Enter a valid email address
-                            </div>
-                        </div>
+              <!-- Acre of Land -->
+              <div class="col-md-6">
+                <label for="modalAcreOfLand" class="form-label fw-semibold"
+                  >Acres of Land <span class="text-danger">*</span></label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  [class.is-invalid]="
+                    (signupForm.submitted || modalAcreOfLand.touched) &&
+                    modalAcreOfLand.invalid
+                  "
+                  [class.is-valid]="
+                    modalAcreOfLand.touched && modalAcreOfLand.valid
+                  "
+                  id="modalAcreOfLand"
+                  #modalAcreOfLand="ngModel"
+                  [(ngModel)]="signupData.acreOfLand"
+                  name="acreOfLand"
+                  placeholder="e.g. 5"
+                  min="0.1"
+                  max="10000"
+                  step="0.1"
+                  required
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    (signupForm.submitted || modalAcreOfLand.touched) &&
+                    modalAcreOfLand.invalid
+                  "
+                >
+                  <span *ngIf="modalAcreOfLand.errors?.['required']"
+                    >Acres of land is required</span
+                  >
+                  <span *ngIf="modalAcreOfLand.errors?.['min']"
+                    >Must be greater than 0</span
+                  >
+                </div>
+              </div>
 
-                        <!-- Company Name (buyer only) -->
-                        <div class="col-md-6" *ngIf="signupData.role === 'buyer'">
-                            <label for="modalCompanyName" class="form-label fw-semibold">Company Name <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                [class.is-invalid]="(signupForm.submitted || modalCompanyName.touched) && modalCompanyName.invalid"
-                                [class.is-valid]="modalCompanyName.touched && modalCompanyName.valid"
-                                id="modalCompanyName" #modalCompanyName="ngModel" [(ngModel)]="signupData.companyName"
-                                name="companyName" placeholder="Enter company name" required minlength="2">
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalCompanyName.touched) && modalCompanyName.invalid">
-                                Company Name is required</div>
-                        </div>
+              <!-- Fertilizers -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  Fertilizers Used
 
+                  <span class="text-danger">*</span>
+                </label>
 
-                        <!-- Village (farmer / seller) -->
-                        <div class="col-md-6" *ngIf="signupData.role === 'farmer' || signupData.role === 'seller'">
-                            <label for="modalVillage" class="form-label fw-semibold">Village <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                [class.is-invalid]="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid"
-                                [class.is-valid]="modalVillage.touched && modalVillage.valid" id="modalVillage"
-                                #modalVillage="ngModel" [(ngModel)]="signupData.village" name="village"
-                                placeholder="Enter your village name" required minlength="2">
-                            <div class="invalid-feedback"
-                                *ngIf="(signupForm.submitted || modalVillage.touched) && modalVillage.invalid">Village
-                                is required</div>
-                        </div>
+                <div
+                  class="fertilizers-checkbox-grid p-3 border rounded"
+                  [class.border-danger]="
+                    signupForm.submitted && signupData.fertilizers.length === 0
+                  "
+                >
+                  <div
+                    class="form-check"
+                    *ngFor="
+                      let fertilizer of fertilizersOptions;
+                      trackBy: trackByFn
+                    "
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'fertilizer-' + fertilizer.value"
+                      [checked]="
+                        signupData.fertilizers.includes(fertilizer.value)
+                      "
+                      (change)="onFertilizerChange(fertilizer.value, $event)"
+                    />
 
-                        <!-- Crops -->
-                        <div class="col-12"
-                            *ngIf="signupData.role === 'farmer' || signupData.role === 'seller' || signupData.role === 'buyer'">
-                            <label class="form-label fw-semibold">
-                                {{ signupData.role === 'buyer' ? 'Crops Looking For' : 'Typical Crops' }}
-                                <span class="text-danger">*</span>
-                            </label>
-                            <div class="crops-checkbox-grid p-3 border rounded"
-                                [class.border-danger]="signupForm.submitted && signupData.typicalCrops.length === 0">
-                                <div class="form-check" *ngFor="let crop of cropOptions; trackBy: trackByFn">
-                                    <input class="form-check-input" type="checkbox" [id]="'crop-' + crop.value"
-                                        [checked]="signupData.typicalCrops.includes(crop.value)"
-                                        (change)="onCropChange(crop.value, $event)">
-                                    <label class="form-check-label" [for]="'crop-' + crop.value">{{crop.label}}</label>
-                                </div>
-                            </div>
-                            <div class="text-danger small mt-1"
-                                *ngIf="signupForm.submitted && signupData.typicalCrops.length === 0">Please select at
-                                least one crop</div>
-                        </div>
+                    <label
+                      class="form-check-label"
+                      [for]="'fertilizer-' + fertilizer.value"
+                    >
+                      {{ fertilizer.label }}
+                    </label>
+                  </div>
+                </div>
 
-                        <!-- ── Section Header: Farm Details (farmer only) ── -->
-                        <ng-container *ngIf="signupData.role === 'farmer'">
-                            <div class="col-12">
-                                <div class="form-section-label mt-1">
-                                    <span class="form-section-icon">🌱</span> Farm Details
-                                </div>
-                            </div>
+                <div
+                  class="text-danger small mt-1"
+                  *ngIf="
+                    signupForm.submitted && signupData.fertilizers.length === 0
+                  "
+                >
+                  Please select at least one fertilizer
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <!-- /row -->
+        </form>
+      </div>
+      <!-- /modal-body -->
 
-                            <!-- Water Source -->
-                            <div class="col-md-6">
-                                <label for="modalWaterSource" class="form-label fw-semibold">Water Source <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select"
-                                    [class.is-invalid]="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid"
-                                    [class.is-valid]="modalWaterSource.touched && modalWaterSource.valid"
-                                    id="modalWaterSource" #modalWaterSource="ngModel"
-                                    [(ngModel)]="signupData.waterSource" name="waterSource" required>
-                                    <option selected disabled value="">Select water source</option>
-                                    <option value="well">Well</option>
-                                    <option value="borewell">Borewell</option>
-                                    <option value="canal">Canal</option>
-                                    <option value="river">River</option>
-                                    <option value="rainfed">Rainfed</option>
-                                </select>
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalWaterSource.touched) && modalWaterSource.invalid">
-                                    Water source is required</div>
-                            </div>
+      <!-- ═══ Signup Error Alert ═══ -->
+      <div
+        *ngIf="signupError"
+        class="alert alert-danger alert-dismissible mx-3 mb-2 py-2 d-flex align-items-center"
+        role="alert"
+      >
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span>{{ signupError }}</span>
+        <button
+          type="button"
+          class="btn-close ms-auto"
+          (click)="signupError = ''"
+          aria-label="Close"
+        ></button>
+      </div>
 
-                            <!-- Mandal -->
-                            <div class="col-md-6">
-                                <label for="modalMandal" class="form-label fw-semibold">Mandal <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control"
-                                    [class.is-invalid]="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid"
-                                    [class.is-valid]="modalMandal.touched && modalMandal.valid" id="modalMandal"
-                                    #modalMandal="ngModel" [(ngModel)]="signupData.mandal" name="mandal"
-                                    placeholder="Enter your mandal" required minlength="2">
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalMandal.touched) && modalMandal.invalid">Mandal
-                                    is required</div>
-                            </div>
-
-                            <!-- Soil Test -->
-                            <div class="col-md-6">
-                                <label for="modalSoilTest" class="form-label fw-semibold">Soil Test <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select"
-                                    [class.is-invalid]="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid"
-                                    [class.is-valid]="modalSoilTest.touched && modalSoilTest.valid" id="modalSoilTest"
-                                    #modalSoilTest="ngModel" [(ngModel)]="signupData.soilTest" name="soilTest" required>
-                                    <option selected disabled value="">Select soil test result</option>
-                                    <option value="tested-high">Tested — High Nutrients</option>
-                                    <option value="tested-medium">Tested — Medium Nutrients</option>
-                                    <option value="tested-low">Tested — Low Nutrients</option>
-                                    <option value="not-tested">Not Tested</option>
-                                </select>
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalSoilTest.touched) && modalSoilTest.invalid">
-                                    Soil test is required</div>
-                            </div>
-
-                            <!-- Soil Type -->
-                            <div class="col-md-6">
-                                <label for="modalSoilType" class="form-label fw-semibold">Soil Type <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select"
-                                    [class.is-invalid]="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid"
-                                    [class.is-valid]="modalSoilType.touched && modalSoilType.valid" id="modalSoilType"
-                                    #modalSoilType="ngModel" [(ngModel)]="signupData.soilType" name="soilType" required>
-                                    <option selected disabled value="">Select soil type</option>
-                                    <option value="black">Black</option>
-                                    <option value="Red">Red</option>
-                                    <option value="laterite">Laterite</option>
-                                    <option value="sandy">Sandy</option>
-                                    <option value="forest">Forest</option>
-                                    <option value="alluvial">Alluvial</option>
-                                </select>
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalSoilType.touched) && modalSoilType.invalid">
-                                    Soil type is required</div>
-                            </div>
-
-                            <!-- Acre of Land -->
-                            <div class="col-md-6">
-                                <label for="modalAcreOfLand" class="form-label fw-semibold">Acres of Land <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" class="form-control"
-                                    [class.is-invalid]="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid"
-                                    [class.is-valid]="modalAcreOfLand.touched && modalAcreOfLand.valid"
-                                    id="modalAcreOfLand" #modalAcreOfLand="ngModel" [(ngModel)]="signupData.acreOfLand"
-                                    name="acreOfLand" placeholder="e.g. 5" min="0.1" max="10000" step="0.1" required>
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalAcreOfLand.touched) && modalAcreOfLand.invalid">
-                                    <span *ngIf="modalAcreOfLand.errors?.['required']">Acres of land is required</span>
-                                    <span *ngIf="modalAcreOfLand.errors?.['min']">Must be greater than 0</span>
-                                </div>
-                            </div>
-
-                            <!-- Fertilizers -->
-                            <div class="col-md-6">
-                                <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers Used <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-select"
-                                    [class.is-invalid]="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid"
-                                    [class.is-valid]="modalFertilizers.touched && modalFertilizers.valid"
-                                    id="modalFertilizers" #modalFertilizers="ngModel"
-                                    [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
-                                    <option selected disabled value="">Select fertilizer</option>
-                                    <option value="urea">Urea</option>
-                                    <option value="dap">DAP</option>
-                                    <option value="mop">MOP (Potash)</option>
-                                    <option value="npk">NPK Complex</option>
-                                    <option value="organic">Organic Fertilizers</option>
-                                </select>
-                                <div class="invalid-feedback"
-                                    *ngIf="(signupForm.submitted || modalFertilizers.touched) && modalFertilizers.invalid">
-                                    Please select a fertilizer</div>
-                            </div>
-                        </ng-container>
-
-                    </div><!-- /row -->
-                </form>
-            </div><!-- /modal-body -->
-
-            <!-- ═══ Signup Error Alert ═══ -->
-            <div *ngIf="signupError"
-                class="alert alert-danger alert-dismissible mx-3 mb-2 py-2 d-flex align-items-center" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                <span>{{ signupError }}</span>
-                <button type="button" class="btn-close ms-auto" (click)="signupError = ''" aria-label="Close"></button>
-            </div>
-
-            <!-- ═══ Footer ═══ -->
-            <div class="signup-modal-footer">
-                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal"
-                    (click)="resetSignupForm()">
-                    Cancel
-                </button>
-                <button type="submit" form="signupFormEl" class="btn btn-signup-submit"
-                    [disabled]="!signupForm.valid || signupData.typicalCrops.length === 0">
-                    <i class="fas fa-user-plus me-2"></i>Create Account
-                </button>
-            </div>
-
-        </div><!-- /modal-content -->
-    </div><!-- /modal-dialog -->
-</div><!-- /signupModal -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      <!-- ═══ Footer ═══ -->
+      <div class="signup-modal-footer">
+        <button
+          type="button"
+          class="btn btn-cancel-outline"
+          data-bs-dismiss="modal"
+          (click)="resetSignupForm()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          form="signupFormEl"
+          class="btn btn-signup-submit"
+          [disabled]="!signupForm.valid || signupData.typicalCrops.length === 0"
+        >
+          <i class="fas fa-user-plus me-2"></i>Create Account
+        </button>
+      </div>
+    </div>
+    <!-- /modal-content -->
+  </div>
+  <!-- /modal-dialog -->
+</div>
+<!-- /signupModal -->
 
 <!-- Forgot Password Modal -->
-<div class="modal fade" id="forgotPassModal" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true"
-    (hidden.bs.modal)="resetForgotPasswordForm()">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-xl shadow-lg">
-            <div class="modal-header bg-primary-green text-white p-4 rounded-top-custom">
-                <h5 class="modal-title fw-bold" id="forgotPassModalLabel">
-                    <i class="fas fa-key me-2"></i>{{ 'login.forgotform' | translate }}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+<div
+  class="modal fade"
+  id="forgotPassModal"
+  tabindex="-1"
+  aria-labelledby="forgotPassModalLabel"
+  aria-hidden="true"
+  (hidden.bs.modal)="resetForgotPasswordForm()"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-xl shadow-lg">
+      <div
+        class="modal-header bg-primary-green text-white p-4 rounded-top-custom"
+      >
+        <h5 class="modal-title fw-bold" id="forgotPassModalLabel">
+          <i class="fas fa-key me-2"></i>{{ "login.forgotform" | translate }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <p class="text-muted mb-4" style="font-size: 14px">
+          <i class="fas fa-info-circle me-1 text-primary"></i>
+          Enter your registered system email (<code>yourname@intra-d.com</code>)
+          and we will send a password reset link to that address.
+        </p>
+
+        <form
+          (ngSubmit)="handleForgotPassword()"
+          #forgotForm="ngForm"
+          novalidate
+        >
+          <!-- Email field -->
+          <div class="mb-4">
+            <label
+              for="forgotEmailInput"
+              class="form-label fw-semibold text-dark"
+            >
+              <i class="fas fa-envelope me-2 text-success"></i>Registered Email
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              type="email"
+              id="forgotEmailInput"
+              name="forgotEmailInput"
+              [(ngModel)]="forgotPasswordData.email"
+              [class.is-invalid]="
+                forgotForm.submitted && forgotEmailInput.invalid
+              "
+              #forgotEmailInput="ngModel"
+              placeholder="e.g. ramesh@intra-d.com"
+              class="form-control form-control-lg rounded-3 border-2"
+              style="padding: 12px 16px; border-color: #e0e6ed"
+              required
+              email
+              [disabled]="forgotPasswordLoading"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="forgotForm.submitted && forgotEmailInput.invalid"
+            >
+              <span *ngIf="forgotEmailInput.errors?.['required']"
+                >Email is required</span
+              >
+              <span *ngIf="forgotEmailInput.errors?.['email']"
+                >Enter a valid email address</span
+              >
             </div>
+          </div>
 
-            <div class="modal-body p-4">
-                <p class="text-muted mb-4" style="font-size:14px;">
-                    <i class="fas fa-info-circle me-1 text-primary"></i>
-                    Enter your registered system email (<code>yourname@intra-d.com</code>) and we will send
-                    a password reset link to that address.
-                </p>
+          <!-- Status message -->
+          <div
+            *ngIf="forgotPasswordMessage"
+            [ngClass]="'alert alert-' + forgotPasswordMessageType"
+            class="mb-3 py-2 px-3 rounded-3"
+            style="font-size: 14px"
+          >
+            <i
+              class="fas me-2"
+              [ngClass]="{
+                'fa-check-circle': forgotPasswordMessageType === 'success',
+                'fa-exclamation-triangle':
+                  forgotPasswordMessageType === 'danger',
+              }"
+            ></i>
+            {{ forgotPasswordMessage }}
+          </div>
 
-                <form (ngSubmit)="handleForgotPassword()" #forgotForm="ngForm" novalidate>
-
-                    <!-- Email field -->
-                    <div class="mb-4">
-                        <label for="forgotEmailInput" class="form-label fw-semibold text-dark">
-                            <i class="fas fa-envelope me-2 text-success"></i>Registered Email
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="email" id="forgotEmailInput" name="forgotEmailInput"
-                            [(ngModel)]="forgotPasswordData.email"
-                            [class.is-invalid]="forgotForm.submitted && forgotEmailInput.invalid"
-                            #forgotEmailInput="ngModel" placeholder="e.g. ramesh@intra-d.com"
-                            class="form-control form-control-lg rounded-3 border-2"
-                            style="padding: 12px 16px; border-color: #e0e6ed;" required email
-                            [disabled]="forgotPasswordLoading">
-                        <div class="invalid-feedback" *ngIf="forgotForm.submitted && forgotEmailInput.invalid">
-                            <span *ngIf="forgotEmailInput.errors?.['required']">Email is required</span>
-                            <span *ngIf="forgotEmailInput.errors?.['email']">Enter a valid email address</span>
-                        </div>
-                    </div>
-
-                    <!-- Status message -->
-                    <div *ngIf="forgotPasswordMessage" [ngClass]="'alert alert-' + forgotPasswordMessageType"
-                        class="mb-3 py-2 px-3 rounded-3" style="font-size:14px;">
-                        <i class="fas me-2" [ngClass]="{'fa-check-circle': forgotPasswordMessageType === 'success',
-                                        'fa-exclamation-triangle': forgotPasswordMessageType === 'danger'}"></i>
-                        {{ forgotPasswordMessage }}
-                    </div>
-
-                    <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold"
-                        [disabled]="forgotPasswordLoading" style="padding: 12px;">
-                        <span *ngIf="forgotPasswordLoading" class="spinner-border spinner-border-sm me-2"></span>
-                        <i *ngIf="!forgotPasswordLoading" class="fas fa-paper-plane me-2"></i>
-                        {{ forgotPasswordLoading ? 'Sending...' : 'Send Reset Link' }}
-                    </button>
-
-                </form>
-            </div>
-
-        </div>
+          <!-- Submit button -->
+          <button
+            type="submit"
+            class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold"
+            [disabled]="forgotPasswordLoading"
+            style="padding: 12px"
+          >
+            <span
+              *ngIf="forgotPasswordLoading"
+              class="spinner-border spinner-border-sm me-2"
+            ></span>
+            <i
+              *ngIf="!forgotPasswordLoading"
+              class="fas fa-paper-plane me-2"
+            ></i>
+            {{ forgotPasswordLoading ? "Sending..." : "Send Reset Link" }}
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
-
-
 <!-- Success Modal (shared between Homepage and Dashboard, defined here for ease) -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content success-modal-card">
-
-            <!-- Header -->
-            <div class="success-modal-header">
-                <div class="success-modal-icon-wrap">
-                    <i class="fas fa-check-circle success-check-icon"></i>
-                </div>
-                <div>
-                    <div class="success-modal-title" id="successModalLabel">{{ successModalTitle }}</div>
-                    <div class="success-modal-sub">Account created &amp; saved to database</div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-
-            <!-- Body -->
-            <div class="modal-body p-4">
-                <ng-container *ngIf="registeredPassword; else defaultSuccess">
-
-                    <!-- Save-credentials warning -->
-                    <div class="cred-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Save these credentials now.</strong> You will need them to log in. They will not be
-                        shown
-                        again.
-                    </div>
-
-                    <!-- Credentials Card -->
-                    <div class="cred-card">
-                        <!-- Mobile (used for login on the login form) -->
-                        <div class="cred-row">
-                            <span class="cred-label"><i class="fas fa-mobile-alt me-2"></i>Mobile (Login ID)</span>
-                            <span class="cred-value" id="cred-mobile">{{ registeredMobileNo }}</span>
-                            <button class="cred-copy-btn" type="button" title="Copy mobile"
-                                (click)="copyToClipboard(registeredMobileNo, 'cred-mobile-copied')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                            <span class="cred-copied" id="cred-mobile-copied">Copied!</span>
-                        </div>
-
-                        <!-- System Email -->
-                        <div class="cred-row">
-                            <span class="cred-label"><i class="fas fa-envelope me-2"></i>System Email</span>
-                            <span class="cred-value" id="cred-email">{{ registeredEmail }}</span>
-                            <button class="cred-copy-btn" type="button" title="Copy email"
-                                (click)="copyToClipboard(registeredEmail, 'cred-email-copied')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                            <span class="cred-copied" id="cred-email-copied">Copied!</span>
-                        </div>
-
-                        <!-- Password -->
-                        <div class="cred-row">
-                            <span class="cred-label"><i class="fas fa-lock me-2"></i>Password</span>
-                            <span class="cred-value cred-password" id="cred-password">{{ registeredPassword }}</span>
-                            <button class="cred-copy-btn" type="button" title="Copy password"
-                                (click)="copyToClipboard(registeredPassword, 'cred-pass-copied')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                            <span class="cred-copied" id="cred-pass-copied">Copied!</span>
-                        </div>
-                    </div>
-
-                    <p class="cred-note">
-                        <i class="fas fa-info-circle me-1"></i>
-                        Use your <strong>Mobile Number</strong> and the above <strong>Password</strong> on the login
-                        form.
-                    </p>
-                </ng-container>
-                <ng-template #defaultSuccess>
-                    <p class="text-muted text-center mb-0">{{ 'modal.formsuccess' | translate }}</p>
-                </ng-template>
-            </div>
-
-            <!-- Footer -->
-            <div class="modal-footer p-3 border-top d-flex justify-content-end">
-                <button type="button" class="btn btn-success px-4 fw-semibold" data-bs-dismiss="modal">
-                    <i class="fas fa-check me-2"></i>I've saved my credentials
-                </button>
-            </div>
+<div
+  class="modal fade"
+  id="successModal"
+  tabindex="-1"
+  aria-labelledby="successModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content success-modal-card">
+      <!-- Header -->
+      <div class="success-modal-header">
+        <div class="success-modal-icon-wrap">
+          <i class="fas fa-check-circle success-check-icon"></i>
         </div>
+        <div>
+          <div class="success-modal-title" id="successModalLabel">
+            {{ successModalTitle }}
+          </div>
+          <div class="success-modal-sub">
+            Account created &amp; saved to database
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body p-4">
+        <ng-container *ngIf="registeredPassword; else defaultSuccess">
+          <!-- Save-credentials warning -->
+          <div class="cred-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Save these credentials now.</strong> You will need them to
+            log in. They will not be shown again.
+          </div>
+
+          <!-- Credentials Card -->
+          <div class="cred-card">
+            <!-- Mobile (used for login on the login form) -->
+            <div class="cred-row">
+              <span class="cred-label"
+                ><i class="fas fa-mobile-alt me-2"></i>Mobile (Login ID)</span
+              >
+              <span class="cred-value" id="cred-mobile">{{
+                registeredMobileNo
+              }}</span>
+              <button
+                class="cred-copy-btn"
+                type="button"
+                title="Copy mobile"
+                (click)="
+                  copyToClipboard(registeredMobileNo, 'cred-mobile-copied')
+                "
+              >
+                <i class="fas fa-copy"></i>
+              </button>
+              <span class="cred-copied" id="cred-mobile-copied">Copied!</span>
+            </div>
+
+            <!-- System Email -->
+            <div class="cred-row">
+              <span class="cred-label"
+                ><i class="fas fa-envelope me-2"></i>System Email</span
+              >
+              <span class="cred-value" id="cred-email">{{
+                registeredEmail
+              }}</span>
+              <button
+                class="cred-copy-btn"
+                type="button"
+                title="Copy email"
+                (click)="copyToClipboard(registeredEmail, 'cred-email-copied')"
+              >
+                <i class="fas fa-copy"></i>
+              </button>
+              <span class="cred-copied" id="cred-email-copied">Copied!</span>
+            </div>
+
+            <!-- Password -->
+            <div class="cred-row">
+              <span class="cred-label"
+                ><i class="fas fa-lock me-2"></i>Password</span
+              >
+              <span class="cred-value cred-password" id="cred-password">{{
+                registeredPassword
+              }}</span>
+              <button
+                class="cred-copy-btn"
+                type="button"
+                title="Copy password"
+                (click)="
+                  copyToClipboard(registeredPassword, 'cred-pass-copied')
+                "
+              >
+                <i class="fas fa-copy"></i>
+              </button>
+              <span class="cred-copied" id="cred-pass-copied">Copied!</span>
+            </div>
+          </div>
+
+          <p class="cred-note">
+            <i class="fas fa-info-circle me-1"></i>
+            Use your <strong>Mobile Number</strong> and the above
+            <strong>Password</strong> on the login form.
+          </p>
+        </ng-container>
+        <ng-template #defaultSuccess>
+          <p class="text-muted text-center mb-0">
+            {{ "modal.formsuccess" | translate }}
+          </p>
+        </ng-template>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer p-3 border-top d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-success px-4 fw-semibold"
+          data-bs-dismiss="modal"
+        >
+          <i class="fas fa-check me-2"></i>I've saved my credentials
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Coming Soon Modal -->
-<div class="modal fade" id="comingSoonModal" tabindex="-1" aria-labelledby="comingSoonModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-lg-custom shadow-lg">
-            <div class="modal-header bg-primary-green text-white p-3 rounded-top-custom">
-                <h5 class="modal-title" id="comingSoonModalLabel">{{selectedFeature}} - Coming Soon!</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 text-center">
-                <i class="fas fa-clock text-primary-green mb-3" style="font-size: 3rem;"></i>
-                <h4 class="text-primary-green mb-3">{{selectedFeature}} {{ 'modal.feature' | translate }}</h4>
-                <p class="text-muted mb-0">{{ 'modal.development' | translate }}</p>
-            </div>
-            <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary-green rounded-md-custom" data-bs-dismiss="modal">{{
-                    'common.gotit' | translate }}</button>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="comingSoonModal"
+  tabindex="-1"
+  aria-labelledby="comingSoonModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-lg-custom shadow-lg">
+      <div
+        class="modal-header bg-primary-green text-white p-3 rounded-top-custom"
+      >
+        <h5 class="modal-title" id="comingSoonModalLabel">
+          {{ selectedFeature }} - Coming Soon!
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <i
+          class="fas fa-clock text-primary-green mb-3"
+          style="font-size: 3rem"
+        ></i>
+        <h4 class="text-primary-green mb-3">
+          {{ selectedFeature }} {{ "modal.feature" | translate }}
+        </h4>
+        <p class="text-muted mb-0">{{ "modal.development" | translate }}</p>
+      </div>
+      <div class="modal-footer p-3 border-top d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn btn-primary-green rounded-md-custom"
+          data-bs-dismiss="modal"
+        >
+          {{ "common.gotit" | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Weather Modal -->
-<div class="modal fade" id="weatherModal" tabindex="-1" aria-labelledby="weatherModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-lg-custom shadow-lg">
-            <div class="modal-header bg-info text-white p-3 rounded-top-custom">
-                <h5 class="modal-title" id="weatherModalLabel">
-                    <i class="fas fa-cloud-sun me-2"></i>{{ 'modal.weather' | translate }}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" *ngIf="weatherData">
-                <div class="text-center mb-3">
-                    <h4 class="text-primary mb-2">{{weatherData.location}}</h4>
-                    <div class="display-4 text-info mb-2">{{weatherData.temperature}}°C</div>
-                    <p class="text-muted text-capitalize mb-0">{{weatherData.description}}</p>
-                </div>
-                <hr>
-                <div class="row text-center">
-                    <div class="col-6">
-                        <i class="fas fa-tint text-primary mb-2" style="font-size: 1.5rem;"></i>
-                        <div class="fw-bold">{{ 'modal.humidity' | translate }}</div>
-                        <div class="text-muted">{{weatherData.humidity}}%</div>
-                    </div>
-                    <div class="col-6">
-                        <i class="fas fa-wind text-primary mb-2" style="font-size: 1.5rem;"></i>
-                        <div class="fw-bold">{{ 'modal.windspeed' | translate }}</div>
-                        <div class="text-muted">{{weatherData.windSpeed}} m/s</div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{
-                    'common.close' | translate }}</button>
-            </div>
+<div
+  class="modal fade"
+  id="weatherModal"
+  tabindex="-1"
+  aria-labelledby="weatherModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-lg-custom shadow-lg">
+      <div class="modal-header bg-info text-white p-3 rounded-top-custom">
+        <h5 class="modal-title" id="weatherModalLabel">
+          <i class="fas fa-cloud-sun me-2"></i>{{ "modal.weather" | translate }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4" *ngIf="weatherData">
+        <div class="text-center mb-3">
+          <h4 class="text-primary mb-2">{{ weatherData.location }}</h4>
+          <div class="display-4 text-info mb-2">
+            {{ weatherData.temperature }}°C
+          </div>
+          <p class="text-muted text-capitalize mb-0">
+            {{ weatherData.description }}
+          </p>
         </div>
+        <hr />
+        <div class="row text-center">
+          <div class="col-6">
+            <i
+              class="fas fa-tint text-primary mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <div class="fw-bold">{{ "modal.humidity" | translate }}</div>
+            <div class="text-muted">{{ weatherData.humidity }}%</div>
+          </div>
+          <div class="col-6">
+            <i
+              class="fas fa-wind text-primary mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <div class="fw-bold">{{ "modal.windspeed" | translate }}</div>
+            <div class="text-muted">{{ weatherData.windSpeed }} m/s</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer p-3 border-top d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn btn-primary rounded-md-custom"
+          data-bs-dismiss="modal"
+        >
+          {{ "common.close" | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Farmers Modal -->
-<div class="modal fade" id="farmersModal" tabindex="-1" aria-labelledby="farmersModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-lg-custom shadow-lg">
-            <div class="modal-header bg-secondary-blue text-white p-3 rounded-top-custom">
-                <h5 class="modal-title" id="farmersModalLabel">
-                    <i class="fas fa-users me-2"></i>{{ 'modal.farmers' | translate }}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="text-center mb-4">
-                    <h4 class="text-primary mb-3">{{ 'modal.connected' | translate }}</h4>
-                </div>
-                <div class="row text-center g-3">
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <i class="fas fa-users text-primary mb-2" style="font-size: 2rem;"></i>
-                            <div class="h4 text-primary mb-1">{{farmersData.totalFarmers}}</div>
-                            <small class="text-muted">{{ 'farmers.total' | translate }}</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <i class="fas fa-user-check text-success mb-2" style="font-size: 2rem;"></i>
-                            <div class="h4 text-success mb-1">{{farmersData.activeFarmers}}</div>
-                            <small class="text-muted">{{ 'farmers.active' | translate }}</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <i class="fas fa-user-plus text-info mb-2" style="font-size: 2rem;"></i>
-                            <div class="h4 text-info mb-1">{{farmersData.newThisMonth}}</div>
-                            <small class="text-muted">{{ 'farmers.new' | translate }}</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 border rounded border-warning">
-                            <i class="fas fa-map text-warning mb-2" style="font-size: 2rem;"></i>
-                            <div class="h4 text-warning mb-1">
-                                {{farmersData.totalLandAcres > 0 ? farmersData.totalLandAcres : '—'}}
-                                <small class="fs-6 fw-normal" *ngIf="farmersData.totalLandAcres > 0">ac</small>
-                            </div>
-                            <small class="text-muted">Total Land Registered</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer p-3 border-top d-flex justify-content-center">
-                <button type="button" class="btn btn-primary rounded-md-custom" data-bs-dismiss="modal">{{
-                    'common.close' | translate }}</button>
-            </div>
+<div
+  class="modal fade"
+  id="farmersModal"
+  tabindex="-1"
+  aria-labelledby="farmersModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-lg-custom shadow-lg">
+      <div
+        class="modal-header bg-secondary-blue text-white p-3 rounded-top-custom"
+      >
+        <h5 class="modal-title" id="farmersModalLabel">
+          <i class="fas fa-users me-2"></i>{{ "modal.farmers" | translate }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="text-center mb-4">
+          <h4 class="text-primary mb-3">{{ "modal.connected" | translate }}</h4>
         </div>
+        <div class="row text-center g-3">
+          <div class="col-6">
+            <div class="p-3 border rounded">
+              <i
+                class="fas fa-users text-primary mb-2"
+                style="font-size: 2rem"
+              ></i>
+              <div class="h4 text-primary mb-1">
+                {{ farmersData.totalFarmers }}
+              </div>
+              <small class="text-muted">{{
+                "farmers.total" | translate
+              }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 border rounded">
+              <i
+                class="fas fa-user-check text-success mb-2"
+                style="font-size: 2rem"
+              ></i>
+              <div class="h4 text-success mb-1">
+                {{ farmersData.activeFarmers }}
+              </div>
+              <small class="text-muted">{{
+                "farmers.active" | translate
+              }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 border rounded">
+              <i
+                class="fas fa-user-plus text-info mb-2"
+                style="font-size: 2rem"
+              ></i>
+              <div class="h4 text-info mb-1">
+                {{ farmersData.newThisMonth }}
+              </div>
+              <small class="text-muted">{{ "farmers.new" | translate }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 border rounded border-warning">
+              <i
+                class="fas fa-map text-warning mb-2"
+                style="font-size: 2rem"
+              ></i>
+              <div class="h4 text-warning mb-1">
+                {{
+                  farmersData.totalLandAcres > 0
+                    ? farmersData.totalLandAcres
+                    : "—"
+                }}
+                <small
+                  class="fs-6 fw-normal"
+                  *ngIf="farmersData.totalLandAcres > 0"
+                  >ac</small
+                >
+              </div>
+              <small class="text-muted">Total Land Registered</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer p-3 border-top d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn btn-primary rounded-md-custom"
+          data-bs-dismiss="modal"
+        >
+          {{ "common.close" | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- OTP Verification Modal for Signup -->
-<app-otp-verification [mobileNumber]="signupData.mobileNo" [showOtpModal]="showOtpModal"
-    (otpVerified)="onOtpVerified($event)" (modalClosed)="onOtpModalClosed()">
+<app-otp-verification
+  [mobileNumber]="signupData.mobileNo"
+  [showOtpModal]="showOtpModal"
+  (otpVerified)="onOtpVerified($event)"
+  (modalClosed)="onOtpModalClosed()"
+>
 </app-otp-verification>
 
 <!--
@@ -928,4 +1661,7 @@
   Firebase RecaptchaVerifier requires the element to exist at the time initRecaptcha() is called.
   width:0/height:0 keeps it invisible with zero layout impact.
 -->
-<div id="recaptcha-container-signup" style="width:0;height:0;overflow:hidden;position:absolute;"></div>
+<div
+  id="recaptcha-container-signup"
+  style="width: 0; height: 0; overflow: hidden; position: absolute"
+></div>
