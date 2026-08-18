@@ -18,7 +18,7 @@ export interface SignupUser {
   mobileNo: string;
   soilType: string;
   acreOfLand: number | null;
-  fertilizers: string;
+  fertilizers: string[] | string;
   role?: string;
   email?: string;
   password?: string;

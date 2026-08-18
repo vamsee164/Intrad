@@ -213,6 +213,13 @@ export class HomepageComponent implements OnInit, OnDestroy {
     private readonly notificationService: NotificationService,
   ) {}
 
+  onLoginSuccess(): void {
+    this.isLoggedIn = this.authService.isAuthenticated();
+    this.currentUser = this.authService.getCurrentUser();
+    const dashboardRoute = this.authService.getDashboardRoute();
+    this.router.navigate([dashboardRoute]);
+  }
+
   // ============================================================
   // CROP CHECKBOX
   // ============================================================
