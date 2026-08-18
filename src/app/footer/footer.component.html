@@ -70,12 +70,12 @@
           <h6 class="footer-section-title">{{ 'footer.workwithus' | translate }}</h6>
           <ul class="footer-links">
             <li>
-              <a [routerLink]="['/career']" class="footer-link">
+              <a (click)="navigateToCareer()" class="footer-link" style="cursor:pointer;">
                 <i class="fas fa-briefcase me-2"></i>{{ 'footer.viewjobs' | translate }}
               </a>
             </li>
             <li>
-              <a [routerLink]="['/contact']" class="footer-link">
+              <a (click)="navigateToContact()" class="footer-link" style="cursor:pointer;">
                 <i class="fas fa-headset me-2"></i>{{ 'nav.contact' | translate }}
               </a>
             </li>
@@ -92,11 +92,11 @@
       <div class="footer-bottom-inner">
         <span class="copyright">{{ 'footer.copyright' | translate }}</span>
         <div class="footer-bottom-links">
-          <a [routerLink]="['/contact']" class="footer-bottom-link">{{ 'nav.contact' | translate }}</a>
+          <a (click)="navigateToContact()" class="footer-bottom-link" style="cursor:pointer;">{{ 'nav.contact' | translate }}</a>
           <span class="separator">·</span>
-          <a [routerLink]="['/about']" class="footer-bottom-link">{{ 'nav.about' | translate }}</a>
           <span class="separator">·</span>
-          <a [routerLink]="['/career']" class="footer-bottom-link">{{ 'nav.wehire' | translate }}</a>
+          <a (click)="navigateToCareer()" class="footer-bottom-link" style="cursor:pointer;">{{ 'nav.wehire' | translate
+            }}</a>
         </div>
       </div>
     </div>

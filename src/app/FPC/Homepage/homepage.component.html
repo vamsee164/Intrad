@@ -71,8 +71,8 @@
                     <div class="carousel-inner">
                         <!-- Slide 1: Mangoes -->
                         <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=1100&h=480&fit=crop&crop=center&auto=format&q=80"
-                                class="d-block slide-img" alt="Fresh ripe mangoes on tree branch">
+                            <img src="assets/images/mangobunch.jpg" class="d-block slide-img"
+                                alt="Fresh ripe mangoes on tree branch">
                             <div class="carousel-caption slide-caption">
                                 <span class="slide-tag">🥭 Mangoes</span>
                                 <h5>Sun-Ripened Alphonso Mangoes</h5>
@@ -407,6 +407,26 @@
                             </div>
                         </div>
 
+                        <!-- Personal Email (for receiving credentials) -->
+                        <div class="col-md-6">
+                            <label for="modalPersonalEmail" class="form-label fw-semibold">Personal Email
+                                <span class="text-muted small fw-normal">(to receive login credentials)</span>
+                            </label>
+                            <input type="email" class="form-control"
+                                [class.is-invalid]="(signupForm.submitted || modalPersonalEmail.touched) && modalPersonalEmail.invalid"
+                                [class.is-valid]="modalPersonalEmail.touched && modalPersonalEmail.valid"
+                                id="modalPersonalEmail" #modalPersonalEmail="ngModel"
+                                [(ngModel)]="signupData.personalEmail" name="personalEmail"
+                                placeholder="yourname@gmail.com">
+                            <div class="form-text text-muted">
+                                <i class="fas fa-envelope me-1"></i>Your login credentials will be emailed here.
+                            </div>
+                            <div class="invalid-feedback"
+                                *ngIf="(signupForm.submitted || modalPersonalEmail.touched) && modalPersonalEmail.invalid">
+                                Enter a valid email address
+                            </div>
+                        </div>
+
                         <!-- Company Name (buyer only) -->
                         <div class="col-md-6" *ngIf="signupData.role === 'buyer'">
                             <label for="modalCompanyName" class="form-label fw-semibold">Company Name <span
@@ -420,6 +440,7 @@
                                 *ngIf="(signupForm.submitted || modalCompanyName.touched) && modalCompanyName.invalid">
                                 Company Name is required</div>
                         </div>
+
 
                         <!-- Village (farmer / seller) -->
                         <div class="col-md-6" *ngIf="signupData.role === 'farmer' || signupData.role === 'seller'">
@@ -581,6 +602,14 @@
                 </form>
             </div><!-- /modal-body -->
 
+            <!-- ═══ Signup Error Alert ═══ -->
+            <div *ngIf="signupError"
+                class="alert alert-danger alert-dismissible mx-3 mb-2 py-2 d-flex align-items-center" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span>{{ signupError }}</span>
+                <button type="button" class="btn-close ms-auto" (click)="signupError = ''" aria-label="Close"></button>
+            </div>
+
             <!-- ═══ Footer ═══ -->
             <div class="signup-modal-footer">
                 <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal"
@@ -620,121 +649,70 @@
 
 
 <!-- Forgot Password Modal -->
-<div class="modal fade" id="forgotPassModal" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal fade" id="forgotPassModal" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true"
+    (hidden.bs.modal)="resetForgotPasswordForm()">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-xl shadow-lg">
             <div class="modal-header bg-primary-green text-white p-4 rounded-top-custom">
-                <h5 class="modal-title display-6 fw-bold" id="forgotPassModalLabel">{{ 'login.forgotform' | translate }}
+                <h5 class="modal-title fw-bold" id="forgotPassModalLabel">
+                    <i class="fas fa-key me-2"></i>{{ 'login.forgotform' | translate }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
+
             <div class="modal-body p-4">
+                <p class="text-muted mb-4" style="font-size:14px;">
+                    <i class="fas fa-info-circle me-1 text-primary"></i>
+                    Enter your registered system email (<code>yourname@intra-d.com</code>) and we will send
+                    a password reset link to that address.
+                </p>
+
                 <form (ngSubmit)="handleForgotPassword()" #forgotForm="ngForm" novalidate>
+
+                    <!-- Email field -->
                     <div class="mb-4">
-                        <label for="forgotEmail" class="form-label fw-semibold text-dark">
-                            <i class="fas fa-mobile-alt me-2 text-primary"></i>Mobile No.
+                        <label for="forgotEmailInput" class="form-label fw-semibold text-dark">
+                            <i class="fas fa-envelope me-2 text-success"></i>Registered Email
                             <span class="text-danger">*</span>
                         </label>
-                        <div class="input-group">
-                            <input type="tel" id="forgotEmail" name="forgotEmail"
-                                [(ngModel)]="forgotPasswordData.mobileNo"
-                                [class.is-invalid]="forgotForm.submitted && forgotEmail.invalid" #forgotEmail="ngModel"
-                                placeholder="Enter mobile number" (input)="onPhoneInput($event)"
-                                class="form-control form-control-lg rounded-start-3 border-2"
-                                [attr.disabled]="isForgotOtpVerified || forgotOtpSent ? true : null"
-                                style="padding: 12px 16px; border-color: #e0e6ed;" required pattern="[0-9]{10}"
-                                minlength="10" maxlength="10">
-                            <button type="button" class="btn btn-outline-primary"
-                                *ngIf="!forgotOtpSent && forgotPasswordData.mobileNo.length === 10"
-                                (click)="sendForgotOtp()" [disabled]="isSendingForgotOtp">
-                                {{ isSendingForgotOtp ? 'Sending...' : 'Send OTP' }}
-                            </button>
-                        </div>
-                        <div class="invalid-feedback" *ngIf="forgotForm.submitted && forgotEmail.invalid">
-                            <span *ngIf="forgotEmail.errors?.['required']">Mobile number is required</span>
-                            <span *ngIf="forgotEmail.errors?.['pattern'] || forgotEmail.errors?.['minlength']">Please
-                                enter a valid 10-digit number</span>
+                        <input type="email" id="forgotEmailInput" name="forgotEmailInput"
+                            [(ngModel)]="forgotPasswordData.email"
+                            [class.is-invalid]="forgotForm.submitted && forgotEmailInput.invalid"
+                            #forgotEmailInput="ngModel" placeholder="e.g. ramesh@intra-d.com"
+                            class="form-control form-control-lg rounded-3 border-2"
+                            style="padding: 12px 16px; border-color: #e0e6ed;" required email
+                            [disabled]="forgotPasswordLoading">
+                        <div class="invalid-feedback" *ngIf="forgotForm.submitted && forgotEmailInput.invalid">
+                            <span *ngIf="forgotEmailInput.errors?.['required']">Email is required</span>
+                            <span *ngIf="forgotEmailInput.errors?.['email']">Enter a valid email address</span>
                         </div>
                     </div>
 
-                    <div class="mb-4" *ngIf="showForgotOtpField">
-                        <label for="forgotOtp" class="form-label fw-semibold text-dark">
-                            Enter OTP: <span class="text-danger">*</span>
-                            <span class="badge bg-success ms-2" *ngIf="isForgotOtpVerified"><i
-                                    class="bi bi-check-circle me-1"></i>Verified</span>
-                        </label>
-                        <input type="text" class="form-control form-control-lg rounded-3 border-2"
-                            [class.is-valid]="isForgotOtpVerified" id="forgotOtp" [(ngModel)]="forgotOtpCode"
-                            name="forgotOtp" placeholder="Enter 6-digit OTP" maxlength="6"
-                            [attr.disabled]="isForgotOtpVerified ? true : null" pattern="[0-9]{6}">
-                        <div [ngClass]="'alert alert-' + forgotOtpMessageType" class="alert-sm mt-2 mb-0 py-1 px-2"
-                            *ngIf="forgotOtpMessage" style="font-size:0.85rem">
-                            <i class="bi"
-                                [ngClass]="{'bi-check-circle': forgotOtpMessageType === 'success', 'bi-exclamation-circle': forgotOtpMessageType === 'danger'}"></i>
-                            {{ forgotOtpMessage }}
-                        </div>
-                        <div class="d-flex gap-2 mt-2" *ngIf="!isForgotOtpVerified">
-                            <button type="button" class="btn btn-sm btn-primary" (click)="verifyForgotOtp()"
-                                [disabled]="isVerifyingForgotOtp || forgotOtpCode.length !== 6">
-                                <i class="bi bi-shield-check me-1"></i>{{ isVerifyingForgotOtp ? 'Verifying...' :
-                                'Verify OTP' }}
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="resendForgotOtp()"
-                                [disabled]="isSendingForgotOtp">
-                                <i class="bi bi-arrow-clockwise me-1"></i>{{ isSendingForgotOtp ? 'Sending...' :
-                                'Resend' }}
-                            </button>
-                        </div>
+                    <!-- Status message -->
+                    <div *ngIf="forgotPasswordMessage" [ngClass]="'alert alert-' + forgotPasswordMessageType"
+                        class="mb-3 py-2 px-3 rounded-3" style="font-size:14px;">
+                        <i class="fas me-2" [ngClass]="{'fa-check-circle': forgotPasswordMessageType === 'success',
+                                        'fa-exclamation-triangle': forgotPasswordMessageType === 'danger'}"></i>
+                        {{ forgotPasswordMessage }}
                     </div>
 
-                    <div class="mb-4" *ngIf="isForgotOtpVerified">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="newPassword" class="form-label fw-semibold text-dark">
-                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.password' | translate }}
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input type="password" id="newPassword" name="newPassword"
-                                    [(ngModel)]="forgotPasswordData.password"
-                                    [class.is-invalid]="forgotForm.submitted && newPassword.invalid"
-                                    #newPassword="ngModel" placeholder="Enter new password"
-                                    class="form-control form-control-lg rounded-3 border-2"
-                                    style="padding: 12px 16px; border-color: #e0e6ed;" required>
-                                <div class="invalid-feedback" *ngIf="forgotForm.submitted && newPassword.invalid">
-                                    Password is required
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="confirmNewPassword" class="form-label fw-semibold text-dark">
-                                    <i class="fas fa-lock me-2 text-primary"></i>{{ 'login.confirmpassword' | translate
-                                    }} <span class="text-danger">*</span>
-                                </label>
-                                <input type="password" id="confirmNewPassword" name="confirmNewPassword"
-                                    [(ngModel)]="forgotPasswordData.confirmPassword"
-                                    [class.is-invalid]="forgotForm.submitted && confirmNewPassword.invalid"
-                                    #confirmNewPassword="ngModel" placeholder="Confirm new password"
-                                    class="form-control form-control-lg rounded-3 border-2"
-                                    style="padding: 12px 16px; border-color: #e0e6ed;" required>
-                                <div class="invalid-feedback"
-                                    *ngIf="forgotForm.submitted && confirmNewPassword.invalid">
-                                    Confirm password is required
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold mb-3"
-                        [disabled]="!forgotForm.valid || !isForgotOtpVerified" style="padding: 12px;">
-                        {{ 'common.submit' | translate }}
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold"
+                        [disabled]="forgotPasswordLoading" style="padding: 12px;">
+                        <span *ngIf="forgotPasswordLoading" class="spinner-border spinner-border-sm me-2"></span>
+                        <i *ngIf="!forgotPasswordLoading" class="fas fa-paper-plane me-2"></i>
+                        {{ forgotPasswordLoading ? 'Sending...' : 'Send Reset Link' }}
                     </button>
+
                 </form>
             </div>
 
         </div>
     </div>
 </div>
+
+
 
 <!-- Success Modal (shared between Homepage and Dashboard, defined here for ease) -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">

@@ -50,6 +50,9 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((e: any) => {
         const url: string = e.urlAfterRedirects || e.url || '';
         this.isInsideDashboard = DASHBOARD_ROUTES.some(r => url.startsWith(r));
+
+        // Scroll to top of the page on every navigation (login, navbar links, etc.)
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       });
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, timeout, retry, switchMap } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
@@ -12,6 +12,7 @@ import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { OtpService } from '../../services/otp.service';
+import { NotificationService } from '../../services/notification.service';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { OtpVerificationComponent } from '../../shared/otp-verification/otp-verification.component';
 import { environment } from '../../../environments/environment';
@@ -31,6 +32,7 @@ interface SignupFormData {
   fertilizers: string;
   role: string;
   companyName: string;
+  personalEmail: string; // personal email to receive login credentials
 }
 
 interface WeatherData {
@@ -69,7 +71,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   signupData: SignupFormData = {
     name: '', typicalCrops: [], village: '', waterSource: '',
     mandal: '', soilTest: '', mobileNo: '', soilType: '',
-    acreOfLand: null, fertilizers: '', role: '', companyName: ''
+    acreOfLand: null, fertilizers: '', role: '', companyName: '',
+    personalEmail: ''
   };
 
   readonly cropOptions = [
@@ -103,21 +106,15 @@ export class HomepageComponent implements OnInit, OnDestroy {
   registeredPassword = '';
   registeredMobileNo = '';
   successModalTitle = 'Form Submission';
+  signupError = ''; // holds the last registration error message shown in the modal
 
   forgotPasswordData = {
-    mobileNo: '',
-    password: '',
-    confirmPassword: ''
+    email: '' // registered @intra-d.com email
   };
 
-  showForgotOtpField: boolean = false;
-  isForgotOtpVerified: boolean = false;
-  forgotOtpCode: string = '';
-  forgotOtpSent: boolean = false;
-  isVerifyingForgotOtp: boolean = false;
-  isSendingForgotOtp: boolean = false;
-  forgotOtpMessage: string = '';
-  forgotOtpMessageType: 'success' | 'danger' = 'danger';
+  forgotPasswordLoading = false;
+  forgotPasswordMessage = '';
+  forgotPasswordMessageType: 'success' | 'danger' = 'danger';
 
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
   @ViewChild('forgotForm') forgotHtmlForm!: NgForm;
@@ -127,9 +124,11 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly authService: AuthService,
+    private readonly router: Router,
     private readonly http: HttpClient,
     private readonly firebaseService: FirebaseService,
-    private readonly otpService: OtpService
+    private readonly otpService: OtpService,
+    private readonly notificationService: NotificationService
   ) {}
 
   onCropChange(value: string, event: any): void {
@@ -155,6 +154,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
         next: (user) => {
           this.currentUser = user;
           this.isLoggedIn = !!user;
+          // Auto-redirect logged-in users to their role dashboard
+          // so old sessions never see the stale service-info UI
+          if (user) {
+            const dashboardRoute = this.authService.getDashboardRoute(user.role);
+            this.router.navigate([dashboardRoute]);
+          }
         },
         error: (error) => {
           console.error('Error in user subscription:', error);
@@ -335,7 +340,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.signupData = {
       name: '', typicalCrops: [], village: '', waterSource: '',
       mandal: '', soilTest: '', mobileNo: '', soilType: '',
-      acreOfLand: null, fertilizers: '', role: '', companyName: ''
+      acreOfLand: null, fertilizers: '', role: '', companyName: '',
+      personalEmail: ''
     };
     this.otpSent = false;
     this.showOtpField = false;
@@ -346,6 +352,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.isSendingOtp = false;
     this.isVerifyingOtp = false;
     this.devOtpPreview = '';
+    this.signupError = '';
     // Reset the Angular form control state (touched / dirty / submitted)
     if (this.signupHtmlForm) {
       this.signupHtmlForm.resetForm();
@@ -492,20 +499,57 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
     console.log('Processing user signup');
     
+    this.signupError = '';
     this.firebaseService.createUser(sanitizedData)
       .pipe(
         timeout(this.API_TIMEOUT),
-        catchError(() => of(null)),
+        catchError((err) => {
+          // Map Firebase Auth error codes to user-friendly messages
+          const code: string = err?.code || err?.error?.message || '';
+          if (code.includes('EMAIL_EXISTS') || code === 'auth/email-already-in-use') {
+            this.signupError = 'This name is already registered. Please contact the administrator.';
+          } else if (code === 'auth/weak-password') {
+            this.signupError = 'Password is too weak. Please try again.';
+          } else if (code === 'auth/network-request-failed') {
+            this.signupError = 'Network error. Please check your connection and try again.';
+          } else if (code === 'auth/too-many-requests') {
+            this.signupError = 'Too many attempts. Please try again later.';
+          } else {
+            this.signupError = 'Registration failed. Please try again.';
+          }
+          console.error('[Signup] Firebase error:', code, err);
+          return of(null);
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe({
         next: (response) => {
           if (response) {
+            this.signupError = '';
             // Set credentials BEFORE hiding so Angular bindings are ready
             this.registeredEmail    = response.email;
             this.registeredPassword = response.generatedPassword;
             this.registeredMobileNo = sanitizedData.mobileNo;
             this.successModalTitle  = 'Registration Successful';
+
+            // Send credentials email non-blocking (failure does not affect signup flow)
+            if (sanitizedData.personalEmail) {
+              this.notificationService.sendLoginCredentialsEmail(
+                response.email,
+                response.generatedPassword,
+                response.name,
+                sanitizedData.personalEmail
+              ).pipe(takeUntil(this.destroy$)).subscribe({
+                next: (sent) => {
+                  if (sent) {
+                    console.log('[Signup] Credentials email sent to', sanitizedData.personalEmail);
+                  } else {
+                    console.warn('[Signup] Credentials email failed — user notified on-screen');
+                  }
+                },
+                error: () => console.warn('[Signup] Credentials email error — non-critical')
+              });
+            }
 
             // Wait for signup modal to FULLY close (backdrop removed) before
             // opening success modal — prevents invisible backdrop blocking clicks
@@ -516,11 +560,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
               }, { once: true });
             }
             this.hideModal('signupModal');
+          } else if (this.signupError) {
+            // Error already set in catchError — show it in the modal, don't close it
           } else {
-            alert('Registration failed. Please try again.');
+            this.signupError = 'Registration failed. Please try again.';
           }
         },
-        error: () => alert('Registration failed. Please try again.')
+        error: (err) => {
+          this.signupError = 'Registration failed. Please try again.';
+          console.error('[Signup] Unexpected error:', err);
+        }
       });
   }
 
@@ -551,110 +600,63 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ====== Forgot Password OTP Logic ======
-
-  sendForgotOtp(): void {
-    if (!this.forgotPasswordData.mobileNo || this.forgotPasswordData.mobileNo.length !== 10) {
-      this.forgotOtpMessage = 'Please enter a valid 10-digit mobile number.';
-      this.forgotOtpMessageType = 'danger';
-      return;
-    }
-    this.isSendingForgotOtp = true;
-    this.forgotOtpMessage = '';
-    this.otpService.sendOtp(this.forgotPasswordData.mobileNo).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.showForgotOtpField = true;
-        this.forgotOtpSent = true;
-        this.isSendingForgotOtp = false;
-        this.forgotOtpMessage = 'OTP sent to your mobile number';
-        this.forgotOtpMessageType = 'success';
-      },
-      error: () => {
-        this.isSendingForgotOtp = false;
-        this.forgotOtpMessage = 'Failed to send OTP. Please try again.';
-        this.forgotOtpMessageType = 'danger';
-      }
-    });
-  }
-
-  verifyForgotOtp(): void {
-    if (this.forgotOtpCode.length !== 6) {
-      this.forgotOtpMessage = 'Please enter a valid 6-digit OTP';
-      this.forgotOtpMessageType = 'danger';
-      return;
-    }
-    this.isVerifyingForgotOtp = true;
-    this.forgotOtpMessage = '';
-    this.otpService.verifyOtp(this.forgotPasswordData.mobileNo, this.forgotOtpCode).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (isValid) => {
-        this.isVerifyingForgotOtp = false;
-        if (isValid) {
-          this.isForgotOtpVerified = true;
-          this.forgotOtpMessage = 'Mobile number verified successfully!';
-          this.forgotOtpMessageType = 'success';
-        } else {
-          this.forgotOtpMessage = 'Invalid OTP. Please try again.';
-          this.forgotOtpMessageType = 'danger';
-        }
-      },
-      error: () => {
-        this.isVerifyingForgotOtp = false;
-        this.forgotOtpMessage = 'Verification failed. Please try again.';
-        this.forgotOtpMessageType = 'danger';
-      }
-    });
-  }
-
-  resendForgotOtp(): void {
-    this.forgotOtpCode = '';
-    this.forgotOtpMessage = '';
-    this.sendForgotOtp();
-  }
-
-  // ====== End Forgot Password OTP Logic ======
+  // ====== Forgot Password — Email Reset Logic ======
 
   handleForgotPassword(): void {
     if (this.forgotHtmlForm.invalid) {
       this.forgotHtmlForm.form.markAllAsTouched();
-      console.warn('Invalid forgot password form submission');
+      console.warn('[ForgotPassword] Invalid form submission');
       return;
     }
 
-    if (!this.isForgotOtpVerified) {
-      alert('Please verify your mobile number first.');
+    const email = this.forgotPasswordData.email.trim();
+    if (!email) {
+      this.forgotPasswordMessage = 'Please enter your registered email address.';
+      this.forgotPasswordMessageType = 'danger';
       return;
     }
 
-    if (this.forgotPasswordData.password !== this.forgotPasswordData.confirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
+    this.forgotPasswordLoading = true;
+    this.forgotPasswordMessage = '';
 
-    console.log('Processing password reset for:', this.forgotPasswordData.mobileNo);
-    
-    this.firebaseService.updateUserPassword(this.forgotPasswordData.mobileNo, this.forgotPasswordData.password)
+    this.notificationService.sendPasswordResetEmail(email)
       .pipe(
         timeout(this.API_TIMEOUT),
-        catchError(() => of(null)),
+        catchError(() => of(false)),
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: (response: any) => {
-          if (response) {
-            alert('Password updated successfully! You can now login with your new password.');
-            this.hideModal('forgotPassModal');
-            this.forgotHtmlForm.resetForm();
-            this.isForgotOtpVerified = false;
-            this.showForgotOtpField = false;
-            this.forgotOtpSent = false;
-            this.forgotOtpMessage = '';
+        next: (sent) => {
+          this.forgotPasswordLoading = false;
+          // Always show success (security: don't reveal if email exists)
+          this.forgotPasswordMessage =
+            'If this email is registered, a password reset link has been sent. Please check your inbox.';
+          this.forgotPasswordMessageType = 'success';
+          if (sent) {
+            console.log('[ForgotPassword] Reset email sent to', email);
           } else {
-            alert('User not found or password update failed.');
+            console.warn('[ForgotPassword] Reset email may not have been delivered');
           }
         },
-        error: () => alert('Password reset failed. Please try again.')
+        error: () => {
+          this.forgotPasswordLoading = false;
+          this.forgotPasswordMessage = 'Failed to send reset email. Please try again.';
+          this.forgotPasswordMessageType = 'danger';
+        }
       });
   }
+
+  resetForgotPasswordForm(): void {
+    this.forgotPasswordData = { email: '' };
+    this.forgotPasswordMessage = '';
+    this.forgotPasswordMessageType = 'danger';
+    this.forgotPasswordLoading = false;
+    if (this.forgotHtmlForm) {
+      this.forgotHtmlForm.resetForm();
+    }
+  }
+
+  // ====== End Forgot Password Logic ======
 
   trackByFn(index: number, item: any): any {
     return item?.value || item?.id || index;

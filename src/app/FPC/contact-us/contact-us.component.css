@@ -34,13 +34,19 @@
 
 /* Main container styling for the contact form */
 .contact-form-container {
-  max-width: 800px; /* Max width for the form */
-  margin-inline: auto; /* Centering with margin */
-  padding: 1rem 2rem; /* Padding inside the container */
+  max-width: 800px;
+  margin-inline: auto;
+  padding: 2.5rem 2.5rem 3rem; /* generous top, sides and bottom */
   background-color: var(--contact-form-bg);
   border-radius: var(--border-radius-container);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--contact-form-border);
+}
+
+/* Page-level vertical spacing so the card never touches navbar/footer */
+:host {
+  display: block;
+  padding: 3.5rem 1rem 4rem;
 }
 
 /* "Get in touch" title styling */
@@ -110,9 +116,12 @@
 
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
+  :host {
+    padding: 2.5rem 0.75rem 3rem;
+  }
   .contact-form-container {
-    padding: 1.25rem;
-    margin: 1rem auto;
+    padding: 1.75rem 1.5rem 2.25rem;
+    margin: 0 auto;
   }
   .get-in-touch-title {
     font-size: 2rem;
@@ -120,8 +129,11 @@
 }
 
 @media (max-width: 575.98px) {
+  :host {
+    padding: 2rem 0 2.5rem;
+  }
   .contact-form-container {
-    padding: 1rem;
+    padding: 1.25rem 1rem 1.75rem;
     margin: 0;
     border-radius: 0;
     box-shadow: none;

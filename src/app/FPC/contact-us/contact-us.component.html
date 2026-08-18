@@ -1,8 +1,8 @@
 <!-- src/app/contact-form/contact-form.component.html -->
 <div class="contact-form-container">
-    <div class="row text-center mb-4">
+    <div class="row text-center mb-5">
         <div class="col-12">
-            <h1 class="get-in-touch-title mb-4">{{ 'contact.title' | translate }}</h1>
+            <h1 class="get-in-touch-title">{{ 'contact.title' | translate }}</h1>
         </div>
     </div>
 
@@ -38,19 +38,21 @@
                     <span *ngIf="email.errors?.['required']">Email is required</span>
                     <span *ngIf="email.errors?.['email']">Please enter a valid email</span>
                 </div>
-                <label for="phone" class="form-label mt-4">{{ 'contact.phone' | translate }}</label>
+            </div>
+            <div class="col-md-6">
+                <label for="phone" class="form-label">{{ 'contact.phone' | translate }}</label>
                 <input type="tel" class="form-control form-control-custom" id="phone" [(ngModel)]="formData.phone"
                     name="phone" pattern="[0-9]{10}" maxlength="10" minlength="10" 
                     (input)="onPhoneInput($event)"
                     title="Please enter exactly 10 digits" placeholder="Enter 10-digit phone number">
             </div>
             <!-- Message -->
-            <div class="col-md-6">
+            <div class="col-12">
                 <label for="message" class="form-label">{{ 'contact.message' | translate }} <span class="text-danger">*</span></label>
                 <textarea class="form-control form-control-custom-textarea" 
                           [class.is-invalid]="(contactForm.submitted || message.touched) && message.invalid"
                           id="message" #message="ngModel" [(ngModel)]="formData.message"
-                          name="message" rows="4" required></textarea>
+                          name="message" rows="5" required></textarea>
                 <div class="invalid-feedback" *ngIf="(contactForm.submitted || message.touched) && message.invalid">
                     Message is required
                 </div>

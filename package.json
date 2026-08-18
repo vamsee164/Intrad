@@ -15,10 +15,10 @@
     "@angular/common": "^21.2.8",
     "@angular/compiler": "^21.2.8",
     "@angular/core": "^21.2.8",
-    "@angular/fire": "^20.0.1",
+    "@angular/fire": "^21.0.0-rc.0",
     "@angular/forms": "^21.2.8",
     "@angular/localize": "^21.1.1",
-    "@angular/material": "^18.2.14",
+    "@angular/material": "^21.0.0",
     "@angular/platform-browser": "^21.2.8",
     "@angular/platform-browser-dynamic": "^21.2.8",
     "@angular/platform-server": "^21.2.8",
@@ -29,7 +29,7 @@
     "firebase": "^12.7.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "^0.14.10"
+    "zone.js": "~0.16.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.2.7",

@@ -49,7 +49,11 @@ export class FirebaseService {
   // Create user securely with Auth + Database PUT using UID
   createUser(userData: SignupUser): Observable<any> {
     const generatedPassword = this.generatePassword();
-    const email = `${userData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com`;
+    // Append a short unique suffix so the same name can register more than once
+    // without triggering EMAIL_EXISTS in Firebase Auth.
+    const namePart = userData.name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    const uniqueSuffix = Date.now().toString(36).slice(-4); // e.g. "k3f2"
+    const email = `${namePart}${uniqueSuffix}@intra-d.com`;
 
     return this.signupWithEmailPassword(email, generatedPassword).pipe(
       switchMap((authResult: any) => {
@@ -159,7 +163,7 @@ export class FirebaseService {
       status: 'pending',
       submittedAt: new Date().toISOString()
     };
-    
+
     return this.http.post(`${this.baseUrl}/landLeaseApplication/${applicationId}.json`, applicationWithId);
   }
 
@@ -192,7 +196,7 @@ export class FirebaseService {
       status: 'pending',
       submittedAt: new Date().toISOString()
     };
-    
+
     return this.http.post(`${this.baseUrl}/serviceRequests/${requestId}.json`, requestWithId);
   }
 
@@ -232,6 +236,25 @@ export class FirebaseService {
 
   getAllBuyerForms(): Observable<any> {
     return this.http.get(`${this.baseUrl}/buyerForms.json`);
+  }
+
+  /**
+   * Fetch all buyer form submissions for a specific buyer email.
+   * Firebase Realtime DB doesn't support server-side equality filters on nested fields,
+   * so we load all forms and filter client-side — no data is lost.
+   */
+  getBuyerFormsByEmail(email: string): Observable<any[]> {
+    return this.getAllBuyerForms().pipe(
+      map((forms: any) => {
+        if (!forms) return [];
+        return Object.values(forms)
+          .filter((form: any) => form?.buyer?.email === email)
+          .sort((a: any, b: any) =>
+            new Date(b.timestamp || b.submittedAt || 0).getTime() -
+            new Date(a.timestamp || a.submittedAt || 0).getTime()
+          );
+      })
+    );
   }
 
   createSellerForm(sellerData: any): Observable<any> {

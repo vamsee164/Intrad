@@ -89,30 +89,6 @@ export class BuyerComponent implements OnInit, OnDestroy {
         },
       },
     },
-    // cereals: {
-    //   label: 'Cereals',
-    //   subCategories: {
-    //     wheat: {
-    //       label: 'Wheat',
-    //       // productTypes: {
-    //       //   flour: 'Flour',
-    //       //   grains: 'Grains',
-    //       // },
-    //     },
-    //   },
-    // },
-    // pulses: {
-    //   label: 'Pulses',
-    //   subCategories: {
-    //     lentils: {
-    //       label: 'Lentils',
-    //       // productTypes: {
-    //       //   whole: 'Whole',
-    //       //   split: 'Split',
-    //       // },
-    //     },
-    //   },
-    // },
     // Fix #17: corrected typo 'Furits' → 'Fruits'
     RawVegetablesFruits: {
       label: 'Raw Vegetables & Fruits',
@@ -141,11 +117,19 @@ export class BuyerComponent implements OnInit, OnDestroy {
   selectedDetails = '';
 
   buyerData = { name: '', email: '', phone: '', quantity: '' };
-  
-  // View management
-  currentView: 'form' | 'confirmation' = 'form';
+
+  // View management: 'form' | 'confirmation' | 'history'
+  currentView: 'form' | 'confirmation' | 'history' = 'form';
   submittedData: any = null;
-  showLastSubmission: boolean = false;
+
+  // Order history
+  orderHistory: any[] = [];
+  isLoadingHistory = false;
+  historyError: string | null = null;
+  expandedOrderId: string | null = null;
+
+  // Submission error flag
+  submitError = false;
 
   private readonly destroy$ = new Subject<void>();
   isSubmitting: boolean = false;
@@ -174,44 +158,73 @@ export class BuyerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.currentUser = user;
+        // Pre-fill email from logged-in user
+        if (user?.email && !this.buyerData.email) {
+          this.buyerData.email = user.email;
+        }
+        if (user?.name && !this.buyerData.name) {
+          this.buyerData.name = user.name;
+        }
+        if (user?.phone && !this.buyerData.phone) {
+          this.buyerData.phone = user.phone;
+        }
       });
-    
+
     // Dynamic main categories from the hierarchy
     this.mainCategories = Object.keys(this.productHierarchy).map(key => ({
       label: (this.productHierarchy as any)[key].label,
       value: key
     }));
-    
-    // Load last submission from localStorage
-    this.loadLastSubmission();
-  }
-  
-  /**
-   * Load last submission from localStorage
-   */
-  loadLastSubmission(): void {
-    const lastSubmission = localStorage.getItem('lastBuyerSubmission');
-    if (lastSubmission) {
-      try {
-        this.submittedData = JSON.parse(lastSubmission);
-        this.showLastSubmission = true;
-      } catch (error) {
-        console.error('Error loading last submission:', error);
-      }
-    }
-  }
-  
-  /**
-   * Toggle last submission visibility
-   */
-  toggleLastSubmission(): void {
-    this.showLastSubmission = !this.showLastSubmission;
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  // ── Order History ───────────────────────────────────────────
+
+  /**
+   * Load order history for the current buyer from Firebase,
+   * filtered by their email address. Shows the history view.
+   */
+  viewHistory(): void {
+    if (!this.currentUser?.email) return;
+
+    this.currentView = 'history';
+    this.isLoadingHistory = true;
+    this.historyError = null;
+    this.orderHistory = [];
+
+    this.firebaseService.getBuyerFormsByEmail(this.currentUser.email)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (orders) => {
+          this.isLoadingHistory = false;
+          this.orderHistory = orders;
+        },
+        error: (_err) => {
+          this.isLoadingHistory = false;
+          this.historyError = 'Unable to load order history. Please try again.';
+        }
+      });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Toggle expanded detail for an order card.
+   */
+  toggleOrderDetail(orderId: string): void {
+    this.expandedOrderId = this.expandedOrderId === orderId ? null : orderId;
+  }
+
+  backToFormFromHistory(): void {
+    this.currentView = 'form';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Dropdown Cascade ────────────────────────────────────────
 
   onMainCategoryChange(): void {
     this.selectedSubCategory = '';
@@ -266,11 +279,14 @@ export class BuyerComponent implements OnInit, OnDestroy {
     return found ? found.label : value;
   }
 
+  // ── Submit ──────────────────────────────────────────────────
+
   onSubmit(): void {
     if (this.buyerForm.invalid) {
       this.buyerForm.form.markAllAsTouched();
       return;
     }
+    this.submitError = false;
     const submissionData = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
@@ -278,51 +294,36 @@ export class BuyerComponent implements OnInit, OnDestroy {
       subCategory: this.getLabel(this.subCategories, this.selectedSubCategory),
       productType: this.getLabel(this.productTypes, this.selectedProductType),
       details: this.getLabel(this.detailsOptions, this.selectedDetails),
-      buyer: this.buyerData,
+      buyer: { ...this.buyerData },
       status: 'pending',
     };
 
-    // Fix #25: removed console.log from production submit
     this.isSubmitting = true;
-    
+
     this.firebaseService.createBuyerForm(submissionData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: (_response) => {
           this.isSubmitting = false;
-          // Save to localStorage for future reference
-          localStorage.setItem('lastBuyerSubmission', JSON.stringify(submissionData));
-          
-          // Store submitted data and show confirmation
           this.submittedData = submissionData;
           this.currentView = 'confirmation';
-          
-          // Scroll to top
           window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         error: (_error) => {
           this.isSubmitting = false;
-          // Fix #22: no alert() — show inline error in form instead
-          if (this.buyerForm) {
-            // Set a flag the template can show — or use a simple property
-            console.error('Buyer form submit failed');
-          }
+          this.submitError = true;
         }
       });
   }
 
-  /**
-   * Go back to form view
-   */
+  // ── Navigation ──────────────────────────────────────────────
+
   backToForm(): void {
     this.currentView = 'form';
     this.resetForm();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * Submit another inquiry
-   */
   submitAnother(): void {
     this.currentView = 'form';
     this.resetForm();
@@ -337,14 +338,40 @@ export class BuyerComponent implements OnInit, OnDestroy {
     this.selectedSubCategory = '';
     this.selectedProductType = '';
     this.selectedDetails = '';
-    this.buyerData = { name: '', email: '', phone: '', quantity: '' };
+    this.buyerData = {
+      name: this.currentUser?.name || '',
+      email: this.currentUser?.email || '',
+      phone: this.currentUser?.phone || '',
+      quantity: ''
+    };
     this.subCategories = [];
     this.productTypes = [];
     this.detailsOptions = [];
     this.submittedData = null;
+    this.submitError = false;
+  }
+
+  getStatusClass(status: string): string {
+    switch ((status || '').toLowerCase()) {
+      case 'approved': return 'status-approved';
+      case 'rejected': return 'status-rejected';
+      default: return 'status-pending';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch ((status || '').toLowerCase()) {
+      case 'approved': return 'bi-check-circle-fill';
+      case 'rejected': return 'bi-x-circle-fill';
+      default: return 'bi-hourglass-split';
+    }
   }
 
   trackByFn(index: number, item: any): any {
     return item?.value || index;
+  }
+
+  trackByOrderId(index: number, order: any): any {
+    return order?.id || order?.formId || index;
   }
 }

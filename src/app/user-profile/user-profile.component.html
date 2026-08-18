@@ -1,181 +1,238 @@
+<!-- ✅ Success Toast -->
+<div class="toast toast-success" *ngIf="saveSuccess">
+  <span>✅ Profile updated successfully!</span>
+</div>
+
 <div class="profile-container" *ngIf="currentUser && profileData">
-  <!-- Header -->
+
+  <!-- ── Header Bar ──────────────────────────────────── -->
   <div class="profile-header">
-    <button class="back-btn" (click)="navigateBack()">
-      <span class="back-icon">←</span>
+    <button class="icon-btn" (click)="navigateBack()" title="Go back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <h1 class="profile-title">{{ currentUser.role | titlecase }} Profile</h1>
-    <!-- Fix #12: Edit button now has a handler -->
-    <button class="edit-btn" (click)="navigateToEditProfile()" title="Edit Profile">
-      <span class="edit-icon">✏️</span>
+    <button class="icon-btn edit-icon-btn" (click)="openEditMode()" title="Edit Profile">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     </button>
   </div>
 
-  <!-- Profile Info -->
-  <div class="profile-info">
+  <!-- ── Profile Hero ──────────────────────────────── -->
+  <div class="profile-hero">
+    <div class="hero-circles">
+      <div class="hc hc1"></div>
+      <div class="hc hc2"></div>
+      <div class="hc hc3"></div>
+    </div>
     <div class="profile-avatar">
-      <img [src]="profileData.profileImage" [alt]="profileData.name" 
+      <img [src]="profileData.profileImage" [alt]="profileData.name"
            onerror="this.src='assets/images/default-avatar.svg'">
     </div>
-    <div class="profile-details">
-      <h2 class="profile-name">{{ profileData.name }}</h2>
-      <div class="role-badge" [ngClass]="'role-' + currentUser.role">
-        <span class="role-icon">🏠</span>
-        {{ currentUser.role | titlecase }}
-      </div>
-      <div class="location">
-        <span class="location-icon">📍</span>
-        {{ profileData.location }}
+    <h2 class="profile-name">{{ profileData.name }}</h2>
+    <div class="role-badge" [ngClass]="'role-' + currentUser.role">
+      <span class="role-dot"></span>
+      {{ currentUser.role | titlecase }}
+    </div>
+    <div class="hero-chips">
+      <span class="hero-chip">📍 {{ profileData.location }}</span>
+      <span class="hero-chip" *ngIf="profileData.phone">📞 {{ profileData.phone }}</span>
+    </div>
+  </div>
+
+  <!-- ── Stats Strip (Farmer only) ─────────────────── -->
+  <div class="stats-row" *ngIf="currentUser.role === 'farmer'">
+    <div class="stat-card">
+      <div class="stat-emoji">🌱</div>
+      <div class="stat-val">{{ profileData.roleSpecific.land }}</div>
+      <div class="stat-key">Land</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-emoji">🌾</div>
+      <div class="stat-val">{{ profileData.roleSpecific.crops }}</div>
+      <div class="stat-key">Crops</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-emoji">🧪</div>
+      <div class="stat-val">{{ profileData.roleSpecific.soilType }}</div>
+      <div class="stat-key">Soil</div>
+    </div>
+  </div>
+
+  <!-- ── Farm Details (Farmer only) ───────────────── -->
+  <div class="info-card" *ngIf="currentUser.role === 'farmer'">
+    <div class="info-card-header">Farm Details</div>
+    <div class="info-row">
+      <span class="info-icon">🏘️</span>
+      <div class="info-content"><span class="info-label">Village</span><span class="info-val">{{ profileData.roleSpecific.village }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📍</span>
+      <div class="info-content"><span class="info-label">Mandal</span><span class="info-val">{{ profileData.roleSpecific.mandal }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">💧</span>
+      <div class="info-content"><span class="info-label">Water Source</span><span class="info-val">{{ profileData.roleSpecific.waterSource }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">🌿</span>
+      <div class="info-content"><span class="info-label">Fertilizers</span><span class="info-val">{{ profileData.roleSpecific.fertilizers }}</span></div>
+    </div>
+    <div class="info-row no-border">
+      <span class="info-icon">🧪</span>
+      <div class="info-content">
+        <span class="info-label">Soil Test</span>
+        <span class="info-val"
+          [class.status-ok]="profileData.roleSpecific.soilTest === 'tested'"
+          [class.status-no]="profileData.roleSpecific.soilTest !== 'tested'">
+          {{ profileData.roleSpecific.soilTest === 'tested' ? '✓ Tested' : '✗ Not Tested' }}
+        </span>
       </div>
     </div>
   </div>
 
-  <!-- Role-specific Stats -->
-  <div class="stats-section" *ngIf="currentUser.role === 'farmer'">
-    <div class="stat-item">
-      <div class="stat-icon">🌱</div>
-      <div class="stat-content">
-        <div class="stat-label">Land</div>
-        <div class="stat-value">{{ profileData.roleSpecific.land }}</div>
-      </div>
+  <!-- ── Quick Actions (Farmer only) ──────────────── -->
+  <div class="actions-grid" *ngIf="currentUser.role === 'farmer'">
+    <div class="action-tile" (click)="navigateToMyCrops()">
+      <span class="action-emoji">🌱</span><span class="action-name">My Crops</span>
     </div>
-    <div class="stat-item">
-      <div class="stat-icon">🌾</div>
-      <div class="stat-content">
-        <div class="stat-label">Crops</div>
-        <div class="stat-value">{{ profileData.roleSpecific.crops }}</div>
-      </div>
+    <div class="action-tile" (click)="navigateToSoilTest()">
+      <span class="action-emoji">🧪</span><span class="action-name">Soil Test</span>
     </div>
-    <div class="stat-item">
-      <div class="stat-icon">🧪</div>
-      <div class="stat-content">
-        <div class="stat-label">Soil</div>
-        <div class="stat-value">{{ profileData.roleSpecific.soilType }}</div>
-      </div>
+    <div class="action-tile" (click)="navigateToMarketPrices()">
+      <span class="action-emoji">💰</span><span class="action-name">Market Prices</span>
+    </div>
+    <div class="action-tile" (click)="navigateToHelpCenter()">
+      <span class="action-emoji">❓</span><span class="action-name">Help Center</span>
     </div>
   </div>
 
-  <!-- Farm Details Section -->
-  <div class="farm-details-section" *ngIf="currentUser.role === 'farmer'">
-    <h3 class="section-title">Farm Details</h3>
-    <div class="detail-item">
-      <span class="detail-icon">🏘️</span>
-      <div class="detail-content">
-        <div class="detail-label">Village</div>
-        <div class="detail-value">{{ profileData.roleSpecific.village }}</div>
-      </div>
+  <!-- ── Account Section ───────────────────────────── -->
+  <div class="info-card account-card">
+    <div class="info-card-header">Account</div>
+    <div class="info-row">
+      <span class="info-icon">📧</span>
+      <div class="info-content"><span class="info-label">Email</span><span class="info-val">{{ currentUser.email }}</span></div>
     </div>
-    <div class="detail-item">
-      <span class="detail-icon">📍</span>
-      <div class="detail-content">
-        <div class="detail-label">Mandal</div>
-        <div class="detail-value">{{ profileData.roleSpecific.mandal }}</div>
-      </div>
+    <div class="info-row">
+      <span class="info-icon">📞</span>
+      <div class="info-content"><span class="info-label">Phone</span><span class="info-val">{{ profileData.phone || 'N/A' }}</span></div>
     </div>
-    <div class="detail-item">
-      <span class="detail-icon">💧</span>
-      <div class="detail-content">
-        <div class="detail-label">Water Source</div>
-        <div class="detail-value">{{ profileData.roleSpecific.waterSource }}</div>
-      </div>
+    <div class="info-row no-border">
+      <span class="info-icon">🌐</span>
+      <div class="info-content"><span class="info-label">Language</span><span class="info-val">{{ profileData.language }}</span></div>
     </div>
-    <div class="detail-item">
-      <span class="detail-icon">🌿</span>
-      <div class="detail-content">
-        <div class="detail-label">Fertilizers</div>
-        <div class="detail-value">{{ profileData.roleSpecific.fertilizers }}</div>
-      </div>
-    </div>
-    <div class="detail-item">
-      <span class="detail-icon">🧪</span>
-      <div class="detail-content">
-        <div class="detail-label">Soil Test Status</div>
-        <div class="detail-value" [ngClass]="{'status-tested': profileData.roleSpecific.soilTest === 'tested', 'status-not-tested': profileData.roleSpecific.soilTest === 'not-tested'}">
-          {{ profileData.roleSpecific.soilTest === 'tested' ? 'Tested ✓' : 'Not Tested' }}
-        </div>
-      </div>
+    <div class="info-row logout-row no-border" (click)="logout()">
+      <span class="info-icon">🚪</span>
+      <span class="logout-label">Logout</span>
     </div>
   </div>
 
-  <!-- Quick Actions -->
-  <div class="quick-actions" *ngIf="currentUser.role === 'farmer'">
-    <div class="action-row">
-      <div class="action-card" (click)="navigateToMyCrops()">
-        <div class="action-icon">🌱</div>
-        <div class="action-content">
-          <div class="action-title">My Crops</div>
-          <div class="action-subtitle">View & manage</div>
-        </div>
-      </div>
-      <div class="action-card" (click)="navigateToSoilTest()">
-        <div class="action-icon">🧪</div>
-        <div class="action-content">
-          <div class="action-title">Soil Test</div>
-          <!-- Fix #11: show actual soil type, not hardcoded -->
-          <div class="action-subtitle">{{ profileData.roleSpecific?.soilType || 'Book a test' }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="action-row">
-      <div class="action-card" (click)="navigateToMarketPrices()">
-        <div class="action-icon">💰</div>
-        <div class="action-content">
-          <!-- Fix #13: was 'My Crops' — corrected to 'Market Prices' -->
-          <div class="action-title">Market Prices</div>
-          <div class="action-subtitle">Live rates</div>
-        </div>
-      </div>
-      <div class="action-card" (click)="navigateToHelpCenter()">
-        <div class="action-icon">❓</div>
-        <div class="action-content">
-          <div class="action-title">Help Center</div>
-          <div class="action-subtitle">Support & FAQs</div>
-        </div>
-      </div>
-    </div>
+</div><!-- /profile-container -->
+
+<!-- ══ EDIT PROFILE DRAWER ══════════════════════════════════════════ -->
+<div class="drawer-overlay" [class.open]="isEditing" (click)="cancelEdit()"></div>
+
+<div class="edit-drawer" [class.open]="isEditing">
+  <div class="drawer-handle"></div>
+
+  <div class="drawer-header">
+    <h2 class="drawer-title">Edit Profile</h2>
+    <button class="drawer-close" (click)="cancelEdit()" type="button">✕</button>
   </div>
 
-  <!-- Account Section -->
-  <div class="account-section">
-    <h3 class="section-title">Account</h3>
-    <div class="account-item">
-      <span class="account-icon">📧</span>
-      <span class="account-label">{{ currentUser.email }}</span>
-      <span class="account-arrow">›</span>
-    </div>
-    <div class="account-item">
-      <span class="account-icon">📞</span>
-      <span class="account-label">{{ profileData.phone }}</span>
-      <span class="account-arrow">›</span>
-    </div>
-    <div class="account-item">
-      <span class="account-icon">🌐</span>
-      <span class="account-label">Language: {{ profileData.language }}</span>
-      <span class="account-arrow">›</span>
-    </div>
-    <div class="account-item logout-item" (click)="logout()">
-      <span class="account-icon logout-icon">🚪</span>
-      <span class="account-label logout-text">Logout</span>
-    </div>
-  </div>
+  <div class="drawer-body">
 
-  <!-- Bottom Quick Actions (Mobile) -->
-  <!-- <div class="bottom-actions" *ngIf="currentUser.role === 'farmer'">
-    <div class="bottom-action" (click)="navigateToMyCrops()">
-      <div class="bottom-icon">🌱</div>
-      <div class="bottom-label">My Crops</div>
+    <!-- Error banner -->
+    <div class="form-error-banner" *ngIf="saveError">
+      ⚠️ {{ saveError }}
     </div>
-    <div class="bottom-action" (click)="navigateToSoilTest()">
-      <div class="bottom-icon">🧪</div>
-      <div class="bottom-label">Soil Test</div>
-    </div>
-    <div class="bottom-action" (click)="navigateToMarketPrices()">
-      <div class="bottom-icon">💰</div>
-      <div class="bottom-label">Market Prices</div>
-    </div>
-    <div class="bottom-action" (click)="navigateToHelpCenter()">
-      <div class="bottom-icon">❓</div>
-      <div class="bottom-label">Help Center</div>
-    </div>
-  </div> -->
+
+    <form (ngSubmit)="saveProfile()" #editFormRef="ngForm" novalidate>
+
+      <div class="form-section-label">Basic Information</div>
+
+      <div class="form-group">
+        <label class="form-label" for="edit-name">Full Name</label>
+        <input id="edit-name" class="form-input" type="text"
+               [(ngModel)]="editForm.name" name="name"
+               placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="edit-phone">Phone Number</label>
+        <input id="edit-phone" class="form-input" type="tel"
+               [(ngModel)]="editForm.phone" name="phone"
+               placeholder="Enter phone number">
+      </div>
+
+      <!-- Farmer-specific fields -->
+      <ng-container *ngIf="currentUser?.role === 'farmer'">
+        <div class="form-section-label">Farm Information</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-village">Village</label>
+            <input id="edit-village" class="form-input" type="text"
+                   [(ngModel)]="editForm.village" name="village"
+                   placeholder="Village name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-mandal">Mandal</label>
+            <input id="edit-mandal" class="form-input" type="text"
+                   [(ngModel)]="editForm.mandal" name="mandal"
+                   placeholder="Mandal name">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-acres">Land (Acres)</label>
+            <input id="edit-acres" class="form-input" type="number" min="0" step="0.5"
+                   [(ngModel)]="editForm.acreOfLand" name="acreOfLand"
+                   placeholder="e.g. 2.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-soil">Soil Type</label>
+            <input id="edit-soil" class="form-input" type="text"
+                   [(ngModel)]="editForm.soilType" name="soilType"
+                   placeholder="e.g. Black cotton">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-water">Water Source</label>
+          <input id="edit-water" class="form-input" type="text"
+                 [(ngModel)]="editForm.waterSource" name="waterSource"
+                 placeholder="e.g. Borewell, Canal">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-fertilizers">Fertilizers Used</label>
+          <input id="edit-fertilizers" class="form-input" type="text"
+                 [(ngModel)]="editForm.fertilizers" name="fertilizers"
+                 placeholder="e.g. Urea, DAP">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-crops">
+            Typical Crops <span class="form-hint">(comma-separated)</span>
+          </label>
+          <input id="edit-crops" class="form-input" type="text"
+                 [(ngModel)]="editForm.typicalCrops" name="typicalCrops"
+                 placeholder="e.g. Rice, Cotton, Chilli">
+        </div>
+      </ng-container>
+
+      <!-- Action Buttons -->
+      <div class="drawer-actions">
+        <button type="button" class="btn-cancel" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
+        <button type="submit" class="btn-save" [disabled]="isSaving">
+          <span *ngIf="!isSaving">Update Profile</span>
+          <span *ngIf="isSaving" class="saving-state">
+            <span class="spinner"></span> Saving…
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>

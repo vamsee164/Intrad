@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
+import { FirebaseService } from '../services/firebase.service';
 import { APP_CONSTANTS } from '../constants';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 
 interface ProfileData {
   name: string;
@@ -15,10 +17,22 @@ interface ProfileData {
   roleSpecific: any;
 }
 
+interface EditForm {
+  name: string;
+  phone: string;
+  village: string;
+  mandal: string;
+  acreOfLand: string;
+  soilType: string;
+  waterSource: string;
+  fertilizers: string;
+  typicalCrops: string;
+}
+
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
@@ -27,8 +41,27 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   profileData: ProfileData | null = null;
 
+  // Edit-mode state
+  isEditing = false;
+  isSaving = false;
+  saveError: string | null = null;
+  saveSuccess = false;
+
+  editForm: EditForm = {
+    name: '',
+    phone: '',
+    village: '',
+    mandal: '',
+    acreOfLand: '',
+    soilType: '',
+    waterSource: '',
+    fertilizers: '',
+    typicalCrops: ''
+  };
+
   constructor(
     private authService: AuthService,
+    private firebaseService: FirebaseService,
     private router: Router
   ) {}
 
@@ -106,23 +139,95 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   private getUserName(role: string): string {
     switch (role) {
-      case APP_CONSTANTS.ROLES.FARMER:
-        return 'Farmer';
-      case APP_CONSTANTS.ROLES.USER:
-        return 'Buyer User';
-      case APP_CONSTANTS.ROLES.ADMIN:
-        return 'Admin User';
-      default:
-        return 'User';
+      case APP_CONSTANTS.ROLES.FARMER: return 'Farmer';
+      case APP_CONSTANTS.ROLES.USER:   return 'Buyer User';
+      case APP_CONSTANTS.ROLES.ADMIN:  return 'Admin User';
+      default: return 'User';
     }
   }
 
-  navigateBack(): void {
-    this.router.navigate([this.getDashboardRoute()]);
+  /** Open edit mode — pre-fill form from current user data */
+  openEditMode(): void {
+    if (!this.currentUser || !this.profileData) return;
+    const u = this.currentUser;
+    this.editForm = {
+      name: u.name || '',
+      phone: u.phone || u.profileData?.mobileNo || '',
+      village: u.profileData?.village || '',
+      mandal: u.profileData?.mandal || '',
+      acreOfLand: u.profileData?.acreOfLand != null ? String(u.profileData.acreOfLand) : '',
+      soilType: u.profileData?.soilType || '',
+      waterSource: u.profileData?.waterSource || '',
+      fertilizers: u.profileData?.fertilizers || '',
+      typicalCrops: Array.isArray(u.profileData?.typicalCrops)
+        ? u.profileData.typicalCrops.join(', ')
+        : (u.profileData?.typicalCrops || '')
+    };
+    this.saveError = null;
+    this.saveSuccess = false;
+    this.isEditing = true;
   }
 
-  navigateToEditProfile(): void {
-    // Route to the dashboard where profile editing is available
+  cancelEdit(): void {
+    this.isEditing = false;
+    this.saveError = null;
+    this.saveSuccess = false;
+  }
+
+  /** Save profile to Firebase Realtime Database and refresh UI */
+  saveProfile(): void {
+    if (!this.currentUser) return;
+    this.isSaving = true;
+    this.saveError = null;
+    this.saveSuccess = false;
+
+    const cropsArray = this.editForm.typicalCrops
+      ? this.editForm.typicalCrops.split(',').map(c => c.trim()).filter(Boolean)
+      : [];
+
+    const payload: Record<string, any> = {
+      name: this.editForm.name.trim(),
+      mobileNo: this.editForm.phone.trim(),
+      village: this.editForm.village.trim(),
+      mandal: this.editForm.mandal.trim(),
+      soilType: this.editForm.soilType.trim(),
+      waterSource: this.editForm.waterSource.trim(),
+      fertilizers: this.editForm.fertilizers.trim(),
+      typicalCrops: cropsArray,
+      acreOfLand: this.editForm.acreOfLand ? parseFloat(this.editForm.acreOfLand) : null
+    };
+
+    const userId = this.currentUser.id;
+
+    this.firebaseService.updateUser(userId, payload)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => { this.isSaving = false; })
+      )
+      .subscribe({
+        next: () => {
+          // Merge updates into local user and refresh AuthService + localStorage
+          const updatedProfileData = { ...this.currentUser!.profileData, ...payload };
+          const updatedUser: User = {
+            ...this.currentUser!,
+            name: payload['name'],
+            phone: payload['mobileNo'],
+            location: payload['village'],
+            profileData: updatedProfileData
+          };
+          this.authService.setCurrentUser(updatedUser);
+          this.saveSuccess = true;
+          this.isEditing = false;
+          setTimeout(() => { this.saveSuccess = false; }, 3000);
+        },
+        error: (err) => {
+          console.error('Profile update failed:', err);
+          this.saveError = 'Failed to update profile. Please try again.';
+        }
+      });
+  }
+
+  navigateBack(): void {
     this.router.navigate([this.getDashboardRoute()]);
   }
 

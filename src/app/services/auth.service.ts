@@ -64,23 +64,21 @@ export class AuthService {
         return this.firebaseService.getAllUsers().pipe(
           map((users) => {
             if (!users) return false;
-            for (const userId in users) {
-              const userContainer = users[userId];
-              for (const firebaseKey in userContainer) {
-                const userObj = userContainer[firebaseKey];
-                if (userObj?.email === credentials.email && userObj?.password === credentials.password) {
-                  const legacyUser: User = {
-                    id: userObj.userId || userId,
-                    email: userObj.email,
-                    role: userObj.role || 'farmer',
-                    name: userObj.name || '',
-                    phone: userObj.mobileNo || userObj.phone || '',
-                    profileData: userObj
-                  };
-                  this.setCurrentUser(legacyUser);
-                  this.startSessionTimeout();
-                  return true;
-                }
+            // Users are stored flat: { uid: { email, role, password, ... } }
+            for (const uid in users) {
+              const userObj = users[uid];
+              if (userObj?.email === credentials.email && userObj?.password === credentials.password) {
+                const legacyUser: User = {
+                  id: userObj.userId || uid,
+                  email: userObj.email,
+                  role: userObj.role || 'farmer',
+                  name: userObj.name || '',
+                  phone: userObj.mobileNo || userObj.phone || '',
+                  profileData: userObj
+                };
+                this.setCurrentUser(legacyUser);
+                this.startSessionTimeout();
+                return true;
               }
             }
             return false;

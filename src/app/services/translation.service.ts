@@ -27,13 +27,13 @@ export class TranslationService {
       'nav.contact': 'Contact Us',
       'nav.profile': 'Profile',
       'nav.logout': 'Logout',
-      
+
       // Homepage
       'home.title': 'INTRA-D',
       'home.subtitle': 'Agricultural & Processing',
       'home.welcome': 'Welcome to Agricultural Excellence',
       'home.description': 'Empowering farmers with modern agricultural solutions and processing techniques',
-      
+
       // Login
       'login.title': 'Access Control System',
       'login.description': 'Secure login to your agricultural dashboard',
@@ -46,7 +46,7 @@ export class TranslationService {
       'login.noaccount': "Don't have an account?",
       'login.forgotform': 'Forgot Password Form',
       'login.confirmpassword': 'Confirm Password',
-      
+
       // Common
       'common.submit': 'Submit',
       'common.cancel': 'Cancel',
@@ -55,7 +55,7 @@ export class TranslationService {
       'common.no': 'No',
       'common.continue': 'Continue',
       'common.gotit': 'Got it!',
-      
+
       // Modals
       'modal.comingsoon': 'Coming Soon!',
       'modal.feature': 'Feature',
@@ -71,17 +71,17 @@ export class TranslationService {
       'modal.windspeed': 'Wind Speed',
       'modal.formsubmission': 'Form Submission',
       'modal.formsuccess': 'Form submitted successfully! Check the console for details.',
-      
+
       // Footer
       'footer.description': 'An Agricultural Innovation Center dedicated to improving farmer income through modern farming techniques, smart practices, and agricultural product processing.',
-      'footer.copyright': '© 2025 Intra-d. All rights reserved.',
+      'footer.copyright': '© 2026 Intra-d. All rights reserved.',
       'footer.followus': 'FOLLOW US',
       'footer.visitus': 'VISIT US',
       'footer.directions': 'Map & Directions',
       'footer.virtualtour': 'Virtual Tour',
       'footer.workwithus': 'WORK WITH US',
       'footer.viewjobs': 'View Jobs',
-      
+
       // Contact Form
       'contact.title': 'Get in touch',
       'contact.firstname': 'First name',
@@ -89,7 +89,7 @@ export class TranslationService {
       'contact.email': 'Email',
       'contact.phone': 'Phone',
       'contact.message': 'Message',
-      
+
       // Soil Test Form
       'soil.benefits': 'Benefits of Soil Testing',
       'soil.balanced': 'Balanced Nutrients',
@@ -136,12 +136,12 @@ export class TranslationService {
       'soil.problem': 'Problem (Optional)',
       'soil.problem.placeholder': 'Describe soil issue...',
       'soil.submit': 'Submit Soil Test Request',
-      
+
       // Farmers Modal
       'farmers.total': 'Total Farmers',
       'farmers.active': 'Active Farmers',
       'farmers.new': 'New This Month',
-      
+
       // Machinery
       'nav.machinery': 'Machinery',
       'machinery.title': 'Agricultural Machinery & Equipment',
@@ -162,7 +162,7 @@ export class TranslationService {
       'machinery.backToHome': 'Back to Homepage',
       'machinery.inquiryTitle': 'Rent Inquiry',
       'machinery.inquirySubmit': 'Submit Rent Inquiry',
-      
+
       // Products
       'nav.products': 'Products',
       'products.title': 'Processed Agricultural Products',
@@ -191,13 +191,13 @@ export class TranslationService {
       'nav.contact': 'సంప్రదించండి',
       'nav.profile': 'ప్రొఫైల్',
       'nav.logout': 'లాగ్ అవుట్',
-      
+
       // Homepage
       'home.title': 'ఇంట్రా-డి',
       'home.subtitle': 'వ్యవసాయ & ప్రాసెసింగ్',
       'home.welcome': 'వ్యవసాయ శ్రేష్ఠతకు స్వాగతం',
       'home.description': 'ఆధునిక వ్యవసాయ పరిష్కారాలు మరియు ప్రాసెసింగ్ టెక్నిక్‌లతో రైతులను శక్తివంతం చేయడం',
-      
+
       // Login
       'login.title': 'లాగిన్',
       'login.email': 'ఇమెయిల్ చిరునామా',
@@ -208,7 +208,7 @@ export class TranslationService {
       'login.description': 'మీ వ్యవసాయ డాష్బోర్డ్కు సురక్షిత లాగిన్',
       'login.signingin': 'సైన్ ఇన్ అవుతోంది...',
       'login.noaccount': 'ఖాతా లేదా?',
-      
+
       // Common
       'common.submit': 'సమర్పించండి',
       'common.cancel': 'రద్దు చేయండి',
@@ -217,7 +217,7 @@ export class TranslationService {
       'common.no': 'లేదు',
       'common.continue': 'కొనసాగించండి',
       'common.gotit': 'అర్థమైంది!',
-      
+
       // Modals
       'modal.comingsoon': 'త్వరలో వస్తోంది!',
       'modal.feature': 'ఫీచర్',
@@ -235,7 +235,7 @@ export class TranslationService {
       'modal.formsuccess': 'ఫారం విజయవంతంగా సమర్పించబడింది! వివరాల కోసం కన్సోల్ చూడండి.',
       'login.forgotform': 'పాస్వర్డ్ మర్చిపోయిన ఫారం',
       'login.confirmpassword': 'పాస్వర్డ్ నిర్ధారించండి',
-      
+
       // Footer
       'footer.description': 'ఆధునిక వ్యవసాయ తంత్రాలు, స్మార్ట్ ప్రాక్టీసులు మరియు వ్యవసాయ ఉత్పాద ప్రాసెసింగ్ ద్వారా రైతుల ఆదాయాన్ని మెరుగుపరచడానికి సమర్పిత వ్యవసాయ ఇన్నోవేషన్ సెంటర్.',
       'footer.copyright': '© 2025 ఇంట్రా-డి. అన్ని హక్కులు రక్షితము.',
@@ -245,7 +245,7 @@ export class TranslationService {
       'footer.virtualtour': 'వర్చుఅల్ టూర్',
       'footer.workwithus': 'మమ్మల్తో పనిచేయండి',
       'footer.viewjobs': 'ఉద్యోగాలు చూడండి',
-      
+
       // Contact Form
       'contact.title': 'సంపర్కం సాధించండి',
       'contact.firstname': 'ముందు పేరు',
@@ -253,7 +253,7 @@ export class TranslationService {
       'contact.email': 'ఇమెయిల్',
       'contact.phone': 'ఫోన్',
       'contact.message': 'సందేశం',
-      
+
       // Soil Test Form
       'soil.benefits': 'మట్టి పరీక్ష ప్రయోజనాలు',
       'soil.balanced': 'సంతులిత పోషకాలు',
@@ -300,12 +300,12 @@ export class TranslationService {
       'soil.problem': 'సమస్య (ఐచ్ఛికం)',
       'soil.problem.placeholder': 'మట్టి సమస్యను వర్ణించండి...',
       'soil.submit': 'మట్టి పరీక్ష అభ్యర్థన సమర్పించండి',
-      
+
       // Farmers Modal
       'farmers.total': 'మొత్తం రైతులు',
       'farmers.active': 'సక్రియ రైతులు',
       'farmers.new': 'ఈ నెలలో కొత్తవారు',
-      
+
       // Machinery
       'nav.machinery': 'యంత్రాలు',
       'machinery.title': 'వ్యవసాయ యంత్రాలు & పరికరాలు',
@@ -325,7 +325,7 @@ export class TranslationService {
       'machinery.category.logistics': 'రవాణా',
       'machinery.inquiryTitle': 'అద్దె విచారణ',
       'machinery.inquirySubmit': 'అద్దె విచారణను సమర్పించండి',
-      
+
       // Products
       'nav.products': 'ఉత్పత్తులు',
       'products.title': 'వ్యవసాయ ఉత్పత్తులు & ప్రాసెసింగ్',
