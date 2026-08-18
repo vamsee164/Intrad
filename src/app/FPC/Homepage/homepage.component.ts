@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, timeout, retry, switchMap } from 'rxjs/operators';
+
+import { catchError, timeout, retry, takeUntil } from 'rxjs/operators';
+
 import { of, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
@@ -21,7 +22,13 @@ declare var bootstrap: any;
 
 interface SignupFormData {
   name: string;
+
+  // Multiple crops can be selected
   typicalCrops: string[];
+
+  // Multiple fertilizers can be selected
+  fertilizers: string[];
+
   village: string;
   waterSource: string;
   mandal: string;
@@ -29,10 +36,9 @@ interface SignupFormData {
   mobileNo: string;
   soilType: string;
   acreOfLand: number | null;
-  fertilizers: string;
   role: string;
   companyName: string;
-  personalEmail: string; // personal email to receive login credentials
+  personalEmail: string;
 }
 
 interface WeatherData {
@@ -46,34 +52,63 @@ interface WeatherData {
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent, TranslatePipe, OtpVerificationComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ServiceInfoComponent,
+    LoginComponent,
+    TranslatePipe,
+    OtpVerificationComponent,
+  ],
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.css']
+  styleUrls: ['./homepage.component.css'],
 })
 export class HomepageComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
+
   private readonly API_TIMEOUT = 10000;
   private readonly MAX_RETRIES = 2;
-  
+
   isLoggedIn = false;
   currentUser: User | null = null;
+
   selectedFeature = '';
+
   weatherData: WeatherData | null = null;
+
   hoveredPhase: number | null = null;
-  
+
   farmersData = {
     totalFarmers: 0,
     activeFarmers: 0,
     newThisMonth: 0,
-    totalLandAcres: 0
+    totalLandAcres: 0,
   };
 
+  // ============================================================
+  // SIGNUP DATA
+  // ============================================================
+
   signupData: SignupFormData = {
-    name: '', typicalCrops: [], village: '', waterSource: '',
-    mandal: '', soilTest: '', mobileNo: '', soilType: '',
-    acreOfLand: null, fertilizers: '', role: '', companyName: '',
-    personalEmail: ''
+    name: '',
+    typicalCrops: [],
+    fertilizers: [],
+    village: '',
+    waterSource: '',
+    mandal: '',
+    soilTest: '',
+    mobileNo: '',
+    soilType: '',
+    acreOfLand: null,
+    role: '',
+    companyName: '',
+    personalEmail: '',
   };
+
+  // ============================================================
+  // CROP OPTIONS
+  // ============================================================
 
   readonly cropOptions = [
     { value: 'mango', label: 'Mango' },
@@ -87,40 +122,87 @@ export class HomepageComponent implements OnInit, OnDestroy {
     { value: 'spinach', label: 'Spinach' },
     { value: 'methi', label: 'Methi' },
     { value: 'coriander', label: 'Coriander' },
-    { value: 'curry-leaves', label: 'Curry Leaves' }
+    { value: 'curry-leaves', label: 'Curry Leaves' },
   ];
 
-  showOtpModal: boolean = false;
-  isMobileVerified: boolean = false;
-  showOtpField: boolean = false;
-  otpCode: string = '';
-  otpSent: boolean = false;
-  isVerifyingOtp: boolean = false;
-  isSendingOtp: boolean = false;
-  otpMessage: string = '';
+  // ============================================================
+  // FERTILIZER OPTIONS
+  // ============================================================
+
+  readonly fertilizersOptions = [
+    { value: 'urea', label: 'Urea' },
+    { value: 'dap', label: 'DAP' },
+    { value: 'mop', label: 'MOP (Potash)' },
+    { value: 'npk', label: 'NPK Complex' },
+    { value: 'organic', label: 'Organic Fertilizers' },
+  ];
+
+  // ============================================================
+  // OTP
+  // ============================================================
+
+  showOtpModal = false;
+  isMobileVerified = false;
+  showOtpField = false;
+
+  otpCode = '';
+  otpSent = false;
+
+  isVerifyingOtp = false;
+  isSendingOtp = false;
+
+  otpMessage = '';
   otpMessageType: 'success' | 'danger' = 'danger';
-  /** Dev-only: shows the generated OTP so tester can enter it (no SMS API connected yet) */
-  devOtpPreview: string = '';
+
+  devOtpPreview = '';
+
+  // ============================================================
+  // REGISTRATION
+  // ============================================================
 
   registeredEmail = '';
   registeredPassword = '';
   registeredMobileNo = '';
+
   successModalTitle = 'Form Submission';
-  signupError = ''; // holds the last registration error message shown in the modal
+
+  signupError = '';
+
+  // ============================================================
+  // FORGOT PASSWORD
+  // ============================================================
 
   forgotPasswordData = {
-    email: '' // registered @intra-d.com email
+    email: '',
   };
 
   forgotPasswordLoading = false;
+
   forgotPasswordMessage = '';
+
   forgotPasswordMessageType: 'success' | 'danger' = 'danger';
 
-  @ViewChild('signupForm') signupHtmlForm!: NgForm;
-  @ViewChild('forgotForm') forgotHtmlForm!: NgForm;
+  // ============================================================
+  // FORM REFERENCES
+  // ============================================================
+
+  @ViewChild('signupForm')
+  signupHtmlForm!: NgForm;
+
+  @ViewChild('forgotForm')
+  forgotHtmlForm!: NgForm;
+
+  // ============================================================
+  // WEATHER
+  // ============================================================
 
   private readonly apiKey = environment.weatherApiKey;
+
   private readonly apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
 
   constructor(
     private readonly authService: AuthService,
@@ -128,88 +210,157 @@ export class HomepageComponent implements OnInit, OnDestroy {
     private readonly http: HttpClient,
     private readonly firebaseService: FirebaseService,
     private readonly otpService: OtpService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
-  onCropChange(value: string, event: any): void {
-    if (event.target.checked) {
-      this.signupData.typicalCrops = [...this.signupData.typicalCrops, value];
+  // ============================================================
+  // CROP CHECKBOX
+  // ============================================================
+
+  onCropChange(value: string, event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+
+    if (checkbox.checked) {
+      // Prevent duplicate values
+      if (!this.signupData.typicalCrops.includes(value)) {
+        this.signupData.typicalCrops = [...this.signupData.typicalCrops, value];
+      }
     } else {
-      this.signupData.typicalCrops = this.signupData.typicalCrops.filter(c => c !== value);
+      this.signupData.typicalCrops = this.signupData.typicalCrops.filter(
+        (crop) => crop !== value,
+      );
     }
   }
 
-  onPhoneInput(event: any): void {
-    const input = event.target;
+  // ============================================================
+  // FERTILIZER CHECKBOX
+  // ============================================================
+
+  onFertilizerChange(value: string, event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+
+    if (checkbox.checked) {
+      // Prevent duplicate values
+      if (!this.signupData.fertilizers.includes(value)) {
+        this.signupData.fertilizers = [...this.signupData.fertilizers, value];
+      }
+    } else {
+      this.signupData.fertilizers = this.signupData.fertilizers.filter(
+        (fertilizer) => fertilizer !== value,
+      );
+    }
+  }
+
+  // ============================================================
+  // PHONE INPUT
+  // ============================================================
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
     input.value = input.value.replace(/[^0-9]/g, '');
+
     if (input.value.length > 10) {
       input.value = input.value.slice(0, 10);
     }
+
+    this.signupData.mobileNo = input.value;
   }
 
+  // ============================================================
+  // INIT
+  // ============================================================
+
   ngOnInit(): void {
-    this.authService.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (user) => {
-          this.currentUser = user;
-          this.isLoggedIn = !!user;
-          // Auto-redirect logged-in users to their role dashboard
-          // so old sessions never see the stale service-info UI
-          if (user) {
-            const dashboardRoute = this.authService.getDashboardRoute(user.role);
-            this.router.navigate([dashboardRoute]);
-          }
-        },
-        error: (error) => {
-          console.error('Error in user subscription:', error);
+    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        this.isLoggedIn = !!user;
+
+        if (user) {
+          const dashboardRoute = this.authService.getDashboardRoute(user.role);
+
+          this.router.navigate([dashboardRoute]);
         }
-      });
+      },
+
+      error: (error) => {
+        console.error('Error in user subscription:', error);
+      },
+    });
 
     this.loadFarmersData();
   }
 
+  // ============================================================
+  // LOAD FARMERS
+  // ============================================================
+
   private loadFarmersData(): void {
-    this.firebaseService.getAllUsers()
+    this.firebaseService
+      .getAllUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users) => {
-          if (users) {
-            let farmerCount = 0;
-            let newThisMonth = 0;
-            let totalLand = 0;
-            const now = new Date();
-            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+          if (!users) {
+            return;
+          }
 
-            // Fix #2: users stored flat {uid: {email, role, ...}} not double-nested
-            for (const uid of Object.keys(users)) {
-              const user = users[uid];
-              if (user?.role === 'farmer') {
-                farmerCount++;
-                if (user.createdAt && user.createdAt >= startOfMonth) newThisMonth++;
-                const acres = parseFloat(user.acreOfLand);
-                if (!isNaN(acres) && acres > 0) {
-                  totalLand += acres;
-                }
+          let farmerCount = 0;
+          let newThisMonth = 0;
+          let totalLand = 0;
+
+          const now = new Date();
+
+          const startOfMonth = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1,
+          ).toISOString();
+
+          for (const uid of Object.keys(users)) {
+            const user = users[uid];
+
+            if (user?.role === 'farmer') {
+              farmerCount++;
+
+              if (user.createdAt && user.createdAt >= startOfMonth) {
+                newThisMonth++;
+              }
+
+              const acres = parseFloat(user.acreOfLand);
+
+              if (!isNaN(acres) && acres > 0) {
+                totalLand += acres;
               }
             }
-            this.farmersData.totalFarmers = farmerCount;
-            this.farmersData.activeFarmers = farmerCount;
-            this.farmersData.newThisMonth = newThisMonth;
-            this.farmersData.totalLandAcres = Math.round(totalLand * 10) / 10;
           }
+
+          this.farmersData.totalFarmers = farmerCount;
+          this.farmersData.activeFarmers = farmerCount;
+          this.farmersData.newThisMonth = newThisMonth;
+
+          this.farmersData.totalLandAcres = Math.round(totalLand * 10) / 10;
         },
+
         error: () => {
-          // Silent — don't break homepage if DB is unreachable
-        }
+          console.warn('Unable to load farmers data');
+        },
       });
   }
 
+  // ============================================================
+  // DESTROY
+  // ============================================================
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  // ============================================================
+  // PHASE
+  // ============================================================
 
   onPhaseHover(phase: number): void {
     this.hoveredPhase = phase;
@@ -219,21 +370,34 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.hoveredPhase = null;
   }
 
-  onLoginSuccess(): void {}
+  // ============================================================
+  // LOGOUT
+  // ============================================================
 
   handleLogout(): void {
     this.authService.logout('/homepage');
   }
 
+  // ============================================================
+  // COMING SOON
+  // ============================================================
+
   setComingSoonFeature(feature: string): void {
     this.selectedFeature = feature.replace(/[<>]/g, '').trim();
   }
 
-  private getCurrentLocation(): Promise<{ lat: number; lon: number }> {
+  // ============================================================
+  // LOCATION
+  // ============================================================
+
+  private getCurrentLocation(): Promise<{
+    lat: number;
+    lon: number;
+  }> {
     return new Promise((resolve, reject) => {
       if (!('geolocation' in navigator)) {
-        console.error('Geolocation not supported by browser');
         reject(new Error('Geolocation not supported'));
+
         return;
       }
 
@@ -244,86 +408,125 @@ export class HomepageComponent implements OnInit, OnDestroy {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           clearTimeout(timeoutId);
+
           resolve({
             lat: position.coords.latitude,
-            lon: position.coords.longitude
+            lon: position.coords.longitude,
           });
         },
+
         (error) => {
           clearTimeout(timeoutId);
           reject(error);
         },
-        { timeout: 10000, enableHighAccuracy: false }
+
+        {
+          timeout: 10000,
+          enableHighAccuracy: false,
+        },
       );
     });
   }
 
+  // ============================================================
+  // WEATHER
+  // ============================================================
+
   async showWeather(): Promise<void> {
     try {
-      console.log('Fetching weather data');
       const { lat, lon } = await this.getCurrentLocation();
-      
+
       if (Math.abs(lat) > 90 || Math.abs(lon) > 180) {
         throw new Error('Invalid coordinates');
       }
 
-      const requestUrl = `${this.apiUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`;
+      const requestUrl =
+        `${this.apiUrl}?lat=${lat}` +
+        `&lon=${lon}` +
+        `&appid=${this.apiKey}` +
+        `&units=metric`;
 
-      this.http.get(requestUrl)
+      this.http
+        .get(requestUrl)
         .pipe(
           timeout(this.API_TIMEOUT),
           retry(this.MAX_RETRIES),
+
           catchError((error: HttpErrorResponse) => {
             console.error('Weather API error:', error);
+
             return of(null);
           }),
-          takeUntil(this.destroy$)
+
+          takeUntil(this.destroy$),
         )
         .subscribe({
           next: (data: any) => {
             if (data) {
               this.weatherData = {
                 location: (data.name || 'Unknown').replace(/[<>]/g, ''),
+
                 temperature: Math.round(data.main?.temp || 0),
-                description: (data.weather?.[0]?.description || 'No data').replace(/[<>]/g, ''),
+
+                description: (
+                  data.weather?.[0]?.description || 'No data'
+                ).replace(/[<>]/g, ''),
+
                 humidity: data.main?.humidity || 'N/A',
-                windSpeed: data.wind?.speed || 'N/A'
+
+                windSpeed: data.wind?.speed || 'N/A',
               };
+
               this.selectedFeature = 'Weather';
+
               this.showModal('weatherModal');
             } else {
               this.showErrorModal('Weather service unavailable');
             }
           },
+
           error: () => {
             this.showErrorModal('Error fetching weather data');
-          }
+          },
         });
     } catch (error) {
       console.error('Weather fetch error:', error);
-      this.showErrorModal('Could not get location. Please enable location services.');
+
+      this.showErrorModal(
+        'Could not get location. Please enable location services.',
+      );
     }
   }
 
   private showErrorModal(message: string): void {
     const sanitizedMessage = message.replace(/[<>]/g, '').trim();
+
     this.weatherData = {
       location: 'Error',
       temperature: 'N/A',
       description: sanitizedMessage,
       humidity: 'N/A',
-      windSpeed: 'N/A'
+      windSpeed: 'N/A',
     };
+
     this.selectedFeature = 'Weather';
+
     this.showModal('weatherModal');
-    console.warn('Error modal shown:', sanitizedMessage);
   }
+
+  // ============================================================
+  // MODAL
+  // ============================================================
 
   private showModal(modalId: string): void {
     try {
       const modalElement = document.getElementById(modalId);
+
       if (modalElement) {
-        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        const modal =
+          bootstrap.Modal.getInstance(modalElement) ||
+          new bootstrap.Modal(modalElement);
+
         modal.show();
       }
     } catch (error) {
@@ -335,131 +538,214 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.showModal('farmersModal');
   }
 
-  /** Resets the entire signup form and all OTP state — called on Cancel / modal close */
+  private hideModal(modalId: string): void {
+    try {
+      const modalElement = document.getElementById(modalId);
+
+      if (modalElement) {
+        const modal =
+          bootstrap.Modal.getInstance(modalElement) ||
+          new bootstrap.Modal(modalElement);
+
+        modal.hide();
+      }
+    } catch (error) {
+      console.error('Modal hide error:', error);
+    }
+  }
+
+  // ============================================================
+  // RESET SIGNUP
+  // ============================================================
+
   resetSignupForm(): void {
     this.signupData = {
-      name: '', typicalCrops: [], village: '', waterSource: '',
-      mandal: '', soilTest: '', mobileNo: '', soilType: '',
-      acreOfLand: null, fertilizers: '', role: '', companyName: '',
-      personalEmail: ''
+      name: '',
+      typicalCrops: [],
+      fertilizers: [],
+      village: '',
+      waterSource: '',
+      mandal: '',
+      soilTest: '',
+      mobileNo: '',
+      soilType: '',
+      acreOfLand: null,
+      role: '',
+      companyName: '',
+      personalEmail: '',
     };
+
     this.otpSent = false;
     this.showOtpField = false;
+
     this.isMobileVerified = false;
+
     this.otpCode = '';
+
     this.otpMessage = '';
+
     this.otpMessageType = 'danger';
+
     this.isSendingOtp = false;
     this.isVerifyingOtp = false;
+
     this.devOtpPreview = '';
+
     this.signupError = '';
-    // Reset the Angular form control state (touched / dirty / submitted)
+
     if (this.signupHtmlForm) {
       this.signupHtmlForm.resetForm();
     }
   }
 
-  /** Allows the user to edit the mobile number after OTP was sent */
+  // ============================================================
+  // EDIT MOBILE
+  // ============================================================
+
   editMobileNumber(): void {
     this.otpSent = false;
     this.showOtpField = false;
+
     this.isMobileVerified = false;
+
     this.otpCode = '';
+
     this.otpMessage = '';
+
     this.otpMessageType = 'danger';
+
     this.devOtpPreview = '';
-    // Reset Firebase reCAPTCHA so it can be re-initialised for next attempt
+
     this.otpService.resetRecaptcha();
   }
+
+  // ============================================================
+  // SIGNUP
+  // ============================================================
 
   handleSignup(): void {
     if (this.signupHtmlForm.invalid) {
       this.signupHtmlForm.form.markAllAsTouched();
-      console.warn('Invalid signup form submission');
+
       return;
     }
 
-    // ── OTP mobile verification temporarily disabled ──
-    // TODO: Re-enable when Firebase Phone Auth SMS delivery is confirmed working.
-    // if (!this.isMobileVerified) {
-    //   if (!this.otpSent) {
-    //     this.sendOtpForVerification();
-    //   } else {
-    //     this.otpMessage = 'Please verify the OTP sent to your mobile number';
-    //     this.otpMessageType = 'danger';
-    //   }
-    //   return;
-    // }
-    this.isMobileVerified = true; // bypass — remove this line when OTP is re-enabled
+    // Make sure at least one crop is selected
+    if (this.signupData.typicalCrops.length === 0) {
+      return;
+    }
+
+    // Make sure at least one fertilizer is selected
+    if (this.signupData.fertilizers.length === 0) {
+      return;
+    }
+
+    // OTP temporarily bypassed
+    this.isMobileVerified = true;
 
     this.performSignup();
   }
 
+  // ============================================================
+  // OTP
+  // ============================================================
+
   sendOtpForVerification(): void {
     if (!this.signupData.mobileNo || this.signupData.mobileNo.length !== 10) {
       this.otpMessage = 'Please enter a valid 10-digit mobile number first.';
+
       this.otpMessageType = 'danger';
+
       return;
     }
+
     this.isSendingOtp = true;
     this.otpMessage = '';
-    // Initialise Firebase reCAPTCHA then send OTP via Firebase Phone Auth
+
     this.otpService.initRecaptcha('recaptcha-container-signup');
-    this.otpService.sendOtp(this.signupData.mobileNo).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (result: boolean) => {
-        this.isSendingOtp = false;
-        if (result) {
-          this.showOtpField = true;
-          this.otpSent = true;
-          this.otpMessage = 'OTP sent to your mobile via SMS. Enter it below.';
-          this.otpMessageType = 'success';
-        } else {
-          this.otpMessage = 'Failed to send OTP. Please try again.';
+
+    this.otpService
+      .sendOtp(this.signupData.mobileNo)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result: boolean) => {
+          this.isSendingOtp = false;
+
+          if (result) {
+            this.showOtpField = true;
+            this.otpSent = true;
+
+            this.otpMessage =
+              'OTP sent to your mobile via SMS. Enter it below.';
+
+            this.otpMessageType = 'success';
+          } else {
+            this.otpMessage = 'Failed to send OTP. Please try again.';
+
+            this.otpMessageType = 'danger';
+          }
+        },
+
+        error: () => {
+          this.isSendingOtp = false;
+
+          this.otpMessage =
+            'Failed to send OTP. Check your connection and try again.';
+
           this.otpMessageType = 'danger';
-        }
-      },
-      error: () => {
-        this.isSendingOtp = false;
-        this.otpMessage = 'Failed to send OTP. Check your connection and try again.';
-        this.otpMessageType = 'danger';
-      }
-    });
+        },
+      });
   }
 
   verifyOtpInline(): void {
     if (this.otpCode.length !== 6) {
       this.otpMessage = 'Please enter a valid 6-digit OTP';
+
       this.otpMessageType = 'danger';
+
       return;
     }
+
     this.isVerifyingOtp = true;
     this.otpMessage = '';
-    this.otpService.verifyOtp(this.signupData.mobileNo, this.otpCode).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (isValid) => {
-        this.isVerifyingOtp = false;
-        if (isValid) {
-          this.isMobileVerified = true;
-          this.otpMessage = 'Mobile number verified successfully!';
-          this.otpMessageType = 'success';
-        } else {
-          this.otpMessage = 'Invalid OTP. Please try again.';
+
+    this.otpService
+      .verifyOtp(this.signupData.mobileNo, this.otpCode)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (isValid) => {
+          this.isVerifyingOtp = false;
+
+          if (isValid) {
+            this.isMobileVerified = true;
+
+            this.otpMessage = 'Mobile number verified successfully!';
+
+            this.otpMessageType = 'success';
+          } else {
+            this.otpMessage = 'Invalid OTP. Please try again.';
+
+            this.otpMessageType = 'danger';
+          }
+        },
+
+        error: () => {
+          this.isVerifyingOtp = false;
+
+          this.otpMessage = 'Verification failed. Please try again.';
+
           this.otpMessageType = 'danger';
-        }
-      },
-      error: () => {
-        this.isVerifyingOtp = false;
-        this.otpMessage = 'Verification failed. Please try again.';
-        this.otpMessageType = 'danger';
-      }
-    });
+        },
+      });
   }
 
   resendOtpInline(): void {
     this.otpCode = '';
     this.otpMessage = '';
     this.devOtpPreview = '';
-    // Reset Firebase reCAPTCHA before resending
+
     this.otpService.resetRecaptcha();
+
     this.sendOtpForVerification();
   }
 
@@ -467,6 +753,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
     if (verified) {
       this.isMobileVerified = true;
       this.showOtpModal = false;
+
       this.performSignup();
     }
   }
@@ -475,225 +762,307 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.showOtpModal = false;
   }
 
+  // ============================================================
+  // PERFORM SIGNUP
+  // ============================================================
+
   performSignup(): void {
     if (this.signupHtmlForm.invalid) {
       this.signupHtmlForm.form.markAllAsTouched();
-      console.warn('Invalid signup form submission');
+
+      return;
+    }
+
+    if (this.signupData.typicalCrops.length === 0) {
+      this.signupError = 'Please select at least one crop.';
+
+      return;
+    }
+
+    if (this.signupData.fertilizers.length === 0) {
+      this.signupError = 'Please select at least one fertilizer.';
+
       return;
     }
 
     const sanitizedData = {
       ...this.signupData,
+
       name: this.signupData.name.replace(/[<>]/g, '').trim(),
+
       village: this.signupData.village.replace(/[<>]/g, '').trim(),
+
       mandal: this.signupData.mandal.replace(/[<>]/g, '').trim(),
-      mobileNo: this.signupData.mobileNo.replace(/[<>]/g, '').trim()
+
+      mobileNo: this.signupData.mobileNo.replace(/[<>]/g, '').trim(),
+
+      // Make sure arrays are copied
+      typicalCrops: [...this.signupData.typicalCrops],
+
+      fertilizers: [...this.signupData.fertilizers],
     };
 
     const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
+
     if (!phoneRegex.test(sanitizedData.mobileNo)) {
-      console.warn('Invalid phone number in signup');
       alert('Please enter a valid phone number');
+
       return;
     }
 
-    console.log('Processing user signup');
-    
     this.signupError = '';
-    this.firebaseService.createUser(sanitizedData)
+
+    this.firebaseService
+      .createUser(sanitizedData)
       .pipe(
         timeout(this.API_TIMEOUT),
+
         catchError((err) => {
-          // Map Firebase Auth error codes to user-friendly messages
           const code: string = err?.code || err?.error?.message || '';
-          if (code.includes('EMAIL_EXISTS') || code === 'auth/email-already-in-use') {
-            this.signupError = 'This name is already registered. Please contact the administrator.';
+
+          if (
+            code.includes('EMAIL_EXISTS') ||
+            code === 'auth/email-already-in-use'
+          ) {
+            this.signupError =
+              'This name is already registered. Please contact the administrator.';
           } else if (code === 'auth/weak-password') {
             this.signupError = 'Password is too weak. Please try again.';
           } else if (code === 'auth/network-request-failed') {
-            this.signupError = 'Network error. Please check your connection and try again.';
+            this.signupError =
+              'Network error. Please check your connection and try again.';
           } else if (code === 'auth/too-many-requests') {
             this.signupError = 'Too many attempts. Please try again later.';
           } else {
             this.signupError = 'Registration failed. Please try again.';
           }
+
           console.error('[Signup] Firebase error:', code, err);
+
           return of(null);
         }),
-        takeUntil(this.destroy$)
+
+        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {
           if (response) {
             this.signupError = '';
-            // Set credentials BEFORE hiding so Angular bindings are ready
-            this.registeredEmail    = response.email;
+
+            this.registeredEmail = response.email;
+
             this.registeredPassword = response.generatedPassword;
+
             this.registeredMobileNo = sanitizedData.mobileNo;
-            this.successModalTitle  = 'Registration Successful';
 
-            // Send credentials email non-blocking (failure does not affect signup flow)
+            this.successModalTitle = 'Registration Successful';
+
+            // Send credentials email
             if (sanitizedData.personalEmail) {
-              this.notificationService.sendLoginCredentialsEmail(
-                response.email,
-                response.generatedPassword,
-                response.name,
-                sanitizedData.personalEmail
-              ).pipe(takeUntil(this.destroy$)).subscribe({
-                next: (sent) => {
-                  if (sent) {
-                    console.log('[Signup] Credentials email sent to', sanitizedData.personalEmail);
-                  } else {
-                    console.warn('[Signup] Credentials email failed — user notified on-screen');
-                  }
-                },
-                error: () => console.warn('[Signup] Credentials email error — non-critical')
-              });
+              this.notificationService
+                .sendLoginCredentialsEmail(
+                  response.email,
+                  response.generatedPassword,
+                  response.name,
+                  sanitizedData.personalEmail,
+                )
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                  next: (sent) => {
+                    if (sent) {
+                      console.log('[Signup] Credentials email sent');
+                    } else {
+                      console.warn('[Signup] Credentials email failed');
+                    }
+                  },
+
+                  error: () => {
+                    console.warn('[Signup] Credentials email error');
+                  },
+                });
             }
 
-            // Wait for signup modal to FULLY close (backdrop removed) before
-            // opening success modal — prevents invisible backdrop blocking clicks
             const signupEl = document.getElementById('signupModal');
+
             if (signupEl) {
-              signupEl.addEventListener('hidden.bs.modal', () => {
-                this.showSuccessModal();
-              }, { once: true });
+              signupEl.addEventListener(
+                'hidden.bs.modal',
+                () => {
+                  this.showSuccessModal();
+                },
+                { once: true },
+              );
             }
+
             this.hideModal('signupModal');
-          } else if (this.signupError) {
-            // Error already set in catchError — show it in the modal, don't close it
-          } else {
+          } else if (!this.signupError) {
             this.signupError = 'Registration failed. Please try again.';
           }
         },
+
         error: (err) => {
           this.signupError = 'Registration failed. Please try again.';
+
           console.error('[Signup] Unexpected error:', err);
-        }
+        },
       });
   }
 
-  private hideModal(modalId: string): void {
-    try {
-      const modalElement = document.getElementById(modalId);
-      if (modalElement) {
-        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-        modal.hide();
-      }
-    } catch (error) {
-      console.error('Modal hide error:', error);
-    }
-  }
+  // ============================================================
+  // SUCCESS MODAL
+  // ============================================================
 
-  /** Shows the success modal — credentials must already be set on the component */
   private showSuccessModal(): void {
     try {
       const el = document.getElementById('successModal');
+
       if (el) {
-        const modal = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
-        // Reset signup form data only AFTER the success modal is fully closed
-        el.addEventListener('hidden.bs.modal', () => this.resetSignupForm(), { once: true });
+        const modal =
+          bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+
+        el.addEventListener('hidden.bs.modal', () => this.resetSignupForm(), {
+          once: true,
+        });
+
         modal.show();
       }
-    } catch (err) {
-      console.error('Error showing success modal:', err);
+    } catch (error) {
+      console.error('Error showing success modal:', error);
     }
   }
 
-  // ====== Forgot Password — Email Reset Logic ======
+  // ============================================================
+  // FORGOT PASSWORD
+  // ============================================================
 
   handleForgotPassword(): void {
     if (this.forgotHtmlForm.invalid) {
       this.forgotHtmlForm.form.markAllAsTouched();
-      console.warn('[ForgotPassword] Invalid form submission');
+
       return;
     }
 
     const email = this.forgotPasswordData.email.trim();
+
     if (!email) {
-      this.forgotPasswordMessage = 'Please enter your registered email address.';
+      this.forgotPasswordMessage =
+        'Please enter your registered email address.';
+
       this.forgotPasswordMessageType = 'danger';
+
       return;
     }
 
     this.forgotPasswordLoading = true;
+
     this.forgotPasswordMessage = '';
 
-    this.notificationService.sendPasswordResetEmail(email)
+    this.notificationService
+      .sendPasswordResetEmail(email)
       .pipe(
         timeout(this.API_TIMEOUT),
+
         catchError(() => of(false)),
-        takeUntil(this.destroy$)
+
+        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (sent) => {
           this.forgotPasswordLoading = false;
-          // Always show success (security: don't reveal if email exists)
+
           this.forgotPasswordMessage =
             'If this email is registered, a password reset link has been sent. Please check your inbox.';
+
           this.forgotPasswordMessageType = 'success';
+
           if (sent) {
-            console.log('[ForgotPassword] Reset email sent to', email);
-          } else {
-            console.warn('[ForgotPassword] Reset email may not have been delivered');
+            console.log('[ForgotPassword] Reset email sent');
           }
         },
+
         error: () => {
           this.forgotPasswordLoading = false;
-          this.forgotPasswordMessage = 'Failed to send reset email. Please try again.';
+
+          this.forgotPasswordMessage =
+            'Failed to send reset email. Please try again.';
+
           this.forgotPasswordMessageType = 'danger';
-        }
+        },
       });
   }
 
   resetForgotPasswordForm(): void {
-    this.forgotPasswordData = { email: '' };
+    this.forgotPasswordData = {
+      email: '',
+    };
+
     this.forgotPasswordMessage = '';
+
     this.forgotPasswordMessageType = 'danger';
+
     this.forgotPasswordLoading = false;
+
     if (this.forgotHtmlForm) {
       this.forgotHtmlForm.resetForm();
     }
   }
 
-  // ====== End Forgot Password Logic ======
+  // ============================================================
+  // TRACK BY
+  // ============================================================
 
   trackByFn(index: number, item: any): any {
     return item?.value || item?.id || index;
   }
 
-  /** Copies text to clipboard — works on both HTTP (localhost) and HTTPS */
+  // ============================================================
+  // CLIPBOARD
+  // ============================================================
+
   copyToClipboard(text: string, feedbackId: string): void {
     const showFeedback = () => {
       const el = document.getElementById(feedbackId);
+
       if (el) {
         el.classList.add('visible');
-        setTimeout(() => el.classList.remove('visible'), 2000);
+
+        setTimeout(() => {
+          el.classList.remove('visible');
+        }, 2000);
       }
     };
 
-    // Modern clipboard API (HTTPS / secure contexts)
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(showFeedback).catch(() => this.fallbackCopy(text, showFeedback));
+      navigator.clipboard
+        .writeText(text)
+        .then(showFeedback)
+        .catch(() => this.fallbackCopy(text, showFeedback));
     } else {
       this.fallbackCopy(text, showFeedback);
     }
   }
 
   private fallbackCopy(text: string, onSuccess: () => void): void {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
-    document.body.appendChild(ta);
-    ta.focus();
-    ta.select();
+    const textarea = document.createElement('textarea');
+
+    textarea.value = text;
+
+    textarea.style.cssText =
+      'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+
     try {
       document.execCommand('copy');
+
       onSuccess();
-    } catch (e) {
-      console.warn('Copy failed', e);
+    } catch (error) {
+      console.warn('Copy failed', error);
     } finally {
-      document.body.removeChild(ta);
+      document.body.removeChild(textarea);
     }
   }
 }
