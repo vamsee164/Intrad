@@ -1,10 +1,8 @@
 <footer class="app-footer">
-
   <!-- Main Footer Body -->
   <div class="footer-body">
     <div class="container">
       <div class="row gy-4">
-
         <!-- Brand Column -->
         <div class="col-lg-4 col-md-6">
           <div class="footer-brand">
@@ -12,7 +10,7 @@
               <img src="assets/images/logo-1.jpeg" alt="Intra-D Logo" class="footer-logo">
               <span class="brand-name">INTRA-D</span>
             </div>
-            <p class="brand-tagline">{{ 'footer.description' | translate }}</p>
+            <p class="brand-tagline">{{ "footer.description" | translate }}</p>
             <div class="contact-info">
               <div class="contact-item">
                 <i class="fas fa-envelope"></i>
@@ -28,7 +26,9 @@
 
         <!-- Social Column -->
         <div class="col-lg-3 col-md-6">
-          <h6 class="footer-section-title">{{ 'footer.followus' | translate }}</h6>
+          <h6 class="footer-section-title">
+            {{ "footer.followus" | translate }}
+          </h6>
           <div class="social-grid">
             <a href="https://wa.me/+919603790037" class="social-btn whatsapp" target="_blank" rel="noopener"
               title="WhatsApp">
@@ -53,21 +53,27 @@
 
         <!-- Visit Us Column -->
         <div class="col-lg-2 col-md-6 col-6">
-          <h6 class="footer-section-title">{{ 'footer.visitus' | translate }}</h6>
+          <h6 class="footer-section-title">
+            {{ "footer.visitus" | translate }}
+          </h6>
           <ul class="footer-links">
-            <li><a
-                href="https://www.google.com/maps/place/HawkisH+Coworking+Space/@17.7273242,83.3144731,17z/data=!3m1!4b1!4m6!3m5!1s0x3a3943474de91ba5:0xbc38d497b49ba9e5!8m2!3d17.7273191!4d83.317048!16s%2Fg%2F11hdsqrv3g?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D"
+            <li>
+              <a href="https://www.google.com/maps/place/HawkisH+Coworking+Space/@17.7273242,83.3144731,17z/data=!3m1!4b1!4m6!3m5!1s0x3a3943474de91ba5:0xbc38d497b49ba9e5!8m2!3d17.7273191!4d83.317048!16s%2Fg%2F11hdsqrv3g?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank" rel="noopener noreferrer" class="footer-link"><i
-                  class="fas fa-map-marker-alt me-2"></i>{{ 'footer.directions' |
-                translate }}</a></li>
-            <li><a href="#" class="footer-link"><i class="fas fa-video me-2"></i>{{ 'footer.virtualtour' | translate
-                }}</a></li>
+                  class="fas fa-map-marker-alt me-2"></i>{{ "footer.directions" | translate }}</a>
+            </li>
+            <li>
+              <a href="#" class="footer-link"><i class="fas fa-video me-2"></i>{{ "footer.virtualtour" | translate
+                }}</a>
+            </li>
           </ul>
         </div>
 
         <!-- Work With Us Column -->
         <div class="col-lg-3 col-md-6 col-6">
-          <h6 class="footer-section-title">{{ 'footer.workwithus' | translate }}</h6>
+          <h6 class="footer-section-title">
+            {{ "footer.workwithus" | translate }}
+          </h6>
           <ul class="footer-links">
             <li>
               <a (click)="navigateToCareer()" class="footer-link" style="cursor:pointer;">
@@ -81,7 +87,6 @@
             </li>
           </ul>
         </div>
-
       </div>
     </div>
   </div>
@@ -92,7 +97,8 @@
       <div class="footer-bottom-inner">
         <span class="copyright">{{ 'footer.copyright' | translate }}</span>
         <div class="footer-bottom-links">
-          <a (click)="navigateToContact()" class="footer-bottom-link" style="cursor:pointer;">{{ 'nav.contact' | translate }}</a>
+          <a (click)="navigateToContact()" class="footer-bottom-link" style="cursor:pointer;">{{ 'nav.contact' |
+            translate }}</a>
           <span class="separator">·</span>
           <span class="separator">·</span>
           <a (click)="navigateToCareer()" class="footer-bottom-link" style="cursor:pointer;">{{ 'nav.wehire' | translate
@@ -101,5 +107,4 @@
       </div>
     </div>
   </div>
-
 </footer>

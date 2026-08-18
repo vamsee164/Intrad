@@ -9,24 +9,4 @@ import { TranslatePipe } from '../shared/translate.pipe';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
 })
-export class FooterComponent {
-  constructor(private readonly router: Router) { }
-
-  navigateToCareer(): void {
-    this.router.navigate(['/career']).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  navigateToAbout(): void {
-    this.router.navigate(['/about']).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  navigateToContact(): void {
-    this.router.navigate(['/contact']).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-}
+export class FooterComponent { }

@@ -17,7 +17,7 @@ interface DropdownOption {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './buyer.component.html',
-  styleUrls: ['./buyer.component.css']
+  styleUrls: ['./buyer.component.css'],
 })
 export class BuyerComponent implements OnInit, OnDestroy {
   @ViewChild('buyerForm') buyerForm!: NgForm;
@@ -89,15 +89,68 @@ export class BuyerComponent implements OnInit, OnDestroy {
         },
       },
     },
-    // Fix #17: corrected typo 'Furits' → 'Fruits'
+
     RawVegetablesFruits: {
       label: 'Raw Vegetables & Fruits',
       subCategories: {
-        lentils: {
-          label: 'Lentils',
+        fruits: {
+          label: 'Fruits',
           productTypes: {
-            // whole: 'Whole',
-            // split: 'Split',
+            mango: {
+              label: 'Mango',
+              details: {
+                slices: 'Slices',
+                granules: 'Granules',
+                powder: 'Powder',
+              },
+            },
+            tomato: {
+              label: 'Tomato',
+              details: {
+                diced: 'Diced',
+                juice: 'Juice Concentrate',
+              },
+            },
+            banana: {
+              label: 'Banana',
+              details: {
+                chips: 'Chips',
+                powder: 'Powder',
+              },
+            },
+          },
+        },
+        vegetables: {
+          label: 'Vegetables',
+          productTypes: {
+            onion: {
+              label: 'Onion',
+              details: {
+                flakes: 'Flakes',
+                powder: 'Powder',
+              },
+            },
+            garlic: {
+              label: 'Garlic',
+              details: {
+                flakes: 'Flakes',
+                powder: 'Powder',
+              },
+            },
+            ginger: {
+              label: 'Ginger',
+              details: {
+                powder: 'Powder',
+                slices: 'Slices',
+              },
+            },
+            tomato: {
+              label: 'Tomato',
+              details: {
+                powder: 'Powder',
+                paste: 'Paste',
+              },
+            },
           },
         },
       },
@@ -137,13 +190,21 @@ export class BuyerComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private firebaseService: FirebaseService,
-    private router: Router
-  ) {}
+    private router: Router,
+  ) { }
 
-  goToProfile(): void { this.router.navigate(['/profile']); }
-  logout(): void { this.authService.logout('/homepage'); }
-  backToAPU(): void { this.router.navigate(['/apu']); }
-  goToControl(): void { this.router.navigate(['/control']); }
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+  logout(): void {
+    this.authService.logout('/homepage');
+  }
+  backToAPU(): void {
+    this.router.navigate(['/apu']);
+  }
+  goToControl(): void {
+    this.router.navigate(['/control']);
+  }
 
   onPhoneInput(event: any): void {
     const input = event.target;
@@ -156,7 +217,7 @@ export class BuyerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
+      .subscribe((user) => {
         this.currentUser = user;
         // Pre-fill email from logged-in user
         if (user?.email && !this.buyerData.email) {
@@ -171,45 +232,28 @@ export class BuyerComponent implements OnInit, OnDestroy {
       });
 
     // Dynamic main categories from the hierarchy
-    this.mainCategories = Object.keys(this.productHierarchy).map(key => ({
+    this.mainCategories = Object.keys(this.productHierarchy).map((key) => ({
       label: (this.productHierarchy as any)[key].label,
-      value: key
+      value: key,
     }));
-  }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    // Load last submission from localStorage
+    this.loadLastSubmission();
   }
-
-  // ── Order History ───────────────────────────────────────────
 
   /**
-   * Load order history for the current buyer from Firebase,
-   * filtered by their email address. Shows the history view.
+   * Load last submission from localStorage
    */
-  viewHistory(): void {
-    if (!this.currentUser?.email) return;
-
-    this.currentView = 'history';
-    this.isLoadingHistory = true;
-    this.historyError = null;
-    this.orderHistory = [];
-
-    this.firebaseService.getBuyerFormsByEmail(this.currentUser.email)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (orders) => {
-          this.isLoadingHistory = false;
-          this.orderHistory = orders;
-        },
-        error: (_err) => {
-          this.isLoadingHistory = false;
-          this.historyError = 'Unable to load order history. Please try again.';
-        }
-      });
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  loadLastSubmission(): void {
+    const lastSubmission = localStorage.getItem('lastBuyerSubmission');
+    if (lastSubmission) {
+      try {
+        this.submittedData = JSON.parse(lastSubmission);
+        this.showLastSubmission = true;
+      } catch (error) {
+        console.error('Error loading last submission:', error);
+      }
+    }
   }
 
   /**
@@ -236,9 +280,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
 
     const category = (this.productHierarchy as any)[this.selectedMainCategory];
     if (category?.subCategories) {
-      this.subCategories = Object.keys(category.subCategories).map(key => ({
+      this.subCategories = Object.keys(category.subCategories).map((key) => ({
         label: category.subCategories[key].label,
-        value: key
+        value: key,
       }));
     }
   }
@@ -252,9 +296,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
     const category = (this.productHierarchy as any)[this.selectedMainCategory];
     const subCat = category?.subCategories?.[this.selectedSubCategory];
     if (subCat?.productTypes) {
-      this.productTypes = Object.keys(subCat.productTypes).map(key => ({
+      this.productTypes = Object.keys(subCat.productTypes).map((key) => ({
         label: subCat.productTypes[key].label,
-        value: key
+        value: key,
       }));
     }
   }
@@ -267,15 +311,15 @@ export class BuyerComponent implements OnInit, OnDestroy {
     const subCat = category?.subCategories?.[this.selectedSubCategory];
     const prodType = subCat?.productTypes?.[this.selectedProductType];
     if (prodType?.details) {
-      this.detailsOptions = Object.keys(prodType.details).map(key => ({
+      this.detailsOptions = Object.keys(prodType.details).map((key) => ({
         label: prodType.details[key],
-        value: key
+        value: key,
       }));
     }
   }
 
   getLabel(options: DropdownOption[], value: string): string {
-    const found = options.find(option => option.value === value);
+    const found = options.find((option) => option.value === value);
     return found ? found.label : value;
   }
 
@@ -290,7 +334,10 @@ export class BuyerComponent implements OnInit, OnDestroy {
     const submissionData = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
-      mainCategory: this.getLabel(this.mainCategories, this.selectedMainCategory),
+      mainCategory: this.getLabel(
+        this.mainCategories,
+        this.selectedMainCategory,
+      ),
       subCategory: this.getLabel(this.subCategories, this.selectedSubCategory),
       productType: this.getLabel(this.productTypes, this.selectedProductType),
       details: this.getLabel(this.detailsOptions, this.selectedDetails),
@@ -305,8 +352,14 @@ export class BuyerComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (_response) => {
           this.isSubmitting = false;
+          // Save to localStorage for future reference
+          localStorage.setItem('lastBuyerSubmission', JSON.stringify(submissionData));
+
+          // Store submitted data and show confirmation
           this.submittedData = submissionData;
           this.currentView = 'confirmation';
+
+          // Scroll to top
           window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         error: (_error) => {
