@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 interface DropdownOption {
   label: string;
@@ -184,6 +184,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
   // Submission error flag
   submitError = false;
 
+  // Flag to show last submission panel
+  showLastSubmission = false;
+
   private readonly destroy$ = new Subject<void>();
   isSubmitting: boolean = false;
 
@@ -250,6 +253,7 @@ export class BuyerComponent implements OnInit, OnDestroy {
       try {
         this.submittedData = JSON.parse(lastSubmission);
         this.showLastSubmission = true;
+        this.currentView = 'confirmation';
       } catch (error) {
         console.error('Error loading last submission:', error);
       }
@@ -426,5 +430,41 @@ export class BuyerComponent implements OnInit, OnDestroy {
 
   trackByOrderId(index: number, order: any): any {
     return order?.id || order?.formId || index;
+  }
+
+  /**
+   * Navigate to the order history view and load orders from Firebase.
+   */
+  viewHistory(): void {
+    this.currentView = 'history';
+    this.isLoadingHistory = true;
+    this.historyError = null;
+    this.orderHistory = [];
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const userEmail = this.currentUser?.email;
+    const fetch$ = userEmail
+      ? this.firebaseService.getBuyerFormsByEmail(userEmail)
+      : this.firebaseService.getAllBuyerForms().pipe(
+        map((forms: any) => forms ? Object.values(forms) : [])
+      );
+
+    fetch$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (orders: any[]) => {
+          this.orderHistory = orders || [];
+          this.isLoadingHistory = false;
+        },
+        error: (_err: any) => {
+          this.historyError = 'Failed to load order history. Please try again.';
+          this.isLoadingHistory = false;
+        },
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -9,4 +9,14 @@ import { TranslatePipe } from '../shared/translate.pipe';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
 })
-export class FooterComponent { }
+export class FooterComponent {
+  constructor(private router: Router) {}
+
+  navigateToCareer(): void {
+    this.router.navigate(['/career']);
+  }
+
+  navigateToContact(): void {
+    this.router.navigate(['/contact']);
+  }
+}
