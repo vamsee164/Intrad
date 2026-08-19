@@ -119,7 +119,7 @@
 
 /* ── Sign Up CTA — filled green, stands out from outline links ── */
 .btn-signup-cta {
-  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%) !important;
+  /* background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%) !important; */
   color: #fff !important;
   border: none !important;
   border-radius: 8px !important;
