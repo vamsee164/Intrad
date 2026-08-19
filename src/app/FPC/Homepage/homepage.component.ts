@@ -865,13 +865,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
             this.successModalTitle = 'Registration Successful';
 
             // Send credentials email
-            if (sanitizedData.personalEmail) {
+            const targetEmail = response.personalEmail || sanitizedData.personalEmail || response.email;
+            if (targetEmail) {
               this.notificationService
                 .sendLoginCredentialsEmail(
                   response.email,
                   response.generatedPassword,
                   response.name,
-                  sanitizedData.personalEmail,
+                  targetEmail,
                 )
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
@@ -976,14 +977,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (sent) => {
           this.forgotPasswordLoading = false;
-
-          this.forgotPasswordMessage =
-            'If this email is registered, a password reset link has been sent. Please check your inbox.';
-
-          this.forgotPasswordMessageType = 'success';
-
           if (sent) {
-            console.log('[ForgotPassword] Reset email sent');
+            this.forgotPasswordMessage =
+              'Password reset link has been sent to your registered email address. Please check your inbox.';
+            this.forgotPasswordMessageType = 'success';
+          } else {
+            this.forgotPasswordMessage =
+              'Could not send reset email. Please ensure the email is registered with Intra-D and try again.';
+            this.forgotPasswordMessageType = 'danger';
           }
         },
 

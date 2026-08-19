@@ -85,3 +85,59 @@
   </div>
 
 </div>
+
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPassModal" tabindex="-1" aria-labelledby="forgotPassModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-xl shadow-lg border-0">
+      <div class="modal-header bg-success text-white p-3">
+        <h5 class="modal-title fw-bold" id="forgotPassModalLabel">
+          <i class="fas fa-key me-2"></i>{{ 'login.forgotform' | translate }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="resetForgotPasswordForm()"></button>
+      </div>
+
+      <div class="modal-body p-4 text-start">
+        <p class="text-muted mb-4 small">
+          <i class="fas fa-info-circle me-1 text-primary"></i>
+          Enter your Personal Email used during signup and we will send a password reset link directly to your inbox.
+        </p>
+
+        <form (ngSubmit)="handleForgotPassword()" #forgotForm="ngForm" novalidate>
+          <div class="mb-3">
+            <label for="forgotEmailInputLogin" class="form-label fw-semibold text-dark small">
+              <i class="fas fa-envelope me-2 text-success"></i>Personal Email / Registered Email
+              <span class="text-danger">*</span>
+            </label>
+            <input type="email" id="forgotEmailInputLogin" name="forgotEmailInputLogin"
+              [(ngModel)]="forgotPasswordData.email"
+              #forgotEmailInputLogin="ngModel"
+              [class.is-invalid]="forgotForm.submitted && forgotEmailInputLogin.invalid"
+              placeholder="e.g. ramesh@gmail.com"
+              class="form-control"
+              required email
+              [disabled]="forgotPasswordLoading">
+            <div class="invalid-feedback" *ngIf="forgotForm.submitted && forgotEmailInputLogin.invalid">
+              <span *ngIf="forgotEmailInputLogin.errors?.['required']">Email is required</span>
+              <span *ngIf="forgotEmailInputLogin.errors?.['email']">Enter a valid email address</span>
+            </div>
+          </div>
+
+          <div *ngIf="forgotPasswordMessage" [ngClass]="'alert alert-' + forgotPasswordMessageType" class="mb-3 py-2 px-3 rounded-3 small">
+            <i class="fas me-2" [ngClass]="{
+              'fa-check-circle': forgotPasswordMessageType === 'success',
+              'fa-exclamation-triangle': forgotPasswordMessageType === 'danger'
+            }"></i>
+            {{ forgotPasswordMessage }}
+          </div>
+
+          <button type="submit" class="btn btn-success w-100 fw-semibold" [disabled]="forgotPasswordLoading">
+            <span *ngIf="forgotPasswordLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!forgotPasswordLoading" class="fas fa-paper-plane me-2"></i>
+            {{ forgotPasswordLoading ? 'Sending...' : 'Send Reset Link' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

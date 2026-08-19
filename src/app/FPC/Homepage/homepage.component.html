@@ -1214,8 +1214,7 @@
       <div class="modal-body p-4">
         <p class="text-muted mb-4" style="font-size: 14px">
           <i class="fas fa-info-circle me-1 text-primary"></i>
-          Enter your registered system email (<code>yourname@intra-d.com</code>)
-          and we will send a password reset link to that address.
+          Enter your Personal Email used during signup and we will send a password reset link directly to your inbox.
         </p>
 
         <form
@@ -1229,7 +1228,7 @@
               for="forgotEmailInput"
               class="form-label fw-semibold text-dark"
             >
-              <i class="fas fa-envelope me-2 text-success"></i>Registered Email
+              <i class="fas fa-envelope me-2 text-success"></i>Personal Email / Registered Email
               <span class="text-danger">*</span>
             </label>
             <input
@@ -1241,7 +1240,7 @@
                 forgotForm.submitted && forgotEmailInput.invalid
               "
               #forgotEmailInput="ngModel"
-              placeholder="e.g. ramesh@intra-d.com"
+              placeholder="e.g. ramesh@gmail.com"
               class="form-control form-control-lg rounded-3 border-2"
               style="padding: 12px 16px; border-color: #e0e6ed"
               required

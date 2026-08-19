@@ -1,11 +1,11 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, from, throwError } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { initializeApp } from 'firebase/app';
 import { Database, getDatabase, ref, push, set } from 'firebase/database';
-import { Auth, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { Auth, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { firebaseConfig } from '../../environments/firebase.config';
 
 export interface SignupUser {
@@ -21,6 +21,7 @@ export interface SignupUser {
   fertilizers: string[] | string;
   role?: string;
   email?: string;
+  personalEmail?: string;
   password?: string;
   userId?: string;
   createdAt?: string;
@@ -49,21 +50,34 @@ export class FirebaseService {
   // Create user securely with Auth + Database PUT using UID
   createUser(userData: SignupUser): Observable<any> {
     const generatedPassword = this.generatePassword();
-    // Append a short unique suffix so the same name can register more than once
-    // without triggering EMAIL_EXISTS in Firebase Auth.
     const namePart = userData.name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
     const uniqueSuffix = Date.now().toString(36).slice(-4); // e.g. "k3f2"
-    const email = `${namePart}${uniqueSuffix}@intra-d.com`;
+    const appGeneratedEmail = `${namePart}${uniqueSuffix}@intra-d.com`;
+    const personalEmail = (userData.personalEmail && userData.personalEmail.trim())
+      ? userData.personalEmail.trim()
+      : '';
 
-    return this.signupWithEmailPassword(email, generatedPassword).pipe(
+    const attemptEmail = personalEmail || appGeneratedEmail;
+
+    return this.signupWithEmailPassword(attemptEmail, generatedPassword).pipe(
+      catchError((err: any) => {
+        // If creating Auth account with personalEmail fails (e.g. email-already-in-use), fall back to appGeneratedEmail
+        if (personalEmail && attemptEmail !== appGeneratedEmail) {
+          console.warn('[FirebaseService] Personal email Auth creation failed, falling back to app email:', err?.code || err?.message);
+          return this.signupWithEmailPassword(appGeneratedEmail, generatedPassword);
+        }
+        return throwError(() => err);
+      }),
       switchMap((authResult: any) => {
         const uid = authResult.user.uid;
-        // Fix #5: NEVER store the password in the database
+        const usedAuthEmail = authResult?.user?.email || attemptEmail;
         const { password: _removed, ...safeData } = userData as any;
         const userWithCredentials = {
           ...safeData,
           userId: uid,
-          email,
+          email: usedAuthEmail,
+          personalEmail: personalEmail || usedAuthEmail,
+          appGeneratedEmail,
           role: userData.role || 'farmer',
           createdAt: new Date().toISOString()
           // password intentionally excluded from DB record
@@ -71,9 +85,39 @@ export class FirebaseService {
 
         return this.http.put(`${this.baseUrl}/signUpFrom/${uid}.json`, userWithCredentials)
           .pipe(
-            map(() => ({ email, generatedPassword, name: userData.name, userId: uid }))
+            map(() => ({
+              email: usedAuthEmail,
+              personalEmail: personalEmail || usedAuthEmail,
+              appGeneratedEmail,
+              generatedPassword,
+              name: userData.name,
+              userId: uid
+            }))
           );
       })
+    );
+  }
+
+  // Helper to find a user in RTDB by personalEmail, email, mobileNo, or phone
+  findUserByIdentifier(identifier: string): Observable<any> {
+    if (!identifier) return of(null);
+    const cleanId = identifier.trim().toLowerCase();
+    return this.getAllUsers().pipe(
+      map((users: any) => {
+        if (!users) return null;
+        for (const userId of Object.keys(users)) {
+          const user = users[userId];
+          if (!user) continue;
+          const userEmail = (user.email || '').toLowerCase();
+          const personalEmail = (user.personalEmail || '').toLowerCase();
+          const mobile = (user.mobileNo || user.phone || '').toLowerCase();
+          if (userEmail === cleanId || personalEmail === cleanId || mobile === cleanId) {
+            return { ...user, userId };
+          }
+        }
+        return null;
+      }),
+      catchError(() => of(null))
     );
   }
 
@@ -110,6 +154,7 @@ export class FirebaseService {
           if (
             user &&
             (user.email === identifier ||
+              user.personalEmail === identifier ||
               user.mobileNo === identifier ||
               user.phone === identifier)
           ) {
@@ -140,6 +185,14 @@ export class FirebaseService {
       return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
     }
     return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  // Firebase Auth password reset link
+  sendPasswordResetEmail(email: string): Observable<void> {
+    if (!this.auth) {
+      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    }
+    return from(sendPasswordResetEmail(this.auth, email));
   }
 
   // Login authentication (log only — actual auth is via Firebase Auth SDK)

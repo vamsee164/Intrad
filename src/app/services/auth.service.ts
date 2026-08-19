@@ -38,52 +38,64 @@ export class AuthService {
   }
 
   login(credentials: LoginCredentials): Observable<boolean> {
-    return this.firebaseService.loginWithEmailPassword(credentials.email, credentials.password).pipe(
-      switchMap((authResult) => {
-        const uid = authResult.user.uid;
-        return this.firebaseService.getUser(uid).pipe(
-          map((profile) => {
-            if (!profile) return false;
-            const user: User = {
-              id: uid,
-              email: profile.email || credentials.email,
-              role: profile.role || 'farmer',
-              name: profile.name || '',
-              phone: profile.mobileNo || profile.phone || '',
-              profileData: profile
-            };
-            this.setCurrentUser(user);
-            this.startSessionTimeout();
-            return true;
-          }),
-          catchError(() => of(false))
-        );
-      }),
-      catchError((authError) => {
-        console.warn('Firebase Auth failed, trying legacy database fallback:', authError.message);
-        return this.firebaseService.getAllUsers().pipe(
-          map((users) => {
-            if (!users) return false;
-            // Users are stored flat: { uid: { email, role, password, ... } }
-            for (const uid in users) {
-              const userObj = users[uid];
-              if (userObj?.email === credentials.email && userObj?.password === credentials.password) {
-                const legacyUser: User = {
-                  id: userObj.userId || uid,
-                  email: userObj.email,
-                  role: userObj.role || 'farmer',
-                  name: userObj.name || '',
-                  phone: userObj.mobileNo || userObj.phone || '',
-                  profileData: userObj
+    return this.firebaseService.findUserByIdentifier(credentials.email).pipe(
+      map((user) => user?.email || user?.personalEmail || credentials.email),
+      catchError(() => of(credentials.email)),
+      switchMap((targetEmail) => {
+        return this.firebaseService.loginWithEmailPassword(targetEmail, credentials.password).pipe(
+          switchMap((authResult) => {
+            const uid = authResult.user.uid;
+            return this.firebaseService.getUser(uid).pipe(
+              map((profile) => {
+                if (!profile) return false;
+                const user: User = {
+                  id: uid,
+                  email: profile.personalEmail || profile.email || credentials.email,
+                  role: profile.role || 'farmer',
+                  name: profile.name || '',
+                  phone: profile.mobileNo || profile.phone || '',
+                  profileData: profile
                 };
-                this.setCurrentUser(legacyUser);
+                this.setCurrentUser(user);
                 this.startSessionTimeout();
                 return true;
-              }
-            }
-            return false;
+              }),
+              catchError(() => of(false))
+            );
           }),
-          catchError(() => of(false))
+          catchError((authError) => {
+            console.warn('Firebase Auth failed, trying database fallback:', authError.message);
+            return this.firebaseService.getAllUsers().pipe(
+              map((users) => {
+                if (!users) return false;
+                for (const uid in users) {
+                  const userObj = users[uid];
+                  if (
+                    userObj &&
+                    (userObj.email === credentials.email ||
+                      userObj.personalEmail === credentials.email ||
+                      userObj.mobileNo === credentials.email ||
+                      userObj.phone === credentials.email) &&
+                    userObj.password === credentials.password
+                  ) {
+                    const legacyUser: User = {
+                      id: userObj.userId || uid,
+                      email: userObj.personalEmail || userObj.email || credentials.email,
+                      role: userObj.role || 'farmer',
+                      name: userObj.name || '',
+                      phone: userObj.mobileNo || userObj.phone || '',
+                      profileData: userObj
+                    };
+                    this.setCurrentUser(legacyUser);
+                    this.startSessionTimeout();
+                    return true;
+                  }
+                }
+                return false;
+              }),
+              catchError(() => of(false))
+            );
+          })
         );
       })
     );
@@ -185,6 +197,16 @@ export class AuthService {
 
   hasRole(role: string): boolean {
     return this.currentUserSubject.value?.role === role;
+  }
+
+  sendPasswordResetEmail(email: string): Observable<boolean> {
+    return this.firebaseService.sendPasswordResetEmail(email).pipe(
+      map(() => true),
+      catchError((error) => {
+        console.error('Error sending password reset email via Firebase Auth:', error);
+        return of(false);
+      })
+    );
   }
 
   private checkAuthStatus(): void {

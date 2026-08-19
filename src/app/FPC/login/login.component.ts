@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter } from '@
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators'; // Fix #20: removed unused switchMap import
+import { Subject, of } from 'rxjs';
+import { takeUntil, catchError } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
-// Fix #19: removed unused FirebaseService import
+import { NotificationService } from '../../services/notification.service';
 import { TranslatePipe } from '../../shared/translate.pipe';
 
 @Component({
@@ -23,18 +23,24 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginMessageType: 'success' | 'danger' | '' = '';
   isLoading = false;
 
+  // Forgot password modal state
+  forgotPasswordData = { email: '' };
+  forgotPasswordMessage = '';
+  forgotPasswordMessageType: 'success' | 'danger' = 'danger';
+  forgotPasswordLoading = false;
+
   @Output() loginSuccess = new EventEmitter<void>();
   @ViewChild('loginForm') loginHtmlForm!: NgForm;
+  @ViewChild('forgotForm') forgotHtmlForm!: NgForm;
 
   constructor(
     private readonly authService: AuthService,
+    private readonly notificationService: NotificationService,
     private readonly router: Router
-    // Fix #19: FirebaseService removed — was injected but never used
   ) {}
 
   isLoggedIn = false;
 
-  // Fix #9: redirect if user is already logged in when visiting login page
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isAuthenticated();
     if (this.isLoggedIn) {
@@ -87,5 +93,54 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginMessageType = 'danger';
       }
     });
+  }
+
+  /** Handle forgot password reset link submission via Firebase Auth */
+  handleForgotPassword(): void {
+    if (this.forgotHtmlForm?.invalid) {
+      this.forgotHtmlForm.form.markAllAsTouched();
+      return;
+    }
+
+    const email = this.forgotPasswordData.email.trim();
+    if (!email) {
+      this.forgotPasswordMessage = 'Please enter your registered email address.';
+      this.forgotPasswordMessageType = 'danger';
+      return;
+    }
+
+    this.forgotPasswordLoading = true;
+    this.forgotPasswordMessage = '';
+
+    this.notificationService.sendPasswordResetEmail(email).pipe(
+      catchError(() => of(false)),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (sent) => {
+        this.forgotPasswordLoading = false;
+        if (sent) {
+          this.forgotPasswordMessage = 'Password reset link has been sent to your registered email address. Please check your inbox.';
+          this.forgotPasswordMessageType = 'success';
+        } else {
+          this.forgotPasswordMessage = 'Could not send reset email. Please ensure the email is registered with Intra-D and try again.';
+          this.forgotPasswordMessageType = 'danger';
+        }
+      },
+      error: () => {
+        this.forgotPasswordLoading = false;
+        this.forgotPasswordMessage = 'Failed to send reset email. Please try again.';
+        this.forgotPasswordMessageType = 'danger';
+      }
+    });
+  }
+
+  resetForgotPasswordForm(): void {
+    this.forgotPasswordData = { email: '' };
+    this.forgotPasswordMessage = '';
+    this.forgotPasswordMessageType = 'danger';
+    this.forgotPasswordLoading = false;
+    if (this.forgotHtmlForm) {
+      this.forgotHtmlForm.resetForm();
+    }
   }
 }
