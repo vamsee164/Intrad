@@ -89,13 +89,79 @@
     </div>
   </div>
 
-  <!-- ── Quick Actions (Farmer only) ──────────────── -->
+  <!-- ── Buyer Details (Buyer only) ───────────────── -->
+  <div class="info-card" *ngIf="currentUser.role === 'buyer' || currentUser.role === 'user'">
+    <div class="info-card-header">Buyer Details</div>
+    <div class="info-row">
+      <span class="info-icon">🏢</span>
+      <div class="info-content"><span class="info-label">Company / Entity</span><span class="info-val">{{ profileData.roleSpecific?.companyName }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📍</span>
+      <div class="info-content"><span class="info-label">Location</span><span class="info-val">{{ profileData.location }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">🛒</span>
+      <div class="info-content"><span class="info-label">Preferred Products</span><span class="info-val">{{ profileData.roleSpecific?.preferredCrops }}</span></div>
+    </div>
+    <div class="info-row no-border">
+      <span class="info-icon">📋</span>
+      <div class="info-content"><span class="info-label">Total Inquiries</span><span class="info-val fw-bold text-success">{{ profileData.roleSpecific?.inquiriesCount || 0 }}</span></div>
+    </div>
+  </div>
+
+  <!-- ── Seller Details (Seller only) ──────────────── -->
+  <div class="info-card" *ngIf="currentUser.role === 'seller'">
+    <div class="info-card-header">Seller Details</div>
+    <div class="info-row">
+      <span class="info-icon">🏘️</span>
+      <div class="info-content"><span class="info-label">Village / Location</span><span class="info-val">{{ profileData.location }}</span></div>
+    </div>
+    <div class="info-row" *ngIf="profileData.roleSpecific?.mandal && profileData.roleSpecific?.mandal !== 'N/A'">
+      <span class="info-icon">📍</span>
+      <div class="info-content"><span class="info-label">Mandal</span><span class="info-val">{{ profileData.roleSpecific?.mandal }}</span></div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📦</span>
+      <div class="info-content"><span class="info-label">Raw Materials / Crops</span><span class="info-val">{{ profileData.roleSpecific?.rawMaterials }}</span></div>
+    </div>
+    <div class="info-row no-border">
+      <span class="info-icon">📝</span>
+      <div class="info-content"><span class="info-label">Offers Registered</span><span class="info-val fw-bold text-success">{{ profileData.roleSpecific?.offersCount || 0 }}</span></div>
+    </div>
+  </div>
+
+  <!-- ── Quick Actions ─────────────────────────────── -->
   <div class="actions-grid" *ngIf="currentUser.role === 'farmer'">
     <div class="action-tile" (click)="navigateToMyCrops()">
       <span class="action-emoji">🌱</span><span class="action-name">My Crops</span>
     </div>
     <div class="action-tile" (click)="navigateToSoilTest()">
       <span class="action-emoji">🧪</span><span class="action-name">Soil Test</span>
+    </div>
+    <div class="action-tile" (click)="navigateToMarketPrices()">
+      <span class="action-emoji">💰</span><span class="action-name">Market Prices</span>
+    </div>
+    <div class="action-tile" (click)="navigateToHelpCenter()">
+      <span class="action-emoji">❓</span><span class="action-name">Help Center</span>
+    </div>
+  </div>
+
+  <div class="actions-grid" *ngIf="currentUser.role === 'buyer' || currentUser.role === 'user'">
+    <div class="action-tile" (click)="navigateToBuyerPortal()">
+      <span class="action-emoji">🛒</span><span class="action-name">Buyer Inquiry Form</span>
+    </div>
+    <div class="action-tile" (click)="navigateToMarketPrices()">
+      <span class="action-emoji">📦</span><span class="action-name">Browse Products</span>
+    </div>
+    <div class="action-tile" (click)="navigateToHelpCenter()">
+      <span class="action-emoji">❓</span><span class="action-name">Help Center</span>
+    </div>
+  </div>
+
+  <div class="actions-grid" *ngIf="currentUser.role === 'seller'">
+    <div class="action-tile" (click)="navigateToSellerPortal()">
+      <span class="action-emoji">📦</span><span class="action-name">Register New Offer</span>
     </div>
     <div class="action-tile" (click)="navigateToMarketPrices()">
       <span class="action-emoji">💰</span><span class="action-name">Market Prices</span>
@@ -163,6 +229,71 @@
                [(ngModel)]="editForm.phone" name="phone"
                placeholder="Enter phone number">
       </div>
+
+      <!-- Buyer-specific fields -->
+      <ng-container *ngIf="currentUser?.role === 'buyer' || currentUser?.role === 'user'">
+        <div class="form-section-label">Buyer Information</div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-company">Company / Business Name</label>
+          <input id="edit-company" class="form-input" type="text"
+                 [(ngModel)]="editForm.companyName" name="companyName"
+                 placeholder="e.g. AgriTrade Pvt Ltd">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-buyer-village">Village / City</label>
+            <input id="edit-buyer-village" class="form-input" type="text"
+                   [(ngModel)]="editForm.village" name="village"
+                   placeholder="City or Village name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-buyer-mandal">Mandal / State</label>
+            <input id="edit-buyer-mandal" class="form-input" type="text"
+                   [(ngModel)]="editForm.mandal" name="mandal"
+                   placeholder="Mandal or State">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-buyer-crops">
+            Preferred Products / Crops <span class="form-hint">(comma-separated)</span>
+          </label>
+          <input id="edit-buyer-crops" class="form-input" type="text"
+                 [(ngModel)]="editForm.typicalCrops" name="typicalCrops"
+                 placeholder="e.g. Mango, Tomato, Onion">
+        </div>
+      </ng-container>
+
+      <!-- Seller-specific fields -->
+      <ng-container *ngIf="currentUser?.role === 'seller'">
+        <div class="form-section-label">Seller Location & Products</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="edit-seller-village">Village / City</label>
+            <input id="edit-seller-village" class="form-input" type="text"
+                   [(ngModel)]="editForm.village" name="village"
+                   placeholder="Village name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-seller-mandal">Mandal</label>
+            <input id="edit-seller-mandal" class="form-input" type="text"
+                   [(ngModel)]="editForm.mandal" name="mandal"
+                   placeholder="Mandal name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-seller-crops">
+            Raw Materials Available <span class="form-hint">(comma-separated)</span>
+          </label>
+          <input id="edit-seller-crops" class="form-input" type="text"
+                 [(ngModel)]="editForm.typicalCrops" name="typicalCrops"
+                 placeholder="e.g. Wheat, Chilli, Turmeric">
+        </div>
+      </ng-container>
 
       <!-- Farmer-specific fields -->
       <ng-container *ngIf="currentUser?.role === 'farmer'">

@@ -222,15 +222,9 @@ export class BuyerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         this.currentUser = user;
-        // Pre-fill email from logged-in user
-        if (user?.email && !this.buyerData.email) {
-          this.buyerData.email = user.email;
-        }
-        if (user?.name && !this.buyerData.name) {
-          this.buyerData.name = user.name;
-        }
-        if (user?.phone && !this.buyerData.phone) {
-          this.buyerData.phone = user.phone;
+        if (user) {
+          this.bindBuyerData(user);
+          this.loadDatabaseData(user);
         }
       });
 
@@ -239,21 +233,86 @@ export class BuyerComponent implements OnInit, OnDestroy {
       label: (this.productHierarchy as any)[key].label,
       value: key,
     }));
-
-    // Load last submission from localStorage
-    this.loadLastSubmission();
   }
 
   /**
-   * Load last submission from localStorage
+   * Bind buyer information from user / profileData
    */
-  loadLastSubmission(): void {
+  private bindBuyerData(user: User): void {
+    const profile = user.profileData || {};
+
+    if (!this.buyerData.name) {
+      this.buyerData.name = user.name || profile.name || '';
+    }
+    if (!this.buyerData.email) {
+      this.buyerData.email = user.email || profile.personalEmail || profile.email || '';
+    }
+    if (!this.buyerData.phone) {
+      this.buyerData.phone = user.phone || profile.mobileNo || profile.phone || '';
+    }
+  }
+
+  /**
+   * Load previous buyer submissions and full profile from Firebase RTDB
+   */
+  private loadDatabaseData(user: User): void {
+    const userEmail = user.email || user.profileData?.personalEmail;
+    const userPhone = user.phone || user.profileData?.mobileNo;
+
+    if (userEmail || userPhone) {
+      this.firebaseService.getBuyerFormsByEmail(userEmail, userPhone)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (orders: any[]) => {
+            this.orderHistory = orders || [];
+            if (this.orderHistory.length > 0) {
+              const latest = this.orderHistory[0];
+              this.submittedData = latest;
+              this.showLastSubmission = true;
+            } else {
+              this.loadLastSubmissionFromLocal();
+            }
+          },
+          error: (err) => {
+            console.warn('[BuyerComponent] Could not fetch database submissions:', err);
+            this.loadLastSubmissionFromLocal();
+          }
+        });
+    } else {
+      this.loadLastSubmissionFromLocal();
+    }
+
+    // Complete missing profile data if needed
+    if ((!this.buyerData.name || !this.buyerData.phone) && user.id) {
+      this.firebaseService.getUser(user.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (dbUser) => {
+            if (dbUser) {
+              if (!this.buyerData.name) {
+                this.buyerData.name = dbUser.name || '';
+              }
+              if (!this.buyerData.phone) {
+                this.buyerData.phone = dbUser.mobileNo || dbUser.phone || '';
+              }
+            }
+          },
+          error: (err) => {
+            console.warn('[BuyerComponent] User lookup error:', err);
+          }
+        });
+    }
+  }
+
+  /**
+   * Fallback: Load last submission from localStorage without forcing view change
+   */
+  private loadLastSubmissionFromLocal(): void {
     const lastSubmission = localStorage.getItem('lastBuyerSubmission');
     if (lastSubmission) {
       try {
         this.submittedData = JSON.parse(lastSubmission);
         this.showLastSubmission = true;
-        this.currentView = 'confirmation';
       } catch (error) {
         console.error('Error loading last submission:', error);
       }
@@ -395,10 +454,12 @@ export class BuyerComponent implements OnInit, OnDestroy {
     this.selectedSubCategory = '';
     this.selectedProductType = '';
     this.selectedDetails = '';
+    const user = this.currentUser;
+    const profile = user?.profileData || {};
     this.buyerData = {
-      name: this.currentUser?.name || '',
-      email: this.currentUser?.email || '',
-      phone: this.currentUser?.phone || '',
+      name: user?.name || profile.name || '',
+      email: user?.email || profile.personalEmail || profile.email || '',
+      phone: user?.phone || profile.mobileNo || profile.phone || '',
       quantity: ''
     };
     this.subCategories = [];

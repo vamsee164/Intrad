@@ -28,11 +28,17 @@ export class SellerComponent implements OnInit, OnDestroy {
     harvestDate: '',
     qualityGrade: ''
   };
-  
-  // View management
-  currentView: 'form' | 'confirmation' = 'form';
+
+  // View management: 'form' | 'confirmation' | 'history'
+  currentView: 'form' | 'confirmation' | 'history' = 'form';
   submittedData: any = null;
   showLastSubmission: boolean = false;
+
+  // Offer history
+  offerHistory: any[] = [];
+  isLoadingHistory = false;
+  historyError: string | null = null;
+  expandedOfferId: string | null = null;
 
   currentUser: User | null = null;
   private readonly destroy$ = new Subject<void>();
@@ -55,19 +61,129 @@ export class SellerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.currentUser = user;
+        if (user) {
+          this.bindUserData(user);
+          this.loadDatabaseData(user);
+        }
       });
-    this.loadLastSubmission();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  
+
   /**
-   * Load last submission from localStorage
+   * Bind user details from AuthService/profileData into form fields
    */
-  loadLastSubmission(): void {
+  private bindUserData(user: User): void {
+    const profile = user.profileData || {};
+
+    if (!this.formData.sellerName) {
+      this.formData.sellerName = user.name || profile.name || '';
+    }
+
+    if (!this.formData.email) {
+      this.formData.email = user.email || profile.personalEmail || profile.email || '';
+    }
+
+    if (!this.formData.contactNo) {
+      this.formData.contactNo = user.phone || profile.mobileNo || profile.phone || '';
+    }
+
+    if (!this.formData.location) {
+      const location = user.location || (profile.village
+        ? (profile.mandal ? `${profile.village}, ${profile.mandal}` : profile.village)
+        : (profile.location || profile.address || ''));
+      this.formData.location = location;
+    }
+
+    if (!this.formData.rawMaterialType && profile.typicalCrops) {
+      const crops = profile.typicalCrops;
+      this.formData.rawMaterialType = Array.isArray(crops) ? (crops[0] || '') : String(crops);
+    }
+  }
+
+  /**
+   * Load submissions and complete profile data from Firebase Realtime Database
+   */
+  private loadDatabaseData(user: User): void {
+    const userEmail = user.email || user.profileData?.personalEmail;
+    const userPhone = user.phone || user.profileData?.mobileNo;
+
+    // Load seller form submissions from database
+    if (userEmail || userPhone) {
+      this.firebaseService.getSellerFormsByEmail(userEmail, userPhone)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (submissions: any[]) => {
+            this.offerHistory = submissions || [];
+            if (this.offerHistory.length > 0) {
+              const latest = this.offerHistory[0];
+              this.submittedData = latest;
+              this.showLastSubmission = true;
+
+              // Pre-fill any remaining empty fields from the latest submission
+              if (!this.formData.location && latest.location) {
+                this.formData.location = latest.location;
+              }
+              if (!this.formData.rawMaterialType && latest.rawMaterialType) {
+                this.formData.rawMaterialType = latest.rawMaterialType;
+              }
+              if (!this.formData.qualityGrade && latest.qualityGrade) {
+                this.formData.qualityGrade = latest.qualityGrade;
+              }
+              if (this.formData.pricePerUnit == null && latest.pricePerUnit != null) {
+                this.formData.pricePerUnit = latest.pricePerUnit;
+              }
+            } else {
+              this.loadLastSubmissionFromLocal();
+            }
+          },
+          error: (err) => {
+            console.warn('[SellerComponent] Could not fetch database submissions:', err);
+            this.loadLastSubmissionFromLocal();
+          }
+        });
+    } else {
+      this.loadLastSubmissionFromLocal();
+    }
+
+    // If name or phone is still missing, fetch user profile directly from RTDB
+    if ((!this.formData.sellerName || !this.formData.contactNo) && user.id) {
+      this.firebaseService.getUser(user.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (dbUser) => {
+            if (dbUser) {
+              if (!this.formData.sellerName) {
+                this.formData.sellerName = dbUser.name || '';
+              }
+              if (!this.formData.contactNo) {
+                this.formData.contactNo = dbUser.mobileNo || dbUser.phone || '';
+              }
+              if (!this.formData.location) {
+                this.formData.location = dbUser.village
+                  ? (dbUser.mandal ? `${dbUser.village}, ${dbUser.mandal}` : dbUser.village)
+                  : (dbUser.location || '');
+              }
+              if (!this.formData.rawMaterialType && dbUser.typicalCrops) {
+                const crops = dbUser.typicalCrops;
+                this.formData.rawMaterialType = Array.isArray(crops) ? (crops[0] || '') : String(crops);
+              }
+            }
+          },
+          error: (err) => {
+            console.warn('[SellerComponent] User lookup error:', err);
+          }
+        });
+    }
+  }
+
+  /**
+   * Fallback: load last submission from localStorage
+   */
+  private loadLastSubmissionFromLocal(): void {
     const lastSubmission = localStorage.getItem('lastSellerSubmission');
     if (lastSubmission) {
       try {
@@ -78,12 +194,47 @@ export class SellerComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
   /**
    * Toggle last submission visibility
    */
   toggleLastSubmission(): void {
     this.showLastSubmission = !this.showLastSubmission;
+  }
+
+  /**
+   * Toggle expanded detail for an offer card.
+   */
+  toggleOfferDetail(offerId: string): void {
+    this.expandedOfferId = this.expandedOfferId === offerId ? null : offerId;
+  }
+
+  backToFormFromHistory(): void {
+    this.currentView = 'form';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  viewHistory(): void {
+    this.currentView = 'history';
+    this.isLoadingHistory = true;
+    this.historyError = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const userEmail = this.currentUser?.email || this.currentUser?.profileData?.personalEmail;
+    const userPhone = this.currentUser?.phone || this.currentUser?.profileData?.mobileNo;
+
+    this.firebaseService.getSellerFormsByEmail(userEmail, userPhone)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (offers: any[]) => {
+          this.offerHistory = offers || [];
+          this.isLoadingHistory = false;
+        },
+        error: (_err: any) => {
+          this.historyError = 'Failed to load offer history. Please try again.';
+          this.isLoadingHistory = false;
+        }
+      });
   }
 
   onPhoneInput(event: any): void {
@@ -99,39 +250,40 @@ export class SellerComponent implements OnInit, OnDestroy {
       this.sellerForm.form.markAllAsTouched();
       return;
     }
-    
+
     const submissionData = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
       ...this.formData,
       status: 'pending'
     };
-    
+
     this.isSubmitting = true;
-    
+
     this.firebaseService.createSellerForm(submissionData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: (_response) => {
           this.isSubmitting = false;
           this.submitError = '';
           // Save to localStorage for future reference
           localStorage.setItem('lastSellerSubmission', JSON.stringify(submissionData));
-          
-          // Store submitted data and show confirmation
+
+          // Store submitted data and update history
           this.submittedData = submissionData;
+          this.offerHistory.unshift(submissionData);
           this.currentView = 'confirmation';
-          
+
           // Scroll to top
           window.scrollTo({ top: 0, behavior: 'smooth' });
         },
-        error: (error: any) => {
+        error: (_error: any) => {
           this.isSubmitting = false;
           this.submitError = 'Failed to submit offer. Please check your connection and try again.';
         }
       });
   }
-  
+
   /**
    * Go back to form view
    */
@@ -140,7 +292,7 @@ export class SellerComponent implements OnInit, OnDestroy {
     this.resetForm();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   /**
    * Submit another offer
    */
@@ -149,22 +301,52 @@ export class SellerComponent implements OnInit, OnDestroy {
     this.resetForm();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   /**
-   * Reset form data
+   * Reset form data while retaining bound seller profile information
    */
   resetForm(): void {
+    const user = this.currentUser;
+    const profile = user?.profileData || {};
+    const userLocation = user?.location || (profile.village
+      ? (profile.mandal ? `${profile.village}, ${profile.mandal}` : profile.village)
+      : (profile.location || ''));
+    const typicalCrop = profile.typicalCrops
+      ? (Array.isArray(profile.typicalCrops) ? profile.typicalCrops[0] : profile.typicalCrops)
+      : '';
+
     this.formData = {
-      sellerName: '',
-      contactNo: '',
-      email: '',
-      rawMaterialType: '',
+      sellerName: user?.name || profile.name || '',
+      contactNo: user?.phone || profile.mobileNo || profile.phone || '',
+      email: user?.email || profile.personalEmail || profile.email || '',
+      rawMaterialType: typicalCrop || '',
       quantity: '',
-      location: '',
+      location: userLocation || '',
       pricePerUnit: null,
       harvestDate: '',
       qualityGrade: ''
     };
     this.submittedData = null;
+    this.submitError = '';
+  }
+
+  getStatusClass(status: string): string {
+    switch ((status || '').toLowerCase()) {
+      case 'approved': return 'status-approved';
+      case 'rejected': return 'status-rejected';
+      default: return 'status-pending';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch ((status || '').toLowerCase()) {
+      case 'approved': return 'bi-check-circle-fill';
+      case 'rejected': return 'bi-x-circle-fill';
+      default: return 'bi-hourglass-split';
+    }
+  }
+
+  trackByOfferId(index: number, offer: any): any {
+    return offer?.id || offer?.formId || index;
   }
 }

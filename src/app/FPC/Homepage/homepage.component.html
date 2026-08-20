@@ -856,7 +856,7 @@
               <div
                 class="crops-checkbox-grid p-3 border rounded"
                 [class.border-danger]="
-                  signupForm.submitted && signupData.typicalCrops.length === 0
+                  signupForm.submitted && (signupData.typicalCrops.length || 0) === 0
                 "
               >
                 <div
@@ -867,7 +867,7 @@
                     class="form-check-input"
                     type="checkbox"
                     [id]="'crop-' + crop.value"
-                    [checked]="signupData.typicalCrops.includes(crop.value)"
+                    [checked]="signupData.typicalCrops.includes(crop.value) || false"
                     (change)="onCropChange(crop.value, $event)"
                   />
                   <label
@@ -880,7 +880,7 @@
               <div
                 class="text-danger small mt-1"
                 *ngIf="
-                  signupForm.submitted && signupData.typicalCrops.length === 0
+                  signupForm.submitted && (signupData.typicalCrops.length || 0) === 0
                 "
               >
                 Please select at least one crop
@@ -1099,7 +1099,7 @@
                 <div
                   class="fertilizers-checkbox-grid p-3 border rounded"
                   [class.border-danger]="
-                    signupForm.submitted && signupData.fertilizers.length === 0
+                    signupForm.submitted && (signupData.fertilizers.length || 0) === 0
                   "
                 >
                   <div
@@ -1114,7 +1114,7 @@
                       type="checkbox"
                       [id]="'fertilizer-' + fertilizer.value"
                       [checked]="
-                        signupData.fertilizers.includes(fertilizer.value)
+                        signupData.fertilizers.includes(fertilizer.value) || false
                       "
                       (change)="onFertilizerChange(fertilizer.value, $event)"
                     />
@@ -1131,7 +1131,7 @@
                 <div
                   class="text-danger small mt-1"
                   *ngIf="
-                    signupForm.submitted && signupData.fertilizers.length === 0
+                    signupForm.submitted && (signupData.fertilizers.length || 0) === 0
                   "
                 >
                   Please select at least one fertilizer
@@ -1174,7 +1174,9 @@
           type="submit"
           form="signupFormEl"
           class="btn btn-signup-submit"
-          [disabled]="!signupForm.valid || signupData.typicalCrops.length === 0"
+          [disabled]="!signupForm.valid || 
+            (['farmer', 'seller', 'buyer'].includes(signupData.role) && (signupData.typicalCrops.length || 0) === 0) || 
+            (signupData.role === 'farmer' && (signupData.fertilizers.length || 0) === 0)"
         >
           <i class="fas fa-user-plus me-2"></i>Create Account
         </button>

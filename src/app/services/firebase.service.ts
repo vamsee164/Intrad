@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, from, throwError } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { Database, getDatabase, ref, push, set } from 'firebase/database';
 import { Auth, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { firebaseConfig } from '../../environments/firebase.config';
@@ -32,32 +32,72 @@ export interface SignupUser {
 })
 export class FirebaseService {
   private baseUrl = firebaseConfig.databaseURL || 'https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app';
-  private readonly db: Database | null = null;
-  private readonly auth: Auth | null = null;
+  private db: Database | null = null;
+  private auth: Auth | null = null;
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    // Only initialize Firebase in browser context
+    this.initFirebase();
+  }
+
+  private initFirebase(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const app = initializeApp(firebaseConfig);
-      this.db = getDatabase(app);
-      this.auth = getAuth(app);
+      try {
+        const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+        this.db = getDatabase(app);
+        this.auth = getAuth(app);
+      } catch (err) {
+        console.warn('[FirebaseService] Firebase init warning:', err);
+      }
     }
+  }
+
+  private getAuthInstance(): Auth | null {
+    if (this.auth) return this.auth;
+    this.initFirebase();
+    return this.auth;
   }
 
   // Create user securely with Auth + Database PUT using UID
   createUser(userData: SignupUser): Observable<any> {
     const generatedPassword = this.generatePassword();
-    const namePart = userData.name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
-    const uniqueSuffix = Date.now().toString(36).slice(-4); // e.g. "k3f2"
+    const cleanName = (userData.name || '').trim();
+    const namePart = cleanName.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '') || 'user';
+    const uniqueSuffix = Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
     const appGeneratedEmail = `${namePart}${uniqueSuffix}@intra-d.com`;
     const personalEmail = (userData.personalEmail && userData.personalEmail.trim())
       ? userData.personalEmail.trim()
       : '';
 
     const attemptEmail = personalEmail || appGeneratedEmail;
+
+    const saveUserToDb = (uid: string, usedEmail: string) => {
+      const { password: _removed, ...safeData } = userData as any;
+      const userWithCredentials = {
+        ...safeData,
+        userId: uid,
+        email: usedEmail,
+        personalEmail: personalEmail || usedEmail,
+        appGeneratedEmail,
+        password: generatedPassword, // Saved for database-fallback login
+        role: userData.role || 'farmer',
+        createdAt: new Date().toISOString()
+      };
+
+      return this.http.put(`${this.baseUrl}/signUpFrom/${uid}.json`, userWithCredentials)
+        .pipe(
+          map(() => ({
+            email: usedEmail,
+            personalEmail: personalEmail || usedEmail,
+            appGeneratedEmail,
+            generatedPassword,
+            name: userData.name,
+            userId: uid
+          }))
+        );
+    };
 
     return this.signupWithEmailPassword(attemptEmail, generatedPassword).pipe(
       catchError((err: any) => {
@@ -71,29 +111,13 @@ export class FirebaseService {
       switchMap((authResult: any) => {
         const uid = authResult.user.uid;
         const usedAuthEmail = authResult?.user?.email || attemptEmail;
-        const { password: _removed, ...safeData } = userData as any;
-        const userWithCredentials = {
-          ...safeData,
-          userId: uid,
-          email: usedAuthEmail,
-          personalEmail: personalEmail || usedAuthEmail,
-          appGeneratedEmail,
-          role: userData.role || 'farmer',
-          createdAt: new Date().toISOString()
-          // password intentionally excluded from DB record
-        };
-
-        return this.http.put(`${this.baseUrl}/signUpFrom/${uid}.json`, userWithCredentials)
-          .pipe(
-            map(() => ({
-              email: usedAuthEmail,
-              personalEmail: personalEmail || usedAuthEmail,
-              appGeneratedEmail,
-              generatedPassword,
-              name: userData.name,
-              userId: uid
-            }))
-          );
+        return saveUserToDb(uid, usedAuthEmail);
+      }),
+      catchError((authErr: any) => {
+        console.warn('[FirebaseService] Firebase Auth signup unavailable/failed, using direct database registration:', authErr?.code || authErr?.message);
+        const fallbackUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+        const usedEmail = personalEmail || appGeneratedEmail;
+        return saveUserToDb(fallbackUid, usedEmail);
       })
     );
   }
@@ -173,26 +197,29 @@ export class FirebaseService {
 
   // Firebase Auth signup
   signupWithEmailPassword(email: string, password: string): Observable<any> {
-    if (!this.auth) {
-      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    const auth = this.getAuthInstance();
+    if (!auth) {
+      return throwError(() => new Error('Firebase Auth not initialized'));
     }
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+    return from(createUserWithEmailAndPassword(auth, email, password));
   }
 
   // Firebase Auth login
   loginWithEmailPassword(email: string, password: string): Observable<any> {
-    if (!this.auth) {
-      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    const auth = this.getAuthInstance();
+    if (!auth) {
+      return throwError(() => new Error('Firebase Auth not initialized'));
     }
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+    return from(signInWithEmailAndPassword(auth, email, password));
   }
 
   // Firebase Auth password reset link
   sendPasswordResetEmail(email: string): Observable<void> {
-    if (!this.auth) {
-      return new Observable(observer => observer.error(new Error('Firebase Auth not initialized')));
+    const auth = this.getAuthInstance();
+    if (!auth) {
+      return throwError(() => new Error('Firebase Auth not initialized'));
     }
-    return from(sendPasswordResetEmail(this.auth, email));
+    return from(sendPasswordResetEmail(auth, email));
   }
 
   // Login authentication (log only — actual auth is via Firebase Auth SDK)
@@ -292,16 +319,24 @@ export class FirebaseService {
   }
 
   /**
-   * Fetch all buyer form submissions for a specific buyer email.
+   * Fetch all buyer form submissions for a specific buyer email or phone.
    * Firebase Realtime DB doesn't support server-side equality filters on nested fields,
    * so we load all forms and filter client-side — no data is lost.
    */
-  getBuyerFormsByEmail(email: string): Observable<any[]> {
+  getBuyerFormsByEmail(email: string, phone?: string): Observable<any[]> {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPhone = (phone || '').trim().toLowerCase();
     return this.getAllBuyerForms().pipe(
       map((forms: any) => {
         if (!forms) return [];
         return Object.values(forms)
-          .filter((form: any) => form?.buyer?.email === email)
+          .filter((form: any) => {
+            const formEmail = (form?.buyer?.email || form?.email || '').trim().toLowerCase();
+            const formPhone = (form?.buyer?.phone || form?.phone || form?.contactNo || '').trim().toLowerCase();
+            const matchEmail = cleanEmail && formEmail === cleanEmail;
+            const matchPhone = cleanPhone && formPhone === cleanPhone;
+            return matchEmail || matchPhone;
+          })
           .sort((a: any, b: any) =>
             new Date(b.timestamp || b.submittedAt || 0).getTime() -
             new Date(a.timestamp || a.submittedAt || 0).getTime()
@@ -324,6 +359,31 @@ export class FirebaseService {
 
   getAllSellerForms(): Observable<any> {
     return this.http.get(`${this.baseUrl}/sellerForms.json`);
+  }
+
+  /**
+   * Fetch all seller form submissions for a specific seller email or phone.
+   */
+  getSellerFormsByEmail(email: string, phone?: string): Observable<any[]> {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPhone = (phone || '').trim().toLowerCase();
+    return this.getAllSellerForms().pipe(
+      map((forms: any) => {
+        if (!forms) return [];
+        return Object.values(forms)
+          .filter((form: any) => {
+            const formEmail = (form?.email || form?.sellerEmail || '').trim().toLowerCase();
+            const formPhone = (form?.contactNo || form?.phone || form?.mobileNo || '').trim().toLowerCase();
+            const matchEmail = cleanEmail && formEmail === cleanEmail;
+            const matchPhone = cleanPhone && formPhone === cleanPhone;
+            return matchEmail || matchPhone;
+          })
+          .sort((a: any, b: any) =>
+            new Date(b.timestamp || b.submittedAt || 0).getTime() -
+            new Date(a.timestamp || a.submittedAt || 0).getTime()
+          );
+      })
+    );
   }
 
   private generateRequestId(): string {

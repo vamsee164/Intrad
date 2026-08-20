@@ -226,6 +226,9 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   onCropChange(value: string, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
+    if (!this.signupData.typicalCrops) {
+      this.signupData.typicalCrops = [];
+    }
 
     if (checkbox.checked) {
       // Prevent duplicate values
@@ -245,6 +248,9 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   onFertilizerChange(value: string, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
+    if (!this.signupData.fertilizers) {
+      this.signupData.fertilizers = [];
+    }
 
     if (checkbox.checked) {
       // Prevent duplicate values
@@ -550,6 +556,13 @@ export class HomepageComponent implements OnInit, OnDestroy {
       const modalElement = document.getElementById(modalId);
 
       if (modalElement) {
+        // Blur any focused element inside the modal to prevent
+        // aria-hidden conflict with focused descendants (WAI-ARIA)
+        const activeEl = modalElement.querySelector(':focus') as HTMLElement;
+        if (activeEl) {
+          activeEl.blur();
+        }
+
         const modal =
           bootstrap.Modal.getInstance(modalElement) ||
           new bootstrap.Modal(modalElement);
@@ -566,6 +579,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
   // ============================================================
 
   resetSignupForm(): void {
+    if (this.signupHtmlForm) {
+      this.signupHtmlForm.resetForm();
+    }
+
     this.signupData = {
       name: '',
       typicalCrops: [],
@@ -599,10 +616,6 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.devOtpPreview = '';
 
     this.signupError = '';
-
-    if (this.signupHtmlForm) {
-      this.signupHtmlForm.resetForm();
-    }
   }
 
   // ============================================================
@@ -637,13 +650,17 @@ export class HomepageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Make sure at least one crop is selected
-    if (this.signupData.typicalCrops.length === 0) {
+    // Make sure at least one crop is selected (required for farmer, seller, buyer)
+    if (this.signupData.typicalCrops.length === 0 &&
+        ['farmer', 'seller', 'buyer'].includes(this.signupData.role)) {
+      this.signupError = 'Please select at least one crop.';
       return;
     }
 
-    // Make sure at least one fertilizer is selected
-    if (this.signupData.fertilizers.length === 0) {
+    // Make sure at least one fertilizer is selected (farmer only)
+    if (this.signupData.fertilizers.length === 0 &&
+        this.signupData.role === 'farmer') {
+      this.signupError = 'Please select at least one fertilizer.';
       return;
     }
 
@@ -780,13 +797,15 @@ export class HomepageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.signupData.typicalCrops.length === 0) {
+    if (this.signupData.typicalCrops.length === 0 &&
+        ['farmer', 'seller', 'buyer'].includes(this.signupData.role)) {
       this.signupError = 'Please select at least one crop.';
 
       return;
     }
 
-    if (this.signupData.fertilizers.length === 0) {
+    if (this.signupData.fertilizers.length === 0 &&
+        this.signupData.role === 'farmer') {
       this.signupError = 'Please select at least one fertilizer.';
 
       return;
@@ -795,18 +814,22 @@ export class HomepageComponent implements OnInit, OnDestroy {
     const sanitizedData = {
       ...this.signupData,
 
-      name: this.signupData.name.replace(/[<>]/g, '').trim(),
+      name: (this.signupData.name || '').replace(/[<>]/g, '').trim(),
 
-      village: this.signupData.village.replace(/[<>]/g, '').trim(),
+      village: (this.signupData.village || '').replace(/[<>]/g, '').trim(),
 
-      mandal: this.signupData.mandal.replace(/[<>]/g, '').trim(),
+      mandal: (this.signupData.mandal || '').replace(/[<>]/g, '').trim(),
 
-      mobileNo: this.signupData.mobileNo.replace(/[<>]/g, '').trim(),
+      mobileNo: (this.signupData.mobileNo || '').replace(/[<>]/g, '').trim(),
+
+      personalEmail: (this.signupData.personalEmail || '').trim(),
+
+      companyName: (this.signupData.companyName || '').trim(),
 
       // Make sure arrays are copied
-      typicalCrops: [...this.signupData.typicalCrops],
+      typicalCrops: [...(this.signupData.typicalCrops || [])],
 
-      fertilizers: [...this.signupData.fertilizers],
+      fertilizers: [...(this.signupData.fertilizers || [])],
     };
 
     const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
@@ -825,14 +848,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
         timeout(this.API_TIMEOUT),
 
         catchError((err) => {
-          const code: string = err?.code || err?.error?.message || '';
+          const code: string = err?.code || err?.error?.message || err?.message || '';
 
           if (
             code.includes('EMAIL_EXISTS') ||
             code === 'auth/email-already-in-use'
           ) {
             this.signupError =
-              'This name is already registered. Please contact the administrator.';
+              'This email or name is already registered. Please contact the administrator.';
           } else if (code === 'auth/weak-password') {
             this.signupError = 'Password is too weak. Please try again.';
           } else if (code === 'auth/network-request-failed') {
@@ -840,6 +863,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
               'Network error. Please check your connection and try again.';
           } else if (code === 'auth/too-many-requests') {
             this.signupError = 'Too many attempts. Please try again later.';
+          } else if (err?.message && !code.includes('unknown')) {
+            this.signupError = `Registration issue: ${err.message}`;
           } else {
             this.signupError = 'Registration failed. Please try again.';
           }

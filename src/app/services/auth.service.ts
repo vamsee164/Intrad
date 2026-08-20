@@ -48,12 +48,16 @@ export class AuthService {
             return this.firebaseService.getUser(uid).pipe(
               map((profile) => {
                 if (!profile) return false;
+                const userLocation = profile.village
+                  ? (profile.mandal ? `${profile.village}, ${profile.mandal}` : profile.village)
+                  : (profile.location || profile.address || '');
                 const user: User = {
                   id: uid,
                   email: profile.personalEmail || profile.email || credentials.email,
                   role: profile.role || 'farmer',
                   name: profile.name || '',
                   phone: profile.mobileNo || profile.phone || '',
+                  location: userLocation,
                   profileData: profile
                 };
                 this.setCurrentUser(user);
@@ -78,12 +82,16 @@ export class AuthService {
                       userObj.phone === credentials.email) &&
                     userObj.password === credentials.password
                   ) {
+                    const legacyLocation = userObj.village
+                      ? (userObj.mandal ? `${userObj.village}, ${userObj.mandal}` : userObj.village)
+                      : (userObj.location || userObj.address || '');
                     const legacyUser: User = {
                       id: userObj.userId || uid,
                       email: userObj.personalEmail || userObj.email || credentials.email,
                       role: userObj.role || 'farmer',
                       name: userObj.name || '',
                       phone: userObj.mobileNo || userObj.phone || '',
+                      location: legacyLocation,
                       profileData: userObj
                     };
                     this.setCurrentUser(legacyUser);
