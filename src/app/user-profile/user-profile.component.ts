@@ -296,7 +296,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   navigateToMarketPrices(): void {
-    this.router.navigate(['/crops/vegetables']);
+    this.router.navigate(['/products']);
   }
 
   navigateToHelpCenter(): void {

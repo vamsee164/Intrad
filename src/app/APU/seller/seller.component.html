@@ -56,7 +56,7 @@
             <span class="text-muted small ms-1">({{ submittedData.timestamp | date:'short' }})</span>
           </div>
           <button type="button" class="btn btn-sm btn-outline-info" (click)="toggleLastSubmission()">
-            <i class="bi bi-eye me-1"></i>{{ showLastSubmission ? 'Details' : 'View' }}
+            <i class="bi bi-eye me-1"></i>{{ showLastSubmission ? 'Hide' : 'View Details' }}
           </button>
         </div>
 
@@ -210,7 +210,8 @@
               <input type="date" class="form-control form-control-custom shadow-sm"
                      [class.is-invalid]="(sellerForm.submitted || harvestDate.touched) && harvestDate.invalid"
                      id="harvestDate" #harvestDate="ngModel"
-                     [(ngModel)]="formData.harvestDate" name="harvestDate" required>
+                     [(ngModel)]="formData.harvestDate" name="harvestDate" required
+                     [min]="getTodayDate()">
             </div>
             <div class="invalid-feedback d-block" *ngIf="(sellerForm.submitted || harvestDate.touched) && harvestDate.invalid">
               Harvest date is required
@@ -395,7 +396,7 @@
           </button>
           <div>
             <h1 class="history-title">Seller Offer History</h1>
-            <p class="history-sub">All raw material offers registered by {{ currentUser?.email || currentUser?.phone }}</p>
+            <p class="history-sub">All raw material offers registered by {{ currentUser?.name || currentUser?.email || currentUser?.phone }}</p>
           </div>
         </div>
         <div class="history-count-badge" *ngIf="!isLoadingHistory">

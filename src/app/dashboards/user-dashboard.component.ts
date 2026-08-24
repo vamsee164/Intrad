@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { BuyerComponent } from '../APU/buyer/buyer.component';
 import { SellerComponent } from '../APU/seller/seller.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -17,6 +19,9 @@ import { SellerComponent } from '../APU/seller/seller.component';
           <span class="user-role-tag">{{ currentUserRole | titlecase }}</span>
         </div>
         <div class="header-right">
+          <button *ngIf="currentUserRole === 'admin'" (click)="goToControl()" class="btn-profile" style="background:#f3e8ff; color:#7c3aed; border-color:#d8b4fe;">
+            <i class="bi bi-shield-lock-fill me-1"></i>Control Panel
+          </button>
           <button (click)="goToProfile()" class="btn-profile">
             <i class="bi bi-person-circle me-1"></i>Profile
           </button>
@@ -105,6 +110,15 @@ import { SellerComponent } from '../APU/seller/seller.component';
     .btn-logout:hover {
       background: #fee2e2;
     }
+    .tab-content {
+      padding: 0;
+    }
+    /* Suppress inner component's top bar — UserDashboard has its own header */
+    app-buyer .top-bar,
+    app-seller .top-bar {
+      display: none !important;
+    }
+    /* Tab navigation styles */
     .dashboard-nav-bar {
       display: flex;
       justify-content: center;
@@ -133,9 +147,6 @@ import { SellerComponent } from '../APU/seller/seller.component';
       color: #ffffff;
       box-shadow: 0 2px 8px rgba(45,80,22,0.25);
     }
-    .tab-content {
-      padding: 16px;
-    }
     @media (max-width: 600px) {
       .dashboard-header {
         flex-direction: column;
@@ -149,22 +160,36 @@ import { SellerComponent } from '../APU/seller/seller.component';
     }
   `]
 })
-export class UserDashboardComponent implements OnInit {
+export class UserDashboardComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   activeTab: 'buyer' | 'seller' = 'buyer';
   currentUserRole: string = 'user';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUser();
-    if (user?.role) {
-      this.currentUserRole = user.role;
-      if (user.role === 'seller') {
-        this.activeTab = 'seller';
-      } else {
-        this.activeTab = 'buyer';
-      }
-    }
+    // Subscribe reactively so role changes (e.g. after token refresh) update the tab
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user?.role) {
+          this.currentUserRole = user.role;
+          if (user.role === 'seller') {
+            this.activeTab = 'seller';
+          } else {
+            this.activeTab = 'buyer';
+          }
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  goToControl(): void {
+    this.router.navigate(['/control']);
   }
 
   goToProfile(): void {

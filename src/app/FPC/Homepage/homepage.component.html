@@ -621,6 +621,7 @@
                 [(ngModel)]="signupData.role"
                 name="role"
                 required
+                (change)="signupError = ''"
               >
                 <option selected disabled value="">Select your role</option>
                 <option value="farmer">🌾 Farmer</option>

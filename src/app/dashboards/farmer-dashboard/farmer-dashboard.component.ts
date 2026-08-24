@@ -126,14 +126,16 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
       {
         title: 'Total Land',
         icon: '🌾',
-        value: this.currentUser?.profileData?.acreOfLand || '5 acres',
+        value: this.currentUser?.profileData?.acreOfLand != null
+          ? this.currentUser.profileData.acreOfLand + ' Acres'
+          : 'N/A',
         description: 'Registered farmland',
         color: '#28a745'
       },
       {
         title: 'Active Crops',
         icon: '🌱',
-        // Fix #10: typicalCrops is string[], not a comma-separated string
+        // typicalCrops is string[], not a comma-separated string
         value: Array.isArray(this.currentUser?.profileData?.typicalCrops)
           ? this.currentUser!.profileData.typicalCrops.length
           : (this.currentUser?.profileData?.typicalCrops
@@ -145,14 +147,14 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
       {
         title: 'Soil Tests',
         icon: '🧪',
-        value: this.currentUser?.profileData?.soilTest || 'Pending',
+        value: this.currentUser?.profileData?.soilTest || 'N/A',
         description: 'Last test status',
         color: '#17a2b8'
       },
       {
         title: 'Water Source',
         icon: '💧',
-        value: this.currentUser?.profileData?.waterSource || 'Borewell',
+        value: this.currentUser?.profileData?.waterSource || 'N/A',
         description: 'Primary source',
         color: '#007bff'
       }
@@ -162,7 +164,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
       {
         title: 'Browse Products',
         icon: '🛒',
-        route: '/homepage',
+        route: '/products',
         description: 'View available products'
       },
       {
@@ -170,12 +172,6 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
         icon: '🧪',
         route: '/booksoil',
         description: 'Schedule soil testing'
-      },
-      {
-        title: 'View Crops',
-        icon: '🌾',
-        route: '/crops/vegetables',
-        description: 'Browse crop catalog'
       },
       {
         title: 'My Profile',
@@ -198,9 +194,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
     ];
 
     this.recentActivities = [
-      { action: 'Logged in', time: 'Just now', icon: '🔐' },
-      { action: 'Viewed product catalog', time: '2 hours ago', icon: '👁️' },
-      { action: 'Updated profile', time: '1 day ago', icon: '✏️' }
+      { action: 'Logged in', time: 'Just now', icon: '🔐' }
     ];
 
     this.servicePackages = [
@@ -379,6 +373,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
           }
         ]
       },
+      /*
       {
         id: 'insurance',
         name: 'Crop Insurance',
@@ -392,6 +387,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
           'Government Subsidy Support'
         ]
       },
+      */
       {
         id: 'training',
         name: 'Training Programs',
@@ -521,7 +517,9 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
       farmerEmail: this.currentUser?.email,
       farmerId: this.currentUser?.id
     };
-    this.firebaseService.createServiceRequest(requestData).subscribe({
+    this.firebaseService.createServiceRequest(requestData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
       next: (response) => {
         this.showToast(`Service request for ${this.serviceForm.serviceType} submitted! ID: ${response.name}`, 'success');
         this.backToDashboard();

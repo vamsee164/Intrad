@@ -18,9 +18,18 @@ export const RoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
-  // Wrong role → redirect to homepage (do NOT show the dashboard or unauthorized page)
-  if (requiredRole && !auth.hasRole(requiredRole)) {
-    return router.createUrlTree(['/homepage']);
+  // Handle role checks
+  if (requiredRole) {
+    const currentRole = auth.getCurrentUser()?.role;
+
+    // Accept 'user' as a legacy alias for 'buyer'
+    const effectiveRole = currentRole === 'user' ? 'buyer' : currentRole;
+
+    if (effectiveRole !== requiredRole) {
+      // Redirect wrong-role users to their OWN dashboard, not homepage
+      const ownDashboard = auth.getDashboardRoute();
+      return router.createUrlTree([ownDashboard]);
+    }
   }
 
   return true;

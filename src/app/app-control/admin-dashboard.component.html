@@ -1,568 +1,958 @@
-<div class="container-fluid p-0">
-    <div class="row g-0">
-        <!-- Desktop Sidebar -->
-        <div class="col-md-2 d-none d-md-block sidebar p-0">
-            <ul class="nav flex-column mt-2">
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')" style="cursor: pointer;"><i class="bi bi-house-door"></i> Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()" style="cursor: pointer;"><i class="bi bi-person"></i> Farmers</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()" style="cursor: pointer;"><i class="bi bi-bag"></i> Buyers</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()" style="cursor: pointer;"><i class="bi bi-shop"></i> Sellers</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')" style="cursor: pointer;"><i class="bi bi-clipboard-check"></i> Service Requests</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')" style="cursor: pointer;"><i class="bi bi-droplet-fill"></i> Soil Tests</a></li>
-                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()" style="cursor: pointer;"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a></li>
-                <li class="nav-item"><a class="nav-link" (click)="goBackToControl()" style="cursor: pointer;"><i class="bi bi-arrow-left"></i> Back to Control</a></li>
-            </ul>
-        </div>
-
-        <!-- Mobile Horizontal Scroll Nav -->
-        <div class="col-12 d-md-none p-0">
-            <div class="mobile-nav">
-                <a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')"><i class="bi bi-house-door"></i> Home</a>
-                <a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()"><i class="bi bi-person"></i> Farmers</a>
-                <a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()"><i class="bi bi-bag"></i> Buyers</a>
-                <a class="nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()"><i class="bi bi-shop"></i> Sellers</a>
-                <a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')"><i class="bi bi-clipboard-check"></i> Services</a>
-                <a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')"><i class="bi bi-droplet-fill"></i> Soil</a>
-                <a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a>
-                <a class="nav-link" (click)="goBackToControl()"><i class="bi bi-arrow-left"></i> Back</a>
-            </div>
-        </div>
-
-        <div class="col-md-10 p-3 p-md-4">
-
-            <!-- Dashboard View -->
-            <div *ngIf="activeView === 'dashboard'">
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-md-3">
-                        <div class="stat-card d-flex align-items-center">
-                            <div class="me-3 text-success"><i class="bi bi-person-badge stat-icon"></i></div>
-                            <div>
-                                <div class="text-muted small">Farmers</div>
-                                <h3 class="mb-0 fw-bold">{{ stats.totalFarmers }}</h3>
-                                <span class="trend-text">• {{ stats.totalFarmers > 0 ? (stats.totalFarmers * 0.02 | number:'1.0-0') : 0 }} today</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="stat-card d-flex align-items-center">
-                            <div class="me-3 text-success"><i class="bi bi-potted-plant stat-icon"></i></div>
-                            <div>
-                                <div class="text-muted small">Crops Available</div>
-                                <h3 class="mb-0 fw-bold">{{ stats.cropsAvailable | number }} <small class="h6">Kg</small></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="stat-card d-flex align-items-center">
-                            <div class="me-3 text-warning"><i class="bi bi-exclamation-triangle stat-icon"></i></div>
-                            <div>
-                                <div class="text-muted small">Urgent Crops</div>
-                                <h3 class="mb-0 fw-bold">{{ stats.urgentCrops | number }} <small class="h6">Kg</small></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="stat-card d-flex align-items-center">
-                            <div class="me-3 text-success"><i class="bi bi-person-check stat-icon"></i></div>
-                            <div>
-                                <div class="text-muted small">Active Buyers</div>
-                                <h3 class="mb-0 fw-bold">{{ stats.activeBuyers }}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-12 col-md-4">
-                        <div class="card data-card h-100">
-                            <div class="card-header-custom">Crops Available</div>
-                            <div class="card-body p-2">
-                                <div class="table-responsive">
-                                    <table class="table table-borderless align-middle mb-0">
-                                        <thead><tr class="text-muted small"><th>Crop</th><th class="text-end">Qty</th></tr></thead>
-                                        <tbody>
-                                            <tr *ngFor="let crop of cropsAvailable; trackBy: trackByFn">
-                                                <td>{{ crop.name }}</td>
-                                                <td class="text-end fw-bold">{{ crop.quantity | number }} Kg</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="card data-card h-100">
-                            <div class="card-header-custom">Crops Needed Urgently</div>
-                            <div class="card-body p-2">
-                                <div class="table-responsive">
-                                    <table class="table table-borderless align-middle mb-0">
-                                        <thead><tr class="text-muted small"><th>Crop</th><th class="text-end">Timeframe</th></tr></thead>
-                                        <tbody>
-                                            <tr *ngFor="let crop of urgentCrops; trackBy: trackByFn">
-                                                <td>{{ crop.name }}</td>
-                                                <td class="text-end">
-                                                    <span class="badge urgent-badge"
-                                                          [ngClass]="crop.timeframe === '24 hrs' ? 'bg-warning-subtle text-warning' : 'bg-danger-subtle text-danger'">
-                                                        {{ crop.quantity | number }} Kg # {{ crop.timeframe }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="card data-card h-100">
-                            <div class="card-header-custom">Buyer Demand</div>
-                            <div class="card-body p-2">
-                                <div class="table-responsive">
-                                    <table class="table table-borderless align-middle mb-0">
-                                        <thead><tr class="text-muted small"><th>Buyer</th><th>Bid</th><th>Ttl</th></tr></thead>
-                                        <tbody>
-                                            <tr *ngFor="let demand of buyerDemands; trackBy: trackByFn">
-                                                <td>{{ demand.name }}</td>
-                                                <td class="fw-bold">{{ demand.bid }}</td>
-                                                <td class="text-muted">{{ demand.ttl }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="mt-3">
-                                    <button class="btn btn-match w-100" (click)="matchBuyerSeller()">Match Buyer & Seller</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Farmers View -->
-            <div *ngIf="activeView === 'farmers'">
-                <h2 class="mb-3">Farmers Details</h2>
-                <div *ngIf="loading" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading farmers data...</p>
-                </div>
-                <div *ngIf="!loading" class="card data-card">
-                    <div class="card-body p-2">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Name</th><th>Village</th><th>Crops</th>
-                                        <th>Land</th><th>Water</th><th>Soil</th>
-                                        <th>Fertilizers</th><th>Mobile</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let farmer of paginatedFarmers; trackBy: trackByFn">
-                                        <td>{{ farmer.name }}</td>
-                                        <td>{{ farmer.village }}</td>
-                                        <td>{{ farmer.cropsProduced }}</td>
-                                        <td>{{ farmer.totalLand }}</td>
-                                        <td>{{ farmer.waterSource }}</td>
-                                        <td>{{ farmer.soilType }}</td>
-                                        <td>{{ farmer.fertilizers }}</td>
-                                        <td>{{ farmer.mobileNo }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div *ngIf="paginatedFarmers.length === 0 && !loading" class="text-center py-4 text-muted">
-                            <i class="bi bi-person fs-3 d-block mb-2"></i>No farmers registered yet.
-                        </div>
-                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
-                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
-                            <nav><ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
-                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
-                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
-                            </ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Buyers View -->
-            <div *ngIf="activeView === 'buyers'">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
-                    <h2 class="mb-0"><i class="bi bi-bag me-2"></i>Buyer Inquiries</h2>
-                    <span class="badge bg-success fs-6">{{ buyersData.length }} Total</span>
-                </div>
-                <div *ngIf="loading" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading buyer inquiries...</p>
-                </div>
-                <div *ngIf="!loading && buyersData.length === 0" class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>No buyer inquiries submitted yet.
-                </div>
-                <div *ngIf="!loading && buyersData.length > 0" class="card data-card">
-                    <div class="card-body p-2">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>📱 Mobile</th>
-                                        <th>✉️ Personal Email</th>
-                                        <th>Category</th>
-                                        <th>Product Type</th>
-                                        <th>Details</th>
-                                        <th>Quantity</th>
-                                        <th>Status</th>
-                                        <th>Submitted On</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let buyer of paginatedBuyers; trackBy: trackByFn">
-                                        <td class="fw-semibold">{{ buyer.name }}</td>
-                                        <td>
-                                            <a [href]="'tel:' + buyer.mobileNo" class="text-decoration-none"
-                                               *ngIf="buyer.mobileNo && buyer.mobileNo !== 'N/A'">
-                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ buyer.mobileNo }}
-                                            </a>
-                                            <span class="text-muted" *ngIf="!buyer.mobileNo || buyer.mobileNo === 'N/A'">—</span>
-                                        </td>
-                                        <td>
-                                            <a [href]="'mailto:' + buyer.email" class="text-decoration-none text-primary"
-                                               *ngIf="buyer.email && buyer.email !== 'N/A'">
-                                                <i class="bi bi-envelope-fill me-1"></i>{{ buyer.email }}
-                                            </a>
-                                            <span class="text-muted" *ngIf="!buyer.email || buyer.email === 'N/A'">—</span>
-                                        </td>
-                                        <td><span class="badge bg-secondary">{{ buyer.mainCategory || '—' }}</span></td>
-                                        <td class="fw-semibold text-primary">{{ buyer.productType || '—' }}</td>
-                                        <td>{{ buyer.details || '—' }}</td>
-                                        <td><span class="badge bg-info text-dark">{{ buyer.quantity || '—' }}</span></td>
-                                        <td>
-                                            <span class="badge"
-                                                [ngClass]="{
-                                                    'bg-warning text-dark': buyer.status === 'pending' || !buyer.status,
-                                                    'bg-success': buyer.status === 'approved',
-                                                    'bg-danger': buyer.status === 'rejected'
-                                                }">
-                                                {{ buyer.status || 'pending' }}
-                                            </span>
-                                        </td>
-                                        <td class="text-muted small">{{ buyer.createdAt ? (buyer.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
-                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
-                            <nav><ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
-                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
-                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
-                            </ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sellers View -->
-            <div *ngIf="activeView === 'sellers'">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2">
-                    <h2 class="mb-0"><i class="bi bi-shop me-2"></i>Seller Offers</h2>
-                    <span class="badge bg-success fs-6">{{ sellersData.length }} Total</span>
-                </div>
-                <div *ngIf="loading" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading seller offers...</p>
-                </div>
-                <div *ngIf="!loading && sellersData.length === 0" class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>No seller offers submitted yet.
-                </div>
-                <div *ngIf="!loading && sellersData.length > 0" class="card data-card">
-                    <div class="card-body p-2">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>📱 Mobile</th>
-                                        <th>✉️ Personal Email</th>
-                                        <th>Raw Material</th>
-                                        <th>Quantity</th>
-                                        <th>Location</th>
-                                        <th>Price/Unit</th>
-                                        <th>Harvest Date</th>
-                                        <th>Quality</th>
-                                        <th>Status</th>
-                                        <th>Submitted On</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let seller of paginatedSellers; trackBy: trackByFn">
-                                        <td class="fw-semibold">{{ seller.name }}</td>
-                                        <td>
-                                            <a [href]="'tel:' + seller.mobileNo" class="text-decoration-none"
-                                               *ngIf="seller.mobileNo && seller.mobileNo !== 'N/A'">
-                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ seller.mobileNo }}
-                                            </a>
-                                            <span class="text-muted" *ngIf="!seller.mobileNo || seller.mobileNo === 'N/A'">—</span>
-                                        </td>
-                                        <td>
-                                            <a [href]="'mailto:' + seller.email" class="text-decoration-none text-primary"
-                                               *ngIf="seller.email && seller.email !== 'N/A'">
-                                                <i class="bi bi-envelope-fill me-1"></i>{{ seller.email }}
-                                            </a>
-                                            <span class="text-muted" *ngIf="!seller.email || seller.email === 'N/A'">—</span>
-                                        </td>
-                                        <td class="fw-semibold text-success">{{ seller.rawMaterialType || '—' }}</td>
-                                        <td><span class="badge bg-info text-dark">{{ seller.quantity || '—' }}</span></td>
-                                        <td>{{ seller.location || seller.village || '—' }}</td>
-                                        <td>
-                                            <span class="fw-semibold text-success" *ngIf="seller.pricePerUnit && seller.pricePerUnit !== 'N/A'">₹{{ seller.pricePerUnit }}</span>
-                                            <span class="text-muted" *ngIf="!seller.pricePerUnit || seller.pricePerUnit === 'N/A'">—</span>
-                                        </td>
-                                        <td>{{ seller.harvestDate ? (seller.harvestDate | date:'dd MMM yyyy') : '—' }}</td>
-                                        <td>
-                                            <span class="badge"
-                                                [ngClass]="{
-                                                    'bg-warning text-dark': seller.qualityGrade === 'basic',
-                                                    'bg-info text-dark': seller.qualityGrade === 'standard',
-                                                    'bg-success': seller.qualityGrade === 'premium'
-                                                }">
-                                                {{ seller.qualityGrade ? (seller.qualityGrade | uppercase) : '—' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge"
-                                                [ngClass]="{
-                                                    'bg-warning text-dark': seller.status === 'pending' || !seller.status,
-                                                    'bg-success': seller.status === 'approved',
-                                                    'bg-danger': seller.status === 'rejected'
-                                                }">
-                                                {{ seller.status || 'pending' }}
-                                            </span>
-                                        </td>
-                                        <td class="text-muted small">{{ seller.createdAt ? (seller.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
-                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
-                            <nav><ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
-                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
-                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
-                            </ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Service Requests View -->
-            <div *ngIf="activeView === 'service-requests'">
-                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-                    <h2 class="mb-0"><i class="bi bi-clipboard-check"></i> Service Requests</h2>
-                    <button class="btn btn-primary btn-sm" (click)="loadServiceRequests()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-                </div>
-                <div *ngIf="loading" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading service requests...</p>
-                </div>
-                <div *ngIf="!loading && serviceRequests.length === 0" class="alert alert-info"><i class="bi bi-info-circle"></i> No service requests found.</div>
-                <div *ngIf="!loading && serviceRequests.length > 0" class="card data-card">
-                    <div class="card-body p-2">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Farmer</th>
-                                        <th>Mobile</th>
-                                        <th>Village</th>
-                                        <th>Service Package</th>
-                                        <th>Service Type</th>
-                                        <th>Equipment</th>
-                                        <th>Price</th>
-                                        <th>Preferred Date</th>
-                                        <th>Notes</th>
-                                        <th>Submitted On</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let request of paginatedServiceRequests; trackBy: trackByFn">
-                                        <!-- Farmer Name -->
-                                        <td class="fw-semibold">{{ request.farmerName || '—' }}</td>
-
-                                        <!-- Mobile — clickable -->
-                                        <td>
-                                            <a [href]="'tel:' + request.mobileNumber" class="text-decoration-none text-dark" *ngIf="request.mobileNumber">
-                                                <i class="bi bi-telephone-fill text-success me-1"></i>{{ request.mobileNumber }}
-                                            </a>
-                                            <span *ngIf="!request.mobileNumber" class="text-muted">—</span>
-                                        </td>
-
-                                        <!-- Village -->
-                                        <td>{{ request.village || '—' }}</td>
-
-                                        <!-- Service Package (serviceName = package title e.g. "Soil Testing") -->
-                                        <td>
-                                            <span class="badge bg-primary" *ngIf="request.serviceName">{{ request.serviceName }}</span>
-                                            <span *ngIf="!request.serviceName" class="text-muted">—</span>
-                                        </td>
-
-                                        <!-- Service Type (serviceType = same as package name, set from form) -->
-                                        <td>
-                                            <span class="badge bg-info text-dark" *ngIf="request.serviceType && request.serviceType !== request.serviceName">{{ request.serviceType }}</span>
-                                            <span *ngIf="!request.serviceType || request.serviceType === request.serviceName" class="text-muted small">Same as package</span>
-                                        </td>
-
-                                        <!-- Equipment (only for equipment-rental) -->
-                                        <td>{{ request.selectedEquipment || '—' }}</td>
-
-                                        <!-- Price -->
-                                        <td>
-                                            <span class="fw-semibold text-success" *ngIf="request.servicePrice">{{ request.servicePrice }}</span>
-                                            <span *ngIf="!request.servicePrice" class="text-muted">—</span>
-                                        </td>
-
-                                        <!-- Preferred Date -->
-                                        <td>{{ request.preferredDate || '—' }}</td>
-
-                                        <!-- Additional Notes -->
-                                        <td style="max-width:150px;">
-                                            <span class="text-muted small" style="white-space:normal;word-break:break-word;" *ngIf="request.additionalNotes">{{ request.additionalNotes }}</span>
-                                            <span *ngIf="!request.additionalNotes" class="text-muted">—</span>
-                                        </td>
-
-                                        <!-- Submitted On -->
-                                        <td class="text-muted small">{{ request.submittedAt ? (request.submittedAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
-
-                                        <!-- Status Badge -->
-                                        <td>
-                                            <span class="badge"
-                                                [ngClass]="{
-                                                    'bg-warning text-dark': request.status === 'pending' || !request.status,
-                                                    'bg-success': request.status === 'approved',
-                                                    'bg-danger': request.status === 'rejected',
-                                                    'bg-info text-dark': request.status === 'completed'
-                                                }">
-                                                {{ request.status || 'pending' }}
-                                            </span>
-                                        </td>
-
-                                        <!-- Actions -->
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-success" title="Approve"
-                                                    (click)="updateRequestStatus(request.id, 'approved', 'service')"
-                                                    [disabled]="request.status === 'approved'">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </button>
-                                                <button class="btn btn-danger" title="Reject"
-                                                    (click)="updateRequestStatus(request.id, 'rejected', 'service')"
-                                                    [disabled]="request.status === 'rejected'">
-                                                    <i class="bi bi-x-lg"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
-                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
-                            <nav><ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
-                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
-                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
-                            </ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Soil Test Requests View -->
-            <div *ngIf="activeView === 'soil-tests'">
-                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-                    <h2 class="mb-0"><i class="bi bi-droplet-fill"></i> Soil Test Requests</h2>
-                    <button class="btn btn-primary btn-sm" (click)="loadSoilTestRequests()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-                </div>
-                <div *ngIf="loading" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>
-                    <p class="mt-3">Loading soil test requests...</p>
-                </div>
-                <div *ngIf="!loading && soilTestRequests.length === 0" class="alert alert-info"><i class="bi bi-info-circle"></i> No soil test requests found.</div>
-                <div *ngIf="!loading && soilTestRequests.length > 0" class="card data-card">
-                    <div class="card-body p-2">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr><th>Farmer</th><th>Mobile</th><th>Village</th><th>Land</th><th>Crop</th><th>Date</th><th>Status</th><th>Actions</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let request of paginatedSoilTests; trackBy: trackByFn">
-                                        <td>{{ request.farmerName }}</td>
-                                        <td>{{ request.mobileNumber }}</td>
-                                        <td>{{ request.village }}</td>
-                                        <td>{{ request.landArea }} ac</td>
-                                        <td>{{ request.currentCrop }}</td>
-                                        <td>{{ request.sampleDate }}</td>
-                                        <td>
-                                            <span class="badge" [ngClass]="{'bg-warning':request.status==='REQUESTED'||request.status==='pending','bg-success':request.status==='COMPLETED'||request.status==='approved','bg-danger':request.status==='rejected','bg-info':request.status==='IN_PROGRESS'}">
-                                                {{ request.status || 'REQUESTED' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-success" (click)="updateRequestStatus(request.id,'approved','soil')" [disabled]="request.status==='approved'||request.status==='COMPLETED'"><i class="bi bi-check"></i></button>
-                                                <button class="btn btn-danger" (click)="updateRequestStatus(request.id,'rejected','soil')" [disabled]="request.status==='rejected'"><i class="bi bi-x"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div *ngIf="totalPages > 1" class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2 px-2">
-                            <div class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} to {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }}</div>
-                            <nav><ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" [class.disabled]="currentPage===1"><a class="page-link" (click)="prevPage()" style="cursor:pointer">Prev</a></li>
-                                <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index; trackBy: trackByIndex" [class.active]="currentPage===i+1"><a class="page-link" (click)="goToPage(i+1)" style="cursor:pointer">{{i+1}}</a></li>
-                                <li class="page-item" [class.disabled]="currentPage===totalPages"><a class="page-link" (click)="nextPage()" style="cursor:pointer">Next</a></li>
-                            </ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports View -->
-            <div *ngIf="activeView === 'reports'">
-                <h2 class="mb-3">Reports & Analytics</h2>
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-md-3"><div class="stat-card"><h4>Total Farmers</h4><h2>{{ stats.totalFarmers }}</h2></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><h4>Total Buyers</h4><h2>{{ stats.totalBuyers }}</h2></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><h4>Crops (Kg)</h4><h2>{{ stats.cropsAvailable | number }}</h2></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><h4>Urgent (Kg)</h4><h2>{{ stats.urgentCrops | number }}</h2></div></div>
-                </div>
-                <div class="card data-card">
-                    <div class="card-body p-2">
-                        <h5 class="px-2 pt-2">Crop Production Summary</h5>
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead class="table-light"><tr><th>Crop Name</th><th>Total Quantity</th><th>Farmers Producing</th></tr></thead>
-                                <tbody>
-                                    <tr *ngFor="let crop of cropsAvailable; trackBy: trackByFn">
-                                        <td>{{ crop.name }}</td>
-                                        <td>{{ crop.quantity | number }} Kg</td>
-                                        <td>{{ crop.quantity > 0 ? (crop.quantity / 1000 | number:'1.0-0') : '—' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+<div class="admin-layout">
+  <!-- Toast Notification Alert -->
+  <div class="admin-toast-container" *ngIf="toastMessage">
+    <div class="admin-toast" [class]="'toast-' + toastType">
+      <i class="bi" [ngClass]="{'bi-check-circle-fill': toastType==='success', 'bi-exclamation-triangle-fill': toastType==='danger', 'bi-info-circle-fill': toastType==='info'}"></i>
+      <span>{{ toastMessage }}</span>
+      <button class="toast-close" (click)="toastMessage = ''">×</button>
     </div>
+  </div>
+
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <!-- Desktop Sidebar -->
+      <aside class="col-md-2 d-none d-md-block admin-sidebar p-0">
+        <div class="sidebar-brand">
+          <div class="brand-badge">ADMIN</div>
+          <span class="brand-text">Control Hub</span>
+        </div>
+
+        <ul class="nav flex-column sidebar-nav">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')">
+              <i class="bi bi-grid-1x2-fill"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()">
+              <i class="bi bi-people-fill"></i>
+              <span>Farmers</span>
+              <span class="badge-count" *ngIf="stats.totalFarmers > 0">{{ stats.totalFarmers }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()">
+              <i class="bi bi-cart-check-fill"></i>
+              <span>Buyers</span>
+              <span class="badge-count" *ngIf="stats.totalBuyers > 0">{{ stats.totalBuyers }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()">
+              <i class="bi bi-shop-window"></i>
+              <span>Sellers</span>
+              <span class="badge-count" *ngIf="stats.totalSellers > 0">{{ stats.totalSellers }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')">
+              <i class="bi bi-clipboard2-pulse-fill"></i>
+              <span>Services</span>
+              <span class="badge-alert" *ngIf="stats.pendingServices > 0">{{ stats.pendingServices }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')">
+              <i class="bi bi-droplet-half"></i>
+              <span>Soil Tests</span>
+              <span class="badge-alert" *ngIf="stats.pendingSoilTests > 0">{{ stats.pendingSoilTests }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()">
+              <i class="bi bi-bar-chart-line-fill"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          
+          <li class="nav-divider"></li>
+
+          <li class="nav-item">
+            <a class="nav-link nav-link-return" (click)="goBackToControl()">
+              <i class="bi bi-arrow-left-circle-fill"></i>
+              <span>Back to Control</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Mobile Top Navigation Bar -->
+      <div class="col-12 d-md-none p-0">
+        <div class="mobile-nav-bar">
+          <a class="mobile-nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')">
+            <i class="bi bi-grid-1x2-fill"></i> Home
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()">
+            <i class="bi bi-people-fill"></i> Farmers
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()">
+            <i class="bi bi-cart-check-fill"></i> Buyers
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'sellers'" (click)="navigateToSellers()">
+            <i class="bi bi-shop-window"></i> Sellers
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')">
+            <i class="bi bi-clipboard2-pulse-fill"></i> Services
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')">
+            <i class="bi bi-droplet-half"></i> Soil
+          </a>
+          <a class="mobile-nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()">
+            <i class="bi bi-bar-chart-line-fill"></i> Reports
+          </a>
+          <a class="mobile-nav-link mobile-nav-back" (click)="goBackToControl()">
+            <i class="bi bi-arrow-left"></i> Exit
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Admin Content Area -->
+      <main class="col-md-10 admin-content p-3 p-md-4">
+        
+        <!-- Header Ribbon -->
+        <div class="content-header-ribbon mb-4">
+          <div class="header-breadcrumb">
+            <span class="crumb-root" (click)="goBackToControl()"><i class="bi bi-house-door-fill me-1"></i>Control Center</span>
+            <i class="bi bi-chevron-right crumb-sep"></i>
+            <span class="crumb-current">{{ activeView | uppercase }}</span>
+          </div>
+
+          <div class="header-actions">
+            <button class="btn btn-match-trigger" (click)="matchBuyerSeller()">
+              <i class="bi bi-lightning-charge-fill me-1"></i>Match Buyer & Seller
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" (click)="loadAllData()" title="Refresh Data">
+              <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW 1: DASHBOARD OVERVIEW -->
+        <section *ngIf="activeView === 'dashboard'" class="view-section">
+          <!-- Stat Cards Grid -->
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+              <div class="glass-stat-card border-green">
+                <div class="stat-icon-wrapper bg-green-light text-green">
+                  <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Registered Farmers</span>
+                  <h3 class="stat-value">{{ stats.totalFarmers }}</h3>
+                  <span class="stat-subtext text-success">
+                    <i class="bi bi-arrow-up-right"></i> {{ stats.cropsAvailable | number }} Kg Produce
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+              <div class="glass-stat-card border-blue">
+                <div class="stat-icon-wrapper bg-blue-light text-blue">
+                  <i class="bi bi-cart-check-fill"></i>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Buyer Inquiries</span>
+                  <h3 class="stat-value">{{ stats.totalBuyers }}</h3>
+                  <span class="stat-subtext text-primary">Active Procurement</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+              <div class="glass-stat-card border-orange">
+                <div class="stat-icon-wrapper bg-orange-light text-orange">
+                  <i class="bi bi-shop-window"></i>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Seller Offers</span>
+                  <h3 class="stat-value">{{ stats.totalSellers }}</h3>
+                  <span class="stat-subtext text-warning">Direct Farm Supply</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+              <div class="glass-stat-card border-purple">
+                <div class="stat-icon-wrapper bg-purple-light text-purple">
+                  <i class="bi bi-clipboard-check-fill"></i>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Pending Actions</span>
+                  <h3 class="stat-value">{{ stats.pendingServices + stats.pendingSoilTests }}</h3>
+                  <span class="stat-subtext text-purple">Services & Soil Tests</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mid Section: Crops & Demands -->
+          <div class="row g-3 mb-4">
+            <!-- Crops Available Table -->
+            <div class="col-12 col-lg-4">
+              <div class="admin-card h-100">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-flower1 text-success me-2"></i>Crops Available
+                  </div>
+                  <span class="badge bg-success-subtle text-success">{{ cropsAvailable.length }} Varieties</span>
+                </div>
+                <div class="admin-card-body p-0">
+                  <div class="table-responsive" style="max-height: 320px;">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light sticky-top">
+                        <tr>
+                          <th>Crop</th>
+                          <th class="text-center">Producers</th>
+                          <th class="text-end">Est. Quantity</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let crop of cropsAvailable; trackBy: trackByFn">
+                          <td class="fw-semibold">{{ crop.name }}</td>
+                          <td class="text-center">
+                            <span class="badge bg-light text-dark border">{{ crop.farmerCount || 1 }}</span>
+                          </td>
+                          <td class="text-end fw-bold text-success">{{ crop.quantity | number }} Kg</td>
+                        </tr>
+                        <tr *ngIf="cropsAvailable.length === 0">
+                          <td colspan="3" class="text-center py-4 text-muted">No crop listings found.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Urgent Crops -->
+            <div class="col-12 col-lg-4">
+              <div class="admin-card h-100">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-exclamation-octagon-fill text-warning me-2"></i>Urgent Harvest Timeline
+                  </div>
+                  <span class="badge bg-warning-subtle text-warning">Priority</span>
+                </div>
+                <div class="admin-card-body p-0">
+                  <div class="table-responsive" style="max-height: 320px;">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light sticky-top">
+                        <tr>
+                          <th>Crop</th>
+                          <th>Quantity</th>
+                          <th class="text-end">Window</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let crop of urgentCrops; trackBy: trackByFn">
+                          <td class="fw-semibold">{{ crop.name }}</td>
+                          <td class="fw-bold">{{ crop.quantity | number }} Kg</td>
+                          <td class="text-end">
+                            <span class="badge-urgent-tag" [class.urgent-critical]="crop.timeframe === '24 hrs'">
+                              {{ crop.timeframe }}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buyer Demands & Match Action -->
+            <div class="col-12 col-lg-4">
+              <div class="admin-card h-100 d-flex flex-column justify-content-between">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-graph-up-arrow text-primary me-2"></i>Active Buyer Bids
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary">Live Orders</span>
+                </div>
+                <div class="admin-card-body p-0 flex-grow-1">
+                  <div class="table-responsive" style="max-height: 250px;">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light sticky-top">
+                        <tr>
+                          <th>Buyer</th>
+                          <th>Crop</th>
+                          <th class="text-end">Bid Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let demand of buyerDemands; trackBy: trackByFn">
+                          <td class="fw-semibold">{{ demand.name }}</td>
+                          <td><span class="badge bg-secondary-subtle text-secondary">{{ demand.crop }}</span></td>
+                          <td class="text-end fw-bold text-primary">{{ demand.bid }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="p-3 bg-light border-top">
+                  <button class="btn btn-match-trigger w-100" (click)="matchBuyerSeller()">
+                    <i class="bi bi-shuffle me-2"></i>Run Matchmaking Engine
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: FARMERS DIRECTORY -->
+        <section *ngIf="activeView === 'farmers'" class="view-section">
+          <div class="table-control-bar mb-3">
+            <div class="control-search">
+              <i class="bi bi-search search-icon"></i>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search farmers by name, village, crops, mobile..." 
+                [(ngModel)]="searchQuery" 
+                (ngModelChange)="onSearchChange()">
+            </div>
+            <div class="control-stats">
+              <span class="badge bg-success fs-6">{{ totalItems }} Farmers</span>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2 text-muted">Loading farmers directory...</p>
+          </div>
+
+          <div *ngIf="!loading" class="admin-card">
+            <div class="admin-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Farmer Name</th>
+                      <th>Location / Village</th>
+                      <th>Crops Produced</th>
+                      <th>Land (Acres)</th>
+                      <th>Water Source</th>
+                      <th>Soil Type</th>
+                      <th>Fertilizers</th>
+                      <th>Contact</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let farmer of paginatedFarmers; trackBy: trackByFn">
+                      <td class="fw-semibold text-dark">{{ farmer.name }}</td>
+                      <td>
+                        <i class="bi bi-geo-alt text-danger me-1"></i>
+                        {{ farmer.village ? (farmer.mandal ? farmer.village + ', ' + farmer.mandal : farmer.village) : (farmer.location || '—') }}
+                      </td>
+                      <td>
+                        <span class="badge bg-success-subtle text-success">{{ farmer.cropsProduced }}</span>
+                      </td>
+                      <td class="fw-bold">{{ farmer.totalLand || farmer.acreOfLand || '—' }} ac</td>
+                      <td>{{ farmer.waterSource }}</td>
+                      <td><span class="badge bg-secondary-subtle text-secondary">{{ farmer.soilType }}</span></td>
+                      <td><small class="text-muted">{{ farmer.fertilizers }}</small></td>
+                      <td>
+                        <a [href]="'tel:' + farmer.mobileNo" class="btn btn-sm btn-outline-success" *ngIf="farmer.mobileNo">
+                          <i class="bi bi-telephone-fill me-1"></i>{{ farmer.mobileNo }}
+                        </a>
+                        <span *ngIf="!farmer.mobileNo" class="text-muted">—</span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="paginatedFarmers.length === 0">
+                      <td colspan="8" class="text-center py-4 text-muted">No farmers matching criteria found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="pagination-footer">
+                <span class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} records</span>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="currentPage===1"><button class="page-link" (click)="prevPage()">Prev</button></li>
+                  <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index" [class.active]="currentPage===i+1">
+                    <button class="page-link" (click)="goToPage(i+1)">{{ i+1 }}</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage===totalPages"><button class="page-link" (click)="nextPage()">Next</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: BUYERS DIRECTORY -->
+        <section *ngIf="activeView === 'buyers'" class="view-section">
+          <div class="table-control-bar mb-3">
+            <div class="control-search">
+              <i class="bi bi-search search-icon"></i>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search buyers by name, email, phone, crop..." 
+                [(ngModel)]="searchQuery" 
+                (ngModelChange)="onSearchChange()">
+            </div>
+            <div class="control-filters">
+              <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span class="badge bg-primary fs-6">{{ totalItems }} Inquiries</span>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Loading buyer inquiries...</p>
+          </div>
+
+          <div *ngIf="!loading" class="admin-card">
+            <div class="admin-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Buyer Name</th>
+                      <th>Mobile Phone</th>
+                      <th>Personal Email</th>
+                      <th>Category</th>
+                      <th>Product Required</th>
+                      <th>Details</th>
+                      <th>Quantity</th>
+                      <th>Status</th>
+                      <th>Submitted On</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let buyer of paginatedBuyers; trackBy: trackByFn">
+                      <td class="fw-semibold text-dark">{{ buyer.name }}</td>
+                      <td>
+                        <a [href]="'tel:' + buyer.mobileNo" class="text-decoration-none text-dark fw-semibold" *ngIf="buyer.mobileNo && buyer.mobileNo !== 'N/A'">
+                          <i class="bi bi-telephone-fill text-success me-1"></i>{{ buyer.mobileNo }}
+                        </a>
+                        <span class="text-muted" *ngIf="!buyer.mobileNo || buyer.mobileNo === 'N/A'">—</span>
+                      </td>
+                      <td>
+                        <a [href]="'mailto:' + buyer.email" class="text-decoration-none text-primary" *ngIf="buyer.email && buyer.email !== 'N/A'">
+                          <i class="bi bi-envelope-fill me-1"></i>{{ buyer.email }}
+                        </a>
+                        <span class="text-muted" *ngIf="!buyer.email || buyer.email === 'N/A'">—</span>
+                      </td>
+                      <td><span class="badge bg-secondary-subtle text-secondary">{{ buyer.mainCategory || '—' }}</span></td>
+                      <td class="fw-semibold text-primary">{{ buyer.productType || '—' }}</td>
+                      <td><small class="text-muted">{{ buyer.details || '—' }}</small></td>
+                      <td><span class="badge bg-info-subtle text-info">{{ buyer.quantity || '—' }}</span></td>
+                      <td>
+                        <span class="badge-status-pill" [attr.data-status]="buyer.status || 'pending'">
+                          {{ buyer.status || 'pending' }}
+                        </span>
+                      </td>
+                      <td class="text-muted small">{{ buyer.createdAt ? (buyer.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
+                    </tr>
+                    <tr *ngIf="paginatedBuyers.length === 0">
+                      <td colspan="9" class="text-center py-4 text-muted">No buyer records matching criteria found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="pagination-footer">
+                <span class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} records</span>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="currentPage===1"><button class="page-link" (click)="prevPage()">Prev</button></li>
+                  <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index" [class.active]="currentPage===i+1">
+                    <button class="page-link" (click)="goToPage(i+1)">{{ i+1 }}</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage===totalPages"><button class="page-link" (click)="nextPage()">Next</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: SELLERS DIRECTORY -->
+        <section *ngIf="activeView === 'sellers'" class="view-section">
+          <div class="table-control-bar mb-3">
+            <div class="control-search">
+              <i class="bi bi-search search-icon"></i>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search sellers by name, produce, phone, location..." 
+                [(ngModel)]="searchQuery" 
+                (ngModelChange)="onSearchChange()">
+            </div>
+            <div class="control-filters">
+              <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span class="badge bg-warning text-dark fs-6">{{ totalItems }} Offers</span>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="mt-2 text-muted">Loading seller offers...</p>
+          </div>
+
+          <div *ngIf="!loading" class="admin-card">
+            <div class="admin-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Seller Name</th>
+                      <th>Mobile Phone</th>
+                      <th>Personal Email</th>
+                      <th>Raw Material Produce</th>
+                      <th>Available Qty</th>
+                      <th>Location</th>
+                      <th>Price / Unit</th>
+                      <th>Harvest Date</th>
+                      <th>Quality Grade</th>
+                      <th>Status</th>
+                      <th>Submitted On</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let seller of paginatedSellers; trackBy: trackByFn">
+                      <td class="fw-semibold text-dark">{{ seller.name }}</td>
+                      <td>
+                        <a [href]="'tel:' + seller.mobileNo" class="text-decoration-none text-dark fw-semibold" *ngIf="seller.mobileNo && seller.mobileNo !== 'N/A'">
+                          <i class="bi bi-telephone-fill text-success me-1"></i>{{ seller.mobileNo }}
+                        </a>
+                        <span class="text-muted" *ngIf="!seller.mobileNo || seller.mobileNo === 'N/A'">—</span>
+                      </td>
+                      <td>
+                        <a [href]="'mailto:' + seller.email" class="text-decoration-none text-primary" *ngIf="seller.email && seller.email !== 'N/A'">
+                          <i class="bi bi-envelope-fill me-1"></i>{{ seller.email }}
+                        </a>
+                        <span class="text-muted" *ngIf="!seller.email || seller.email === 'N/A'">—</span>
+                      </td>
+                      <td><span class="badge bg-success-subtle text-success">{{ seller.rawMaterialType || '—' }}</span></td>
+                      <td><span class="badge bg-info-subtle text-info">{{ seller.quantity || '—' }}</span></td>
+                      <td>{{ seller.location || seller.village || '—' }}</td>
+                      <td class="fw-bold text-success">
+                        {{ seller.pricePerUnit && seller.pricePerUnit !== 'N/A' ? '₹' + seller.pricePerUnit : '—' }}
+                      </td>
+                      <td>{{ seller.harvestDate ? (seller.harvestDate | date:'dd MMM yyyy') : '—' }}</td>
+                      <td>
+                        <span class="badge-quality-tag" [attr.data-quality]="seller.qualityGrade || 'standard'">
+                          {{ (seller.qualityGrade || 'standard') | uppercase }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge-status-pill" [attr.data-status]="seller.status || 'pending'">
+                          {{ seller.status || 'pending' }}
+                        </span>
+                      </td>
+                      <td class="text-muted small">{{ seller.createdAt ? (seller.createdAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
+                    </tr>
+                    <tr *ngIf="paginatedSellers.length === 0">
+                      <td colspan="11" class="text-center py-4 text-muted">No seller records matching criteria found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="pagination-footer">
+                <span class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} records</span>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="currentPage===1"><button class="page-link" (click)="prevPage()">Prev</button></li>
+                  <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index" [class.active]="currentPage===i+1">
+                    <button class="page-link" (click)="goToPage(i+1)">{{ i+1 }}</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage===totalPages"><button class="page-link" (click)="nextPage()">Next</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 5: SERVICE REQUESTS -->
+        <section *ngIf="activeView === 'service-requests'" class="view-section">
+          <div class="table-control-bar mb-3">
+            <div class="control-search">
+              <i class="bi bi-search search-icon"></i>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search services by farmer, package, equipment, mobile..." 
+                [(ngModel)]="searchQuery" 
+                (ngModelChange)="onSearchChange()">
+            </div>
+            <div class="control-filters">
+              <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span class="badge bg-purple text-light fs-6">{{ totalItems }} Requests</span>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-purple" role="status"></div>
+            <p class="mt-2 text-muted">Loading service requests...</p>
+          </div>
+
+          <div *ngIf="!loading" class="admin-card">
+            <div class="admin-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Farmer</th>
+                      <th>Phone</th>
+                      <th>Village</th>
+                      <th>Service Package</th>
+                      <th>Service Details / Equipment</th>
+                      <th>Price</th>
+                      <th>Preferred Date</th>
+                      <th>Submitted On</th>
+                      <th>Status</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let request of paginatedServiceRequests; trackBy: trackByFn">
+                      <td class="fw-semibold text-dark">{{ request.farmerName || '—' }}</td>
+                      <td>
+                        <a [href]="'tel:' + request.mobileNumber" class="text-decoration-none text-dark fw-semibold" *ngIf="request.mobileNumber">
+                          <i class="bi bi-telephone-fill text-success me-1"></i>{{ request.mobileNumber }}
+                        </a>
+                        <span *ngIf="!request.mobileNumber" class="text-muted">—</span>
+                      </td>
+                      <td>{{ request.village || '—' }}</td>
+                      <td>
+                        <span class="badge bg-primary-subtle text-primary">{{ request.serviceName || request.serviceType || 'Standard Service' }}</span>
+                      </td>
+                      <td>
+                        <span class="text-dark" *ngIf="request.selectedEquipment">{{ request.selectedEquipment }}</span>
+                        <span class="text-muted small" *ngIf="!request.selectedEquipment">{{ request.additionalNotes || '—' }}</span>
+                      </td>
+                      <td class="fw-bold text-success">{{ request.servicePrice || '—' }}</td>
+                      <td>{{ request.preferredDate || '—' }}</td>
+                      <td class="text-muted small">{{ request.submittedAt ? (request.submittedAt | date:'dd MMM yyyy, h:mm a') : '—' }}</td>
+                      <td>
+                        <span class="badge-status-pill" [attr.data-status]="request.status || 'pending'">
+                          {{ request.status || 'pending' }}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                          <button 
+                            class="btn btn-outline-success" 
+                            title="Approve Request"
+                            [disabled]="request.status === 'approved'"
+                            (click)="updateRequestStatus(request.id, 'approved', 'service')">
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                          <button 
+                            class="btn btn-outline-info" 
+                            title="Mark Completed"
+                            [disabled]="request.status === 'completed'"
+                            (click)="updateRequestStatus(request.id, 'completed', 'service')">
+                            <i class="bi bi-check2-all"></i>
+                          </button>
+                          <button 
+                            class="btn btn-outline-danger" 
+                            title="Reject Request"
+                            [disabled]="request.status === 'rejected'"
+                            (click)="updateRequestStatus(request.id, 'rejected', 'service')">
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="paginatedServiceRequests.length === 0">
+                      <td colspan="10" class="text-center py-4 text-muted">No service requests matching criteria found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="pagination-footer">
+                <span class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} records</span>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="currentPage===1"><button class="page-link" (click)="prevPage()">Prev</button></li>
+                  <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index" [class.active]="currentPage===i+1">
+                    <button class="page-link" (click)="goToPage(i+1)">{{ i+1 }}</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage===totalPages"><button class="page-link" (click)="nextPage()">Next</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 6: SOIL TEST REQUESTS -->
+        <section *ngIf="activeView === 'soil-tests'" class="view-section">
+          <div class="table-control-bar mb-3">
+            <div class="control-search">
+              <i class="bi bi-search search-icon"></i>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search soil tests by farmer, village, crop..." 
+                [(ngModel)]="searchQuery" 
+                (ngModelChange)="onSearchChange()">
+            </div>
+            <div class="control-filters">
+              <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending / Requested</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span class="badge bg-info text-dark fs-6">{{ totalItems }} Soil Tests</span>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-info" role="status"></div>
+            <p class="mt-2 text-muted">Loading soil test requests...</p>
+          </div>
+
+          <div *ngIf="!loading" class="admin-card">
+            <div class="admin-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Farmer Name</th>
+                      <th>Mobile Phone</th>
+                      <th>Village</th>
+                      <th>Land Area</th>
+                      <th>Current Crop</th>
+                      <th>Sampling Date</th>
+                      <th>Status</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let request of paginatedSoilTests; trackBy: trackByFn">
+                      <td class="fw-semibold text-dark">{{ request.farmerName }}</td>
+                      <td>
+                        <a [href]="'tel:' + request.mobileNumber" class="text-decoration-none text-dark fw-semibold" *ngIf="request.mobileNumber">
+                          <i class="bi bi-telephone-fill text-success me-1"></i>{{ request.mobileNumber }}
+                        </a>
+                        <span *ngIf="!request.mobileNumber" class="text-muted">—</span>
+                      </td>
+                      <td>{{ request.village || '—' }}</td>
+                      <td class="fw-bold">{{ request.landArea || '—' }} ac</td>
+                      <td><span class="badge bg-secondary-subtle text-secondary">{{ request.currentCrop || '—' }}</span></td>
+                      <td>{{ request.sampleDate || '—' }}</td>
+                      <td>
+                        <span class="badge-status-pill" [attr.data-status]="request.status || 'REQUESTED'">
+                          {{ request.status || 'REQUESTED' }}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                          <button 
+                            class="btn btn-outline-success" 
+                            title="Approve Soil Test"
+                            [disabled]="request.status === 'approved' || request.status === 'COMPLETED'"
+                            (click)="updateRequestStatus(request.id, 'approved', 'soil')">
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                          <button 
+                            class="btn btn-outline-danger" 
+                            title="Reject Soil Test"
+                            [disabled]="request.status === 'rejected'"
+                            (click)="updateRequestStatus(request.id, 'rejected', 'soil')">
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="paginatedSoilTests.length === 0">
+                      <td colspan="8" class="text-center py-4 text-muted">No soil test records matching criteria found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="pagination-footer">
+                <span class="small text-muted">Showing {{ (currentPage-1)*pageSize+1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} records</span>
+                <ul class="pagination pagination-sm mb-0">
+                  <li class="page-item" [class.disabled]="currentPage===1"><button class="page-link" (click)="prevPage()">Prev</button></li>
+                  <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i=index" [class.active]="currentPage===i+1">
+                    <button class="page-link" (click)="goToPage(i+1)">{{ i+1 }}</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage===totalPages"><button class="page-link" (click)="nextPage()">Next</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 7: REPORTS & ANALYTICS -->
+        <section *ngIf="activeView === 'reports'" class="view-section">
+          <div class="row g-3 mb-4">
+            <!-- Soil Types Breakdown -->
+            <div class="col-12 col-lg-6">
+              <div class="admin-card h-100">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-pie-chart-fill text-success me-2"></i>Soil Types Distribution
+                  </div>
+                </div>
+                <div class="admin-card-body">
+                  <div *ngFor="let s of analytics.soilTypes; trackBy: trackByFn" class="analytics-row mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-semibold">{{ s.type }}</span>
+                      <span class="text-muted">{{ s.count }} farmers ({{ s.percentage }}%)</span>
+                    </div>
+                    <div class="progress progress-bar-slim">
+                      <div class="progress-bar bg-success" [style.width.%]="s.percentage"></div>
+                    </div>
+                  </div>
+                  <div *ngIf="analytics.soilTypes.length === 0" class="text-muted text-center py-4">No soil distribution data available.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Water Sources Breakdown -->
+            <div class="col-12 col-lg-6">
+              <div class="admin-card h-100">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-water text-primary me-2"></i>Irrigation & Water Sources
+                  </div>
+                </div>
+                <div class="admin-card-body">
+                  <div *ngFor="let w of analytics.waterSources; trackBy: trackByFn" class="analytics-row mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-semibold">{{ w.source }}</span>
+                      <span class="text-muted">{{ w.count }} farmers ({{ w.percentage }}%)</span>
+                    </div>
+                    <div class="progress progress-bar-slim">
+                      <div class="progress-bar bg-primary" [style.width.%]="w.percentage"></div>
+                    </div>
+                  </div>
+                  <div *ngIf="analytics.waterSources.length === 0" class="text-muted text-center py-4">No water source data available.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Land Size Distribution -->
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="admin-card">
+                <div class="admin-card-header">
+                  <div class="card-header-title">
+                    <i class="bi bi-bounding-box text-warning me-2"></i>Farm Land Holdings Distribution
+                  </div>
+                </div>
+                <div class="admin-card-body">
+                  <div class="row g-3">
+                    <div class="col-md-4" *ngFor="let l of analytics.landDistribution; trackBy: trackByFn">
+                      <div class="land-bracket-box">
+                        <span class="bracket-title">{{ l.label }}</span>
+                        <h4 class="bracket-count">{{ l.count }} Farmers</h4>
+                        <div class="progress progress-bar-slim mt-2">
+                          <div class="progress-bar bg-warning" [style.width.%]="l.percentage"></div>
+                        </div>
+                        <span class="bracket-percent text-muted small mt-1 d-block">{{ l.percentage }}% of total</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MATCHMAKING ENGINE MODAL -->
+  <div class="match-modal-backdrop" *ngIf="showMatchModal" (click)="closeMatchModal()">
+    <div class="match-modal-dialog" (click)="$event.stopPropagation()">
+      <div class="match-modal-header">
+        <div>
+          <h3 class="modal-title mb-0">
+            <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Smart Buyer-Seller Match Engine
+          </h3>
+          <p class="modal-subtitle mb-0">Discovered {{ matchedPairs.length }} active matches based on crop requirements and seller supplies</p>
+        </div>
+        <button class="btn-close-modal" (click)="closeMatchModal()">×</button>
+      </div>
+
+      <div class="match-modal-body">
+        <div *ngIf="matchedPairs.length === 0" class="text-center py-5 text-muted">
+          <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
+          No immediate match pairs found. Check back once more buyers and sellers submit their requirements.
+        </div>
+
+        <div class="match-pair-card" *ngFor="let pair of matchedPairs; trackBy: trackByFn">
+          <div class="match-score-badge">
+            <span class="score-num">{{ pair.matchScore }}%</span>
+            <span class="score-text">Match</span>
+          </div>
+
+          <div class="match-pair-grid">
+            <!-- Buyer Column -->
+            <div class="match-col buyer-col">
+              <span class="col-tag tag-buyer"><i class="bi bi-cart-fill me-1"></i>Buyer Requirement</span>
+              <h5 class="entity-name">{{ pair.buyerName }}</h5>
+              <div class="entity-detail"><strong>Crop Needed:</strong> <span class="text-primary fw-bold">{{ pair.cropRequired }}</span></div>
+              <div class="entity-detail"><strong>Qty:</strong> {{ pair.quantityRequired }}</div>
+              <div class="entity-actions mt-2">
+                <a [href]="'tel:' + pair.buyerPhone" class="btn btn-sm btn-outline-primary me-2" *ngIf="pair.buyerPhone">
+                  <i class="bi bi-telephone-fill me-1"></i>Call Buyer
+                </a>
+                <a [href]="'mailto:' + pair.buyerEmail" class="btn btn-sm btn-outline-secondary" *ngIf="pair.buyerEmail">
+                  <i class="bi bi-envelope-fill"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Match Divider Icon -->
+            <div class="match-arrow-center">
+              <i class="bi bi-arrow-left-right"></i>
+            </div>
+
+            <!-- Seller Column -->
+            <div class="match-col seller-col">
+              <span class="col-tag tag-seller"><i class="bi bi-shop me-1"></i>Available Supply</span>
+              <h5 class="entity-name">{{ pair.sellerName }}</h5>
+              <div class="entity-detail"><strong>Location:</strong> {{ pair.sellerLocation }}</div>
+              <div class="entity-detail"><strong>Available:</strong> {{ pair.availableQuantity }} ({{ pair.pricePerUnit }})</div>
+              <div class="entity-actions mt-2">
+                <a [href]="'tel:' + pair.sellerPhone" class="btn btn-sm btn-outline-success me-2" *ngIf="pair.sellerPhone">
+                  <i class="bi bi-telephone-fill me-1"></i>Call Seller
+                </a>
+                <a [href]="'mailto:' + pair.sellerEmail" class="btn btn-sm btn-outline-secondary" *ngIf="pair.sellerEmail">
+                  <i class="bi bi-envelope-fill"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="match-modal-footer">
+        <button class="btn btn-secondary" (click)="closeMatchModal()">Close Matchmaker</button>
+      </div>
+    </div>
+  </div>
 </div>

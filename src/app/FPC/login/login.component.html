@@ -38,9 +38,14 @@
         <i class="fas fa-lock me-1 text-success"></i>{{ 'login.password' | translate }}
         <span class="text-danger">*</span>
       </label>
-      <input type="password" id="password" name="password" [(ngModel)]="loginData.password" #password="ngModel"
-        [class.is-invalid]="(loginForm.submitted || password.touched) && password.invalid"
-        placeholder="Enter your password" class="login-input" required>
+      <div class="password-input-wrapper">
+        <input [type]="showPassword ? 'text' : 'password'" id="password" name="password" [(ngModel)]="loginData.password" #password="ngModel"
+          [class.is-invalid]="(loginForm.submitted || password.touched) && password.invalid"
+          placeholder="Enter your password" class="login-input" required>
+        <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" title="{{ showPassword ? 'Hide password' : 'Show password' }}" tabindex="-1">
+          <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
       <div class="invalid-feedback" *ngIf="(loginForm.submitted || password.touched) && password.invalid">
         Password is required
       </div>

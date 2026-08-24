@@ -37,28 +37,47 @@ export class AuthService {
     this.checkAuthStatus();
   }
 
+  // Built-in demo accounts for local testing / backwards compatibility
+  private static readonly DEMO_ACCOUNTS: Record<string, { role: string; name: string; password: string }> = {
+    'admin@intrad.com': { role: 'admin', name: 'Intra-D Admin', password: 'admin123' },
+    'farmer@intrad.com': { role: 'farmer', name: 'Demo Farmer', password: 'farmer123' },
+    'user@intrad.com': { role: 'buyer', name: 'Demo Buyer', password: 'user123' },
+    'buyer@intrad.com': { role: 'buyer', name: 'Demo Buyer', password: 'buyer123' },
+    'seller@intrad.com': { role: 'seller', name: 'Demo Seller', password: 'seller123' }
+  };
+
   login(credentials: LoginCredentials): Observable<boolean> {
-    return this.firebaseService.findUserByIdentifier(credentials.email).pipe(
-      map((user) => user?.email || user?.personalEmail || credentials.email),
-      catchError(() => of(credentials.email)),
+    const inputIdentifier = (credentials.email || '').trim();
+    const inputPassword = (credentials.password || '').trim();
+    const cleanId = inputIdentifier.toLowerCase();
+
+    return this.firebaseService.findUserByIdentifier(inputIdentifier).pipe(
+      map((user) => user?.email || user?.personalEmail || user?.appGeneratedEmail || inputIdentifier),
+      catchError(() => of(inputIdentifier)),
       switchMap((targetEmail) => {
-        return this.firebaseService.loginWithEmailPassword(targetEmail, credentials.password).pipe(
+        return this.firebaseService.loginWithEmailPassword(targetEmail, inputPassword).pipe(
           switchMap((authResult) => {
             const uid = authResult.user.uid;
             return this.firebaseService.getUser(uid).pipe(
+              switchMap((profile) => {
+                if (profile && (profile.name || profile.role || profile.email)) {
+                  return of(profile);
+                }
+                // Fallback to findUserByIdentifier if profile wasn't at direct UID path
+                return this.firebaseService.findUserByIdentifier(targetEmail);
+              }),
               map((profile) => {
-                if (!profile) return false;
-                const userLocation = profile.village
+                const userLocation = profile?.village
                   ? (profile.mandal ? `${profile.village}, ${profile.mandal}` : profile.village)
-                  : (profile.location || profile.address || '');
+                  : (profile?.location || profile?.address || '');
                 const user: User = {
                   id: uid,
-                  email: profile.personalEmail || profile.email || credentials.email,
-                  role: profile.role || 'farmer',
-                  name: profile.name || '',
-                  phone: profile.mobileNo || profile.phone || '',
+                  email: profile?.personalEmail || profile?.email || targetEmail,
+                  role: profile?.role || 'farmer',
+                  name: profile?.name || profile?.firstName || '',
+                  phone: profile?.mobileNo || profile?.phone || profile?.phoneNumber || '',
                   location: userLocation,
-                  profileData: profile
+                  profileData: profile || {}
                 };
                 this.setCurrentUser(user);
                 this.startSessionTimeout();
@@ -68,37 +87,54 @@ export class AuthService {
             );
           }),
           catchError((authError) => {
-            console.warn('Firebase Auth failed, trying database fallback:', authError.message);
+            console.warn('[AuthService] Firebase Auth login failed, checking database fallback:', authError?.message || authError);
             return this.firebaseService.getAllUsers().pipe(
               map((users) => {
-                if (!users) return false;
-                for (const uid in users) {
-                  const userObj = users[uid];
-                  if (
-                    userObj &&
-                    (userObj.email === credentials.email ||
-                      userObj.personalEmail === credentials.email ||
-                      userObj.mobileNo === credentials.email ||
-                      userObj.phone === credentials.email) &&
-                    userObj.password === credentials.password
-                  ) {
-                    const legacyLocation = userObj.village
-                      ? (userObj.mandal ? `${userObj.village}, ${userObj.mandal}` : userObj.village)
-                      : (userObj.location || userObj.address || '');
-                    const legacyUser: User = {
-                      id: userObj.userId || uid,
-                      email: userObj.personalEmail || userObj.email || credentials.email,
-                      role: userObj.role || 'farmer',
-                      name: userObj.name || '',
-                      phone: userObj.mobileNo || userObj.phone || '',
-                      location: legacyLocation,
-                      profileData: userObj
-                    };
-                    this.setCurrentUser(legacyUser);
-                    this.startSessionTimeout();
-                    return true;
+                if (users) {
+                  for (const uid of Object.keys(users)) {
+                    const userObj = users[uid];
+                    if (!userObj) continue;
+
+                    const userEmail = (userObj.email || '').trim().toLowerCase();
+                    const personalEmail = (userObj.personalEmail || '').trim().toLowerCase();
+                    const appEmail = (userObj.appGeneratedEmail || '').trim().toLowerCase();
+                    const mobile = (userObj.mobileNo || userObj.phone || userObj.phoneNumber || userObj.mobile || '').trim().toLowerCase();
+                    const dbPassword = (userObj.password || '').trim();
+
+                    const matchesIdentifier =
+                      userEmail === cleanId ||
+                      personalEmail === cleanId ||
+                      appEmail === cleanId ||
+                      mobile === cleanId;
+
+                    if (matchesIdentifier && dbPassword === inputPassword) {
+                      const legacyLocation = userObj.village
+                        ? (userObj.mandal ? `${userObj.village}, ${userObj.mandal}` : userObj.village)
+                        : (userObj.location || userObj.address || '');
+                      const legacyUser: User = {
+                        id: userObj.userId || uid,
+                        email: userObj.personalEmail || userObj.email || inputIdentifier,
+                        role: userObj.role || 'farmer',
+                        name: userObj.name || (userObj.firstName ? userObj.firstName + ' ' + (userObj.lastName || '') : ''),
+                        phone: userObj.mobileNo || userObj.phone || userObj.phoneNumber || '',
+                        location: legacyLocation,
+                        profileData: userObj
+                      };
+                      this.setCurrentUser(legacyUser);
+                      this.startSessionTimeout();
+                      return true;
+                    }
                   }
                 }
+
+                // Check demo / mock accounts fallback
+                const demoUser = this.validateUser({ email: inputIdentifier, password: inputPassword });
+                if (demoUser) {
+                  this.setCurrentUser(demoUser);
+                  this.startSessionTimeout();
+                  return true;
+                }
+
                 return false;
               }),
               catchError(() => of(false))
@@ -109,28 +145,42 @@ export class AuthService {
     );
   }
 
-  validateFirebaseUser(email: string, password: string, firebaseUsers: any): User | null {
+  /**
+   * Validates user against provided Firebase user list, supporting both flat and legacy nested structures.
+   */
+  validateFirebaseUser(identifier: string, password: string, firebaseUsers: any): User | null {
     try {
       if (!firebaseUsers) return null;
-      
-      for (const userId in firebaseUsers) {
-        const userContainer = firebaseUsers[userId];
-        for (const firebaseKey in userContainer) {
-          const user = userContainer[firebaseKey];
-          if (user?.email === email && user?.password === password) {
-            // Extract phone number from multiple possible fields
-            const phoneNumber = user.phone || user.phoneNumber || user.mobileNo || user.mobile || '';
-            
-            return { 
-              id: user.userId || userId, 
-              email: user.email, 
-              role: user.role || 'farmer',
-              name: user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : ''),
-              phone: phoneNumber,
-              location: user.location || user.address || user.village || '',
-              profileData: user
-            };
-          }
+      const cleanId = (identifier || '').trim().toLowerCase();
+      const cleanPass = (password || '').trim();
+
+      // Normalize if raw nested object is passed
+      const normalizedUsers = this.firebaseService.normalizeUsersMap(firebaseUsers);
+
+      for (const userId of Object.keys(normalizedUsers)) {
+        const user = normalizedUsers[userId];
+        if (!user) continue;
+
+        const userEmail = (user.email || '').trim().toLowerCase();
+        const personalEmail = (user.personalEmail || '').trim().toLowerCase();
+        const appEmail = (user.appGeneratedEmail || '').trim().toLowerCase();
+        const mobile = (user.mobileNo || user.phone || user.phoneNumber || user.mobile || '').trim().toLowerCase();
+        const userPass = (user.password || '').trim();
+
+        if (
+          (userEmail === cleanId || personalEmail === cleanId || appEmail === cleanId || mobile === cleanId) &&
+          userPass === cleanPass
+        ) {
+          const phoneNumber = user.phone || user.phoneNumber || user.mobileNo || user.mobile || '';
+          return {
+            id: user.userId || userId,
+            email: user.personalEmail || user.email || identifier,
+            role: user.role || 'farmer',
+            name: user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : ''),
+            phone: phoneNumber,
+            location: user.village || user.location || user.address || '',
+            profileData: user
+          };
         }
       }
       return null;
@@ -140,9 +190,21 @@ export class AuthService {
     }
   }
 
-  /** @deprecated — use validateFirebaseUser() for real user lookup */
+  /** Validates against hardcoded mock demo credentials for development / test fallback */
   private validateUser({ email, password }: LoginCredentials): User | null {
-    // Removed hardcoded credentials — authentication is done via Firebase
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const demo = AuthService.DEMO_ACCOUNTS[cleanEmail];
+    if (demo && demo.password === (password || '').trim()) {
+      return {
+        id: `demo_${demo.role}`,
+        email: cleanEmail,
+        role: demo.role,
+        name: demo.name,
+        phone: '9999999999',
+        location: 'Demo Hub',
+        profileData: { ...demo, email: cleanEmail }
+      };
+    }
     return null;
   }
 

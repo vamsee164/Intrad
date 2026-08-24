@@ -11,10 +11,14 @@ type ViewType = 'control' | 'admin';
 interface AppCard {
   id: string;
   title: string;
+  subtitle: string;
   description: string;
   icon: string;
+  badgeText?: string;
+  badgeClass?: string;
   buttonText: string;
   buttonClass: string;
+  rolesAllowed: string[];
   action: () => void;
 }
 
@@ -26,7 +30,7 @@ interface AppCard {
   styleUrls: ['./app-control.component.css', './admin-dashboard.component.css']
 })
 export class AppControlComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
   currentUser: User | null = null;
   availableApps: AppCard[] = [];
   currentView: ViewType = 'control';
@@ -34,30 +38,68 @@ export class AppControlComponent implements OnInit, OnDestroy {
   private readonly appConfigs: AppCard[] = [
     {
       id: 'fpc',
-      title: 'Farmer System',
-      description: 'Farmer Producer Company Management',
+      title: 'Farmer Producer System',
+      subtitle: 'FPC Hub',
+      description: 'Manage crop listings, land lease applications, machinery bookings, and farmer profiles.',
       icon: '🌾',
-      buttonText: 'Launch Farmer',
-      buttonClass: 'fpc-btn',
+      badgeText: 'FPC Production',
+      badgeClass: 'badge-fpc',
+      buttonText: 'Launch Farmer Portal',
+      buttonClass: 'btn-fpc',
+      rolesAllowed: ['admin', 'farmer'],
       action: () => this.launchApp('fpc')
     },
     {
-      id: 'apu',
-      title: 'APU System', 
-      description: 'Agricultural Processing Unit',
-      icon: '🏭',
-      buttonText: 'Launch APU',
-      buttonClass: 'apu-btn',
-      action: () => this.launchApp('apu')
+      id: 'apu_buyer',
+      title: 'APU Buyer Portal',
+      subtitle: 'Processing Unit',
+      description: 'Submit bulk crop purchasing demands, track sourcing inquiries, and match with verified sellers.',
+      icon: '🛒',
+      badgeText: 'APU Buyer',
+      badgeClass: 'badge-apu-buyer',
+      buttonText: 'Launch Buyer Portal',
+      buttonClass: 'btn-apu-buyer',
+      rolesAllowed: ['admin', 'buyer', 'user'],
+      action: () => this.launchApp('apu_buyer')
+    },
+    {
+      id: 'apu_seller',
+      title: 'APU Seller Portal',
+      subtitle: 'Raw Material Supply',
+      description: 'Post harvest supply offers, manage agro-produce inventory, and connect directly with bulk buyers.',
+      icon: '🚜',
+      badgeText: 'APU Seller',
+      badgeClass: 'badge-apu-seller',
+      buttonText: 'Launch Seller Portal',
+      buttonClass: 'btn-apu-seller',
+      rolesAllowed: ['admin', 'seller', 'farmer'],
+      action: () => this.launchApp('apu_seller')
     },
     {
       id: 'admin',
-      title: 'Admin Portal',
-      description: 'System Administration',
+      title: 'Admin Management Console',
+      subtitle: 'Control & Moderation',
+      description: 'Master dashboard, user verification, service request approvals, soil test management & buyer matching.',
       icon: '⚙️',
-      buttonText: 'Launch Admin',
-      buttonClass: 'admin-btn',
+      badgeText: 'Master Admin',
+      badgeClass: 'badge-admin',
+      buttonText: 'Open Admin Console',
+      buttonClass: 'btn-admin',
+      rolesAllowed: ['admin'],
       action: () => this.setActiveView('admin')
+    },
+    {
+      id: 'reports',
+      title: 'Analytics & Reports',
+      subtitle: 'Business Intelligence',
+      description: 'Comprehensive yield reports, demand metrics, soil test statistics, and exportable analytics.',
+      icon: '📊',
+      badgeText: 'Reports',
+      badgeClass: 'badge-reports',
+      buttonText: 'View Reports',
+      buttonClass: 'btn-reports',
+      rolesAllowed: ['admin'],
+      action: () => this.router.navigate(['/report'])
     }
   ];
 
@@ -69,7 +111,7 @@ export class AppControlComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
+      .subscribe((user) => {
         this.currentUser = user;
         this.updateAvailableApps();
       });
@@ -84,18 +126,6 @@ export class AppControlComponent implements OnInit, OnDestroy {
     this.currentView = view;
   }
 
-  navigateToFarmers(): void {
-    // This will be handled by the admin dashboard component
-  }
-
-  navigateToBuyers(): void {
-    // This will be handled by the admin dashboard component
-  }
-
-  navigateToReports(): void {
-    // This will be handled by the admin dashboard component
-  }
-
   goBackToControl(): void {
     this.setActiveView('control');
   }
@@ -106,18 +136,25 @@ export class AppControlComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.availableApps = this.appConfigs.filter(app => {
-      switch (app.id) {
-        case 'fpc': return this.authService.isAuthenticated();
-        case 'apu': return this.hasRole('admin') || this.hasRole('farmer');
-        case 'admin': return this.hasRole('admin');
-        default: return false;
-      }
+    const currentRole = this.currentUser.role || 'farmer';
+    const effectiveRole = currentRole === 'user' ? 'buyer' : currentRole;
+
+    // Admin has access to all cards; others get role-specific cards
+    this.availableApps = this.appConfigs.filter((app) => {
+      if (effectiveRole === 'admin') return true;
+      return app.rolesAllowed.includes(effectiveRole);
     });
   }
 
-  private hasRole(role: string): boolean {
-    return this.currentUser?.role === role;
+  getUserInitials(): string {
+    if (!this.currentUser?.name) {
+      return this.currentUser?.email?.substring(0, 2).toUpperCase() || 'ID';
+    }
+    const parts = this.currentUser.name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].substring(0, 2).toUpperCase();
   }
 
   goToLogin(): void {
@@ -125,15 +162,24 @@ export class AppControlComponent implements OnInit, OnDestroy {
   }
 
   launchApp(appId: string): void {
-    switch(appId) {
+    switch (appId) {
       case 'fpc':
         this.router.navigate(['/farmer']);
         break;
-      case 'apu':
-        this.router.navigate(['/apu']);
+      case 'apu_buyer':
+        this.router.navigate(['/apu/buyer']);
+        break;
+      case 'apu_seller':
+        this.router.navigate(['/apu/seller']);
+        break;
+      case 'admin':
+        this.setActiveView('admin');
+        break;
+      case 'reports':
+        this.router.navigate(['/report']);
         break;
       default:
-        this.router.navigate([`/${appId}`]);
+        this.router.navigate(['/homepage']);
     }
   }
 
@@ -141,7 +187,7 @@ export class AppControlComponent implements OnInit, OnDestroy {
     this.authService.logout('/homepage');
   }
 
-  trackByFn(index: number, item: any): any {
-    return item?.id || index;
+  trackByFn(index: number, item: AppCard): string {
+    return item?.id || String(index);
   }
 }

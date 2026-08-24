@@ -122,7 +122,62 @@ export class FirebaseService {
     );
   }
 
-  // Helper to find a user in RTDB by personalEmail, email, mobileNo, or phone
+  /**
+   * Normalizes raw Firebase signUpFrom data into a unified flat dictionary: { [userId]: userProfile }
+   * Supports both modern flat schema (/signUpFrom/{uid}) and legacy nested schema (/signUpFrom/{uid}/{pushKey})
+   */
+  normalizeUsersMap(rawUsers: any): Record<string, any> {
+    if (!rawUsers || typeof rawUsers !== 'object') return {};
+    const normalized: Record<string, any> = {};
+
+    for (const key of Object.keys(rawUsers)) {
+      const entry = rawUsers[key];
+      if (!entry || typeof entry !== 'object') continue;
+
+      // Case 1: Direct flat user object (has standard user profile fields)
+      if (
+        entry.email !== undefined ||
+        entry.personalEmail !== undefined ||
+        entry.appGeneratedEmail !== undefined ||
+        entry.name !== undefined ||
+        entry.role !== undefined ||
+        entry.mobileNo !== undefined ||
+        entry.phone !== undefined ||
+        entry.password !== undefined
+      ) {
+        normalized[key] = {
+          ...entry,
+          userId: entry.userId || key
+        };
+        continue;
+      }
+
+      // Case 2: Legacy nested container (e.g. entry = { [pushKey]: { ... } })
+      let foundNested = false;
+      for (const nestedKey of Object.keys(entry)) {
+        const nestedObj = entry[nestedKey];
+        if (nestedObj && typeof nestedObj === 'object') {
+          const resolvedId = nestedObj.userId || key || nestedKey;
+          normalized[resolvedId] = {
+            ...nestedObj,
+            userId: resolvedId,
+            _parentKey: key,
+            _pushKey: nestedKey
+          };
+          foundNested = true;
+        }
+      }
+
+      // Fallback if neither matched
+      if (!foundNested) {
+        normalized[key] = { ...entry, userId: entry.userId || key };
+      }
+    }
+
+    return normalized;
+  }
+
+  // Helper to find a user in RTDB by personalEmail, email, mobileNo, or phone (supports flat & nested)
   findUserByIdentifier(identifier: string): Observable<any> {
     if (!identifier) return of(null);
     const cleanId = identifier.trim().toLowerCase();
@@ -132,11 +187,18 @@ export class FirebaseService {
         for (const userId of Object.keys(users)) {
           const user = users[userId];
           if (!user) continue;
-          const userEmail = (user.email || '').toLowerCase();
-          const personalEmail = (user.personalEmail || '').toLowerCase();
-          const mobile = (user.mobileNo || user.phone || '').toLowerCase();
-          if (userEmail === cleanId || personalEmail === cleanId || mobile === cleanId) {
-            return { ...user, userId };
+          const userEmail = (user.email || '').trim().toLowerCase();
+          const personalEmail = (user.personalEmail || '').trim().toLowerCase();
+          const appEmail = (user.appGeneratedEmail || '').trim().toLowerCase();
+          const mobile = (user.mobileNo || user.phone || user.phoneNumber || user.mobile || '').trim().toLowerCase();
+          
+          if (
+            userEmail === cleanId ||
+            personalEmail === cleanId ||
+            appEmail === cleanId ||
+            mobile === cleanId
+          ) {
+            return { ...user, userId: user.userId || userId };
           }
         }
         return null;
@@ -145,9 +207,35 @@ export class FirebaseService {
     );
   }
 
-  // Read user by ID
+  // Read user by ID (handles both flat and legacy nested records)
   getUser(userId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/signUpFrom/${userId}.json`);
+    return this.http.get<any>(`${this.baseUrl}/signUpFrom/${userId}.json`).pipe(
+      map((userData) => {
+        if (!userData) return null;
+        // Direct flat object
+        if (
+          userData.email !== undefined ||
+          userData.personalEmail !== undefined ||
+          userData.appGeneratedEmail !== undefined ||
+          userData.name !== undefined ||
+          userData.role !== undefined ||
+          userData.mobileNo !== undefined ||
+          userData.phone !== undefined
+        ) {
+          return { ...userData, userId: userData.userId || userId };
+        }
+        // Nested under pushKey
+        const keys = Object.keys(userData);
+        if (keys.length > 0) {
+          const firstVal = userData[keys[0]];
+          if (firstVal && typeof firstVal === 'object') {
+            return { ...firstVal, userId: firstVal.userId || userId, _pushKey: keys[0] };
+          }
+        }
+        return { ...userData, userId };
+      }),
+      catchError(() => of(null))
+    );
   }
 
   // Update user
@@ -160,32 +248,46 @@ export class FirebaseService {
     return this.http.delete(`${this.baseUrl}/signUpFrom/${userId}.json`);
   }
 
-  // Get all users
+  // Get all users (normalized for both flat and legacy nested schemas)
   getAllUsers(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/signUpFrom.json`);
+    return this.http.get<any>(`${this.baseUrl}/signUpFrom.json`).pipe(
+      map((rawUsers) => this.normalizeUsersMap(rawUsers)),
+      catchError((err) => {
+        console.error('[FirebaseService] Error fetching users:', err);
+        return of({});
+      })
+    );
   }
 
   // Update user password — only in Firebase Auth (DB no longer stores passwords)
-  // Fix #3: data is stored flat at /signUpFrom/{uid} (PUT), not double-nested
+  // Supports both flat (/signUpFrom/{uid}) and legacy nested records
   updateUserPassword(identifier: string, newPassword: string): Observable<any> {
+    const cleanId = (identifier || '').trim().toLowerCase();
     return this.getAllUsers().pipe(
       switchMap((users: any) => {
         if (!users) return of(null);
 
-        // Users are stored flat: { [uid]: { email, mobileNo, ... } }
         for (const userId of Object.keys(users)) {
           const user = users[userId];
+          if (!user) continue;
+
+          const userEmail = (user.email || '').trim().toLowerCase();
+          const personalEmail = (user.personalEmail || '').trim().toLowerCase();
+          const appEmail = (user.appGeneratedEmail || '').trim().toLowerCase();
+          const mobile = (user.mobileNo || user.phone || user.phoneNumber || user.mobile || '').trim().toLowerCase();
+
           if (
-            user &&
-            (user.email === identifier ||
-              user.personalEmail === identifier ||
-              user.mobileNo === identifier ||
-              user.phone === identifier)
+            userEmail === cleanId ||
+            personalEmail === cleanId ||
+            appEmail === cleanId ||
+            mobile === cleanId
           ) {
-            // Update only non-sensitive fields; passwords belong in Firebase Auth only
-            // For a full password reset, use Firebase Auth sendPasswordResetEmail()
+            const updatePath = user._pushKey && user._parentKey
+              ? `${this.baseUrl}/signUpFrom/${user._parentKey}/${user._pushKey}.json`
+              : `${this.baseUrl}/signUpFrom/${userId}.json`;
+
             return this.http.patch(
-              `${this.baseUrl}/signUpFrom/${userId}.json`,
+              updatePath,
               { lastPasswordReset: new Date().toISOString() }
             );
           }
@@ -277,11 +379,35 @@ export class FirebaseService {
       submittedAt: new Date().toISOString()
     };
 
-    return this.http.post(`${this.baseUrl}/serviceRequests/${requestId}.json`, requestWithId);
+    return this.http.put(`${this.baseUrl}/serviceRequests/${requestId}.json`, requestWithId);
   }
 
   getAllServiceRequests(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/serviceRequests.json`);
+    return this.http.get<any>(`${this.baseUrl}/serviceRequests.json`).pipe(
+      map((raw) => {
+        if (!raw || typeof raw !== 'object') return {};
+        const normalized: Record<string, any> = {};
+        for (const key of Object.keys(raw)) {
+          const entry = raw[key];
+          if (!entry || typeof entry !== 'object') continue;
+          if (entry.serviceName || entry.farmerName || entry.serviceType || entry.selectedEquipment || entry.status) {
+            normalized[key] = { id: key, requestId: key, ...entry };
+          } else {
+            const subKeys = Object.keys(entry);
+            if (subKeys.length > 0 && typeof entry[subKeys[0]] === 'object' && entry[subKeys[0]] !== null) {
+              normalized[key] = { id: key, requestId: key, _nestedKey: subKeys[0], ...entry[subKeys[0]] };
+            } else {
+              normalized[key] = { id: key, requestId: key, ...entry };
+            }
+          }
+        }
+        return normalized;
+      }),
+      catchError((err) => {
+        console.error('[FirebaseService] Error fetching service requests:', err);
+        return of({});
+      })
+    );
   }
 
   updateServiceRequest(requestId: string, data: any): Observable<any> {
@@ -294,7 +420,31 @@ export class FirebaseService {
 
   // Soil Test Requests
   getAllSoilTestRequests(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/soilTest.json`);
+    return this.http.get<any>(`${this.baseUrl}/soilTest.json`).pipe(
+      map((raw) => {
+        if (!raw || typeof raw !== 'object') return {};
+        const normalized: Record<string, any> = {};
+        for (const key of Object.keys(raw)) {
+          const entry = raw[key];
+          if (!entry || typeof entry !== 'object') continue;
+          if (entry.farmerName || entry.sampleDate || entry.status || entry.currentCrop) {
+            normalized[key] = { id: key, requestId: key, ...entry };
+          } else {
+            const subKeys = Object.keys(entry);
+            if (subKeys.length > 0 && typeof entry[subKeys[0]] === 'object' && entry[subKeys[0]] !== null) {
+              normalized[key] = { id: key, requestId: key, _nestedKey: subKeys[0], ...entry[subKeys[0]] };
+            } else {
+              normalized[key] = { id: key, requestId: key, ...entry };
+            }
+          }
+        }
+        return normalized;
+      }),
+      catchError((err) => {
+        console.error('[FirebaseService] Error fetching soil test requests:', err);
+        return of({});
+      })
+    );
   }
 
   updateSoilTestRequest(requestId: string, data: any): Observable<any> {

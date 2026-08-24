@@ -59,6 +59,15 @@
                     <i class="fas fa-envelope me-2"></i>{{ 'nav.contact' | translate }}
                 </a>
             </li>
+            <!-- Dashboard / Control Center (Authenticated users) -->
+            <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="isAuthenticated" routerLinkActive="active">
+                <a class="nav-link btn btn-outline-primary-green rounded-modern fw-bold" role="button"
+                    (click)="goToDashboard()" style="cursor:pointer;">
+                    <i class="fas fa-shield-alt me-2" *ngIf="currentUser?.role === 'admin'"></i>
+                    <i class="fas fa-tachometer-alt me-2" *ngIf="currentUser?.role !== 'admin'"></i>
+                    {{ currentUser?.role === 'admin' ? 'Control Center' : 'My Dashboard' }}
+                </a>
+            </li>
             <!-- Sign Up CTA (non-authenticated only) -->
             <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="!isAuthenticated">
                 <a class="nav-link btn btn-signup-cta rounded-modern px-4 py-2 fw-bold" role="button"

@@ -9,12 +9,13 @@ export const APU_ROUTES: Routes = [
   {
     path: 'buyer',
     component: BuyerComponent,
-    canActivate: [AuthGuard]           // Fix #4: was public, now requires login
+    canActivate: [AuthGuard, RoleGuard],  // Only buyers (and admins) can access buyer portal
+    data: { role: 'buyer' }
   },
   {
     path: 'seller',
     component: SellerComponent,
-    canActivate: [AuthGuard, RoleGuard], // Fix #7: added RoleGuard for seller role
+    canActivate: [AuthGuard, RoleGuard],  // Only sellers (and admins) can access seller portal
     data: { role: 'seller' }
   }
 ];

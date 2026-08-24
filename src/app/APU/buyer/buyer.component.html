@@ -229,15 +229,25 @@
 
           <!-- Phone -->
           <div class="field-group">
-            <label for="buyerPhone" class="field-label">Phone Number</label>
+            <label for="buyerPhone" class="field-label">
+              Phone Number <span class="required">*</span>
+            </label>
             <div class="input-wrapper">
               <i class="bi bi-telephone field-icon"></i>
               <input type="tel" class="field-input has-icon" id="buyerPhone"
+                     #buyerPhone="ngModel"
+                     [class.is-invalid]="(buyerForm.submitted || buyerPhone.touched) && buyerPhone.invalid"
                      [(ngModel)]="buyerData.phone" name="buyerPhone"
                      placeholder="10-digit mobile number"
                      (input)="onPhoneInput($event)"
                      pattern="[0-9]{10}" maxlength="10" minlength="10"
+                     required
                      title="Please enter exactly 10 digits">
+            </div>
+            <div class="field-error" *ngIf="(buyerForm.submitted || buyerPhone.touched) && buyerPhone.invalid">
+              <i class="bi bi-exclamation-circle me-1"></i>
+              <span *ngIf="buyerPhone.errors?.['required']">Phone number is required</span>
+              <span *ngIf="buyerPhone.errors?.['pattern'] || buyerPhone.errors?.['minlength']">Must be exactly 10 digits</span>
             </div>
           </div>
 
@@ -364,7 +374,7 @@
         </button>
         <div>
           <h1 class="history-title">Order History</h1>
-          <p class="history-sub">All inquiries submitted by {{ currentUser?.email }}</p>
+          <p class="history-sub">All inquiries submitted by {{ currentUser?.name || currentUser?.email }}</p>
         </div>
       </div>
       <div class="history-count-badge" *ngIf="!isLoadingHistory">

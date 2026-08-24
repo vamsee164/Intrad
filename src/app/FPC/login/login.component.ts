@@ -22,6 +22,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginMessage = '';
   loginMessageType: 'success' | 'danger' | '' = '';
   isLoading = false;
+  showPassword = false;
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   // Forgot password modal state
   forgotPasswordData = { email: '' };
@@ -77,8 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (success) => {
         this.isLoading = false;
         if (success) {
-          this.loginMessage = 'Login successful!';
-          this.loginMessageType = 'success';
+          // Navigate immediately — the redirect is sufficient success feedback
           this.loginHtmlForm.resetForm();
           this.loginSuccess.emit();
           this.redirectByRole();

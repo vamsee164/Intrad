@@ -81,9 +81,12 @@
       <div class="info-content">
         <span class="info-label">Soil Test</span>
         <span class="info-val"
-          [class.status-ok]="profileData.roleSpecific.soilTest === 'tested'"
-          [class.status-no]="profileData.roleSpecific.soilTest !== 'tested'">
-          {{ profileData.roleSpecific.soilTest === 'tested' ? '✓ Tested' : '✗ Not Tested' }}
+          [class.status-ok]="profileData.roleSpecific.soilTest && profileData.roleSpecific.soilTest !== 'not-tested'"
+          [class.status-no]="!profileData.roleSpecific.soilTest || profileData.roleSpecific.soilTest === 'not-tested'">
+          {{ (profileData.roleSpecific.soilTest && profileData.roleSpecific.soilTest !== 'not-tested') ? '✓ Tested' : '✗ Not Tested' }}
+          <span class="text-muted small" *ngIf="profileData.roleSpecific.soilTest === 'tested-high'"> (High Nutrients)</span>
+          <span class="text-muted small" *ngIf="profileData.roleSpecific.soilTest === 'tested-medium'"> (Medium Nutrients)</span>
+          <span class="text-muted small" *ngIf="profileData.roleSpecific.soilTest === 'tested-low'"> (Low Nutrients)</span>
         </span>
       </div>
     </div>
@@ -140,7 +143,7 @@
       <span class="action-emoji">🧪</span><span class="action-name">Soil Test</span>
     </div>
     <div class="action-tile" (click)="navigateToMarketPrices()">
-      <span class="action-emoji">💰</span><span class="action-name">Market Prices</span>
+      <span class="action-emoji">💰</span><span class="action-name">Browse Products</span>
     </div>
     <div class="action-tile" (click)="navigateToHelpCenter()">
       <span class="action-emoji">❓</span><span class="action-name">Help Center</span>

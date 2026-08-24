@@ -243,6 +243,12 @@ export class SellerComponent implements OnInit, OnDestroy {
     if (input.value.length > 10) {
       input.value = input.value.slice(0, 10);
     }
+    // Keep ngModel in sync
+    this.formData.contactNo = input.value;
+  }
+
+  getTodayDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
   onSubmit(): void {

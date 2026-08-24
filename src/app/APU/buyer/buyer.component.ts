@@ -215,6 +215,8 @@ export class BuyerComponent implements OnInit, OnDestroy {
     if (input.value.length > 10) {
       input.value = input.value.slice(0, 10);
     }
+    // Keep ngModel in sync to avoid race condition
+    this.buyerData.phone = input.value;
   }
 
   ngOnInit(): void {
