@@ -18,13 +18,10 @@
         <i class="bi bi-person-circle"></i>
         <span class="d-none d-sm-inline">Profile</span>
       </button>
-      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-apu" (click)="backToAPU()">
-        <i class="bi bi-arrow-left"></i>
-        <span class="d-none d-sm-inline">APU</span>
-      </button>
-      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-control" (click)="goToControl()">
+      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-control" (click)="goToControl()"
+        title="Back to Control Panel">
         <i class="bi bi-speedometer2"></i>
-        <span class="d-none d-sm-inline">Control</span>
+        <span class="d-none d-sm-inline">Control Panel</span>
       </button>
       <button class="tb-btn tb-logout" (click)="logout()" title="Logout">
         <i class="bi bi-box-arrow-right"></i>
@@ -89,10 +86,9 @@
           </label>
           <div class="select-wrapper">
             <select class="field-select"
-                    [class.is-invalid]="(buyerForm.submitted || mainCategory.touched) && mainCategory.invalid"
-                    id="mainCategory" #mainCategory="ngModel"
-                    [(ngModel)]="selectedMainCategory" name="mainCategory"
-                    (change)="onMainCategoryChange()" required>
+              [class.is-invalid]="(buyerForm.submitted || mainCategory.touched) && mainCategory.invalid"
+              id="mainCategory" #mainCategory="ngModel" [(ngModel)]="selectedMainCategory" name="mainCategory"
+              (change)="onMainCategoryChange()" required>
               <option value="" disabled selected>Select a category</option>
               <option *ngFor="let category of mainCategories; trackBy: trackByFn" [value]="category.value">
                 {{ category.label }}
@@ -109,9 +105,8 @@
         <div class="field-group slide-in" *ngIf="subCategories.length > 0">
           <label for="subCategory" class="field-label">Sub-Category</label>
           <div class="select-wrapper">
-            <select class="field-select" id="subCategory"
-                    [(ngModel)]="selectedSubCategory" name="subCategory"
-                    (change)="onSubCategoryChange()" [required]="subCategories.length > 0">
+            <select class="field-select" id="subCategory" [(ngModel)]="selectedSubCategory" name="subCategory"
+              (change)="onSubCategoryChange()" [required]="subCategories.length > 0">
               <option value="" disabled selected>Select a sub-category</option>
               <option *ngFor="let subCategory of subCategories; trackBy: trackByFn" [value]="subCategory.value">
                 {{ subCategory.label }}
@@ -125,9 +120,8 @@
         <div class="field-group slide-in" *ngIf="productTypes.length > 0">
           <label for="productType" class="field-label">Product Type</label>
           <div class="select-wrapper">
-            <select class="field-select" id="productType"
-                    [(ngModel)]="selectedProductType" name="productType"
-                    (change)="onProductTypeChange()" [required]="productTypes.length > 0">
+            <select class="field-select" id="productType" [(ngModel)]="selectedProductType" name="productType"
+              (change)="onProductTypeChange()" [required]="productTypes.length > 0">
               <option value="" disabled selected>Select a product type</option>
               <option *ngFor="let type of productTypes; trackBy: trackByFn" [value]="type.value">
                 {{ type.label }}
@@ -141,9 +135,8 @@
         <div class="field-group slide-in" *ngIf="detailsOptions.length > 0">
           <label for="details" class="field-label">Details / Processing Form</label>
           <div class="select-wrapper">
-            <select class="field-select" id="details"
-                    [(ngModel)]="selectedDetails" name="details"
-                    [required]="detailsOptions.length > 0">
+            <select class="field-select" id="details" [(ngModel)]="selectedDetails" name="details"
+              [required]="detailsOptions.length > 0">
               <option value="" disabled selected>Select processing details</option>
               <option *ngFor="let detail of detailsOptions; trackBy: trackByFn" [value]="detail.value">
                 {{ detail.label }}
@@ -197,10 +190,9 @@
             <div class="input-wrapper">
               <i class="bi bi-person field-icon"></i>
               <input type="text" class="field-input has-icon"
-                     [class.is-invalid]="(buyerForm.submitted || buyerName.touched) && buyerName.invalid"
-                     id="buyerName" #buyerName="ngModel"
-                     [(ngModel)]="buyerData.name" name="buyerName"
-                     placeholder="Enter your full name" required>
+                [class.is-invalid]="(buyerForm.submitted || buyerName.touched) && buyerName.invalid" id="buyerName"
+                #buyerName="ngModel" [(ngModel)]="buyerData.name" name="buyerName" placeholder="Enter your full name"
+                required>
             </div>
             <div class="field-error" *ngIf="(buyerForm.submitted || buyerName.touched) && buyerName.invalid">
               <i class="bi bi-exclamation-circle me-1"></i>Full name is required
@@ -215,10 +207,9 @@
             <div class="input-wrapper">
               <i class="bi bi-envelope field-icon"></i>
               <input type="email" class="field-input has-icon"
-                     [class.is-invalid]="(buyerForm.submitted || buyerEmail.touched) && buyerEmail.invalid"
-                     id="buyerEmail" #buyerEmail="ngModel"
-                     [(ngModel)]="buyerData.email" name="buyerEmail"
-                     placeholder="Enter your email" required email>
+                [class.is-invalid]="(buyerForm.submitted || buyerEmail.touched) && buyerEmail.invalid" id="buyerEmail"
+                #buyerEmail="ngModel" [(ngModel)]="buyerData.email" name="buyerEmail" placeholder="Enter your email"
+                required email>
             </div>
             <div class="field-error" *ngIf="(buyerForm.submitted || buyerEmail.touched) && buyerEmail.invalid">
               <i class="bi bi-exclamation-circle me-1"></i>
@@ -234,20 +225,17 @@
             </label>
             <div class="input-wrapper">
               <i class="bi bi-telephone field-icon"></i>
-              <input type="tel" class="field-input has-icon" id="buyerPhone"
-                     #buyerPhone="ngModel"
-                     [class.is-invalid]="(buyerForm.submitted || buyerPhone.touched) && buyerPhone.invalid"
-                     [(ngModel)]="buyerData.phone" name="buyerPhone"
-                     placeholder="10-digit mobile number"
-                     (input)="onPhoneInput($event)"
-                     pattern="[0-9]{10}" maxlength="10" minlength="10"
-                     required
-                     title="Please enter exactly 10 digits">
+              <input type="tel" class="field-input has-icon" id="buyerPhone" #buyerPhone="ngModel"
+                [class.is-invalid]="(buyerForm.submitted || buyerPhone.touched) && buyerPhone.invalid"
+                [(ngModel)]="buyerData.phone" name="buyerPhone" placeholder="10-digit mobile number"
+                (input)="onPhoneInput($event)" pattern="[0-9]{10}" maxlength="10" minlength="10" required
+                title="Please enter exactly 10 digits">
             </div>
             <div class="field-error" *ngIf="(buyerForm.submitted || buyerPhone.touched) && buyerPhone.invalid">
               <i class="bi bi-exclamation-circle me-1"></i>
               <span *ngIf="buyerPhone.errors?.['required']">Phone number is required</span>
-              <span *ngIf="buyerPhone.errors?.['pattern'] || buyerPhone.errors?.['minlength']">Must be exactly 10 digits</span>
+              <span *ngIf="buyerPhone.errors?.['pattern'] || buyerPhone.errors?.['minlength']">Must be exactly 10
+                digits</span>
             </div>
           </div>
 
@@ -258,13 +246,13 @@
             </label>
             <div class="input-wrapper">
               <i class="bi bi-box2 field-icon"></i>
-              <input type="text" class="field-input has-icon"
-                     [class.is-invalid]="(buyerForm.submitted || requiredQuantity.touched) && requiredQuantity.invalid"
-                     id="requiredQuantity" #requiredQuantity="ngModel"
-                     [(ngModel)]="buyerData.quantity" name="requiredQuantity"
-                     placeholder="e.g., 100 kg, 5 MT" required>
+              <input type="number" class="field-input has-icon"
+                [class.is-invalid]="(buyerForm.submitted || requiredQuantity.touched) && requiredQuantity.invalid"
+                id="requiredQuantity" #requiredQuantity="ngModel" [(ngModel)]="buyerData.quantity"
+                name="requiredQuantity" placeholder="e.g., 100" min="100" step="50" required>
             </div>
-            <div class="field-error" *ngIf="(buyerForm.submitted || requiredQuantity.touched) && requiredQuantity.invalid">
+            <div class="field-error"
+              *ngIf="(buyerForm.submitted || requiredQuantity.touched) && requiredQuantity.invalid">
               <i class="bi bi-exclamation-circle me-1"></i>Quantity is required
             </div>
           </div>
@@ -415,7 +403,7 @@
     <!-- Orders List -->
     <div *ngIf="!isLoadingHistory && !historyError && orderHistory.length > 0" class="orders-list">
       <div class="order-card" *ngFor="let order of orderHistory; trackBy: trackByOrderId"
-           [class.order-card-expanded]="expandedOrderId === (order.id || order.formId)">
+        [class.order-card-expanded]="expandedOrderId === (order.id || order.formId)">
 
         <!-- Order Card Header -->
         <div class="order-card-header" (click)="toggleOrderDetail(order.id || order.formId)">
@@ -439,9 +427,8 @@
               <i class="bi me-1" [ngClass]="getStatusIcon(order.status)"></i>
               {{ order.status | titlecase }}
             </span>
-            <i class="bi order-chevron"
-               [class.bi-chevron-down]="expandedOrderId !== (order.id || order.formId)"
-               [class.bi-chevron-up]="expandedOrderId === (order.id || order.formId)"></i>
+            <i class="bi order-chevron" [class.bi-chevron-down]="expandedOrderId !== (order.id || order.formId)"
+              [class.bi-chevron-up]="expandedOrderId === (order.id || order.formId)"></i>
           </div>
         </div>
 

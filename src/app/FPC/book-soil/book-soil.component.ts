@@ -49,10 +49,15 @@ export class BookSoilComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService
   ) {}
 
+  isAuthenticated = false;
+  currentUserRole: string | undefined;
+
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
+        this.isAuthenticated = !!user;
+        this.currentUserRole = user?.role;
         if (user) {
           this.soilTestForm.farmerName = user.name || '';
           this.soilTestForm.mobileNumber = user.phone || user.profileData?.mobileNo || '';
@@ -67,19 +72,15 @@ export class BookSoilComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.authService.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        if (user?.role === 'farmer') {
-          this.router.navigate(['/farmer']);
-        } else {
-          window.history.back();
-        }
-      });
+    if (this.isAuthenticated) {
+      this.router.navigate([this.authService.getDashboardRoute()]);
+    } else {
+      this.router.navigate(['/homepage']);
+    }
   }
 
-  goToFarmerDashboard(): void {
-    this.router.navigate(['/farmer']);
+  goToDashboard(): void {
+    this.router.navigate([this.authService.getDashboardRoute()]);
   }
 
   /** Step navigation and checks */

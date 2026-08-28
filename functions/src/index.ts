@@ -7,6 +7,7 @@
 
 import { setGlobalOptions } from "firebase-functions";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onValueCreated } from "firebase-functions/v2/database";
 import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
@@ -33,7 +34,7 @@ const IS_DEV_MODE = process.env["EMAIL_DEV_MODE"] === "true";
 // cors: true is safe for onCall functions — the callable protocol validates
 // Firebase App tokens on every request; this only controls which browsers
 // can initiate the preflight (OPTIONS) request.
-const CALLABLE_CORS: true = true;
+const CALLABLE_CORS = true as const;
 
 interface SendLoginEmailPayload {
   email: string;
@@ -78,6 +79,11 @@ async function sendEmail(options: nodemailer.SendMailOptions): Promise<boolean> 
   }
 }
 
+function buildCredentialsEmailHtml(name: string, email: string, password: string): string {
+  const year = new Date().getFullYear();
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Welcome to INTRA-D</title><style>body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px}.c{max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08)}.h{background:linear-gradient(135deg,#2d7a4f,#4caf7d);padding:32px 24px;text-align:center;color:#fff}.b{padding:28px 32px}.cb{background:#f0faf5;border:1px solid #b2dfca;border-radius:8px;padding:20px;margin:20px 0}.cr{padding:8px 0;border-bottom:1px dashed #d0e8da}.cr:last-child{border-bottom:none}.cl{font-size:11px;color:#666;font-weight:700;text-transform:uppercase;display:block}.cv{font-size:14px;color:#1a4a2e;font-weight:700;font-family:monospace;word-break:break-all}.w{background:#fff8e1;border-left:4px solid #ffc107;padding:12px;font-size:13px;color:#7a5f00;margin:16px 0}.btn{display:inline-block;background:#2d7a4f;color:#fff!important;text-decoration:none;padding:13px 30px;border-radius:8px;font-weight:700}.f{text-align:center;padding:16px;background:#f4f6f9;font-size:12px;color:#999}</style></head><body><div class="c"><div class="h"><h1 style="margin:0;font-size:24px">&#127807; INTRA-D</h1><p style="margin:4px 0 0;opacity:.85;font-size:13px">Empowering Indian Farmers</p></div><div class="b"><p style="color:#333">Hello <strong>${name}</strong>,</p><p style="color:#555;font-size:15px">Your INTRA-D account has been created. Here are your login credentials:</p><div class="cb"><div class="cr"><span class="cl">System Email / Username</span><span class="cv">${email}</span></div><div class="cr"><span class="cl">Password</span><span class="cv">${password}</span></div></div><div class="w">&#9888; <strong>Important:</strong> Save these credentials. You need them to log in. Do not share your password.</div><a href="https://intra-d.com/login" class="btn">Login to INTRA-D &rarr;</a></div><div class="f">&copy; ${year} INTRA-D &mdash; This is an automated email. Please do not reply.</div></div></body></html>`;
+}
+
 export const sendLoginEmail = onCall<SendLoginEmailPayload>(
   {
     region: "asia-south1",
@@ -96,12 +102,57 @@ export const sendLoginEmail = onCall<SendLoginEmailPayload>(
     }
     logger.info("[sendLoginEmail] Sending credentials email", { to: personalEmail, systemEmail: email });
 
-    const year = new Date().getFullYear();
-    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Welcome to INTRA-D</title><style>body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6f9;margin:0;padding:20px}.c{max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08)}.h{background:linear-gradient(135deg,#2d7a4f,#4caf7d);padding:32px 24px;text-align:center;color:#fff}.b{padding:28px 32px}.cb{background:#f0faf5;border:1px solid #b2dfca;border-radius:8px;padding:20px;margin:20px 0}.cr{padding:8px 0;border-bottom:1px dashed #d0e8da}.cr:last-child{border-bottom:none}.cl{font-size:11px;color:#666;font-weight:700;text-transform:uppercase;display:block}.cv{font-size:14px;color:#1a4a2e;font-weight:700;font-family:monospace;word-break:break-all}.w{background:#fff8e1;border-left:4px solid #ffc107;padding:12px;font-size:13px;color:#7a5f00;margin:16px 0}.btn{display:inline-block;background:#2d7a4f;color:#fff!important;text-decoration:none;padding:13px 30px;border-radius:8px;font-weight:700}.f{text-align:center;padding:16px;background:#f4f6f9;font-size:12px;color:#999}</style></head><body><div class="c"><div class="h"><h1 style="margin:0;font-size:24px">&#127807; INTRA-D</h1><p style="margin:4px 0 0;opacity:.85;font-size:13px">Empowering Indian Farmers</p></div><div class="b"><p style="color:#333">Hello <strong>${name}</strong>,</p><p style="color:#555;font-size:15px">Your INTRA-D account has been created. Here are your login credentials:</p><div class="cb"><div class="cr"><span class="cl">System Email</span><span class="cv">${email}</span></div><div class="cr"><span class="cl">Password</span><span class="cv">${password}</span></div></div><div class="w">&#9888; <strong>Important:</strong> Save these credentials. You need them to log in. Do not share your password.</div><a href="https://intra-d.com/login" class="btn">Login to INTRA-D &rarr;</a></div><div class="f">&copy; ${year} INTRA-D &mdash; This is an automated email. Please do not reply.</div></div></body></html>`;
-
-    const ok = await sendEmail({ from: `"INTRA-D Team" <${GMAIL_USER}>`, to: personalEmail, subject: "Your INTRA-D Account Credentials", html });
+    const html = buildCredentialsEmailHtml(name, email, password);
+    const ok = await sendEmail({ from: `"INTRA-D Team" <${GMAIL_USER}>`, to: personalEmail, subject: "Welcome to INTRA-D - Your Account Credentials", html });
     if (!ok) throw new HttpsError("internal", "Failed to send credentials email.");
     return { success: true, message: "Login credentials sent to your email." };
+  }
+);
+
+/**
+ * Automatically triggers right when a user's login credentials record is created in Realtime Database.
+ * Path: /signUpFrom/{userId}
+ */
+export const onUserCredentialsCreated = onValueCreated(
+  {
+    ref: "/signUpFrom/{userId}",
+    instance: "intra-d-default-rtdb",
+    region: "asia-southeast1",
+    secrets: ["GMAIL_USER", "GMAIL_APP_PASSWORD"],
+  },
+  async (event) => {
+    const data = event.data.val();
+    if (!data) return;
+
+    const email = data.email || data.appGeneratedEmail || "";
+    const password = data.password || "";
+    const name = data.name || "Farmer";
+    const personalEmail = (data.personalEmail || email || "").trim();
+
+    if (!personalEmail || !password) {
+      logger.info("[onUserCredentialsCreated] Incomplete credentials payload, skipping email.", { userId: event.params.userId });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(personalEmail)) {
+      logger.warn("[onUserCredentialsCreated] Invalid recipient email address:", { personalEmail });
+      return;
+    }
+
+    logger.info("[onUserCredentialsCreated] Triggered welcome credentials email for user", {
+      userId: event.params.userId,
+      recipient: personalEmail,
+      loginEmail: email,
+    });
+
+    const html = buildCredentialsEmailHtml(name, email, password);
+    await sendEmail({
+      from: `"INTRA-D Team" <${GMAIL_USER}>`,
+      to: personalEmail,
+      subject: "Welcome to INTRA-D - Your Account Credentials",
+      html,
+    });
   }
 );
 

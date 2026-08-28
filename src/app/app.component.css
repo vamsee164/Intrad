@@ -1,13 +1,131 @@
-@media (min-width: 1200px) {
+.main-viewport {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
 
+@media (min-width: 1200px) {
     .container {
         max-width: 1320px !important;
     }
 }
 
 @media (min-width: 992px) {
-
     .container {
         max-width: 1214px;
     }
+}
+
+/* Global Not Found Modal Backdrop */
+.modal-backdrop-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: modal-fade-in 0.25s ease-out;
+}
+
+@keyframes modal-fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.not-found-modal-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 32px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.modal-icon-wrap {
+    margin-bottom: 16px;
+}
+
+.modal-badge-404 {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.modal-emoji {
+    font-size: 52px;
+    line-height: 1;
+}
+
+.modal-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 12px 0 8px 0;
+}
+
+.modal-text {
+    font-size: 0.92rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.modal-action-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-modal-primary {
+    background: #2d5016;
+    color: #ffffff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-modal-primary:hover {
+    background: #1b4010;
+    transform: translateY(-1px);
+}
+
+.btn-modal-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-secondary:hover {
+    background: #e2e8f0;
+    color: #0f172a;
 }

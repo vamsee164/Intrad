@@ -9,14 +9,21 @@ import { AuthService } from '../../../services/auth.service';
   imports: [CommonModule],
   template: `
     <div class="unauthorized-container">
-      <div class="unauthorized-content">
-        <div class="icon">🚫</div>
-        <h1>Access Denied</h1>
-        <p>You don't have permission to access this page.</p>
-        <p class="sub-text">Please contact your administrator if you believe this is an error.</p>
-        <div class="actions">
-          <button class="btn btn-primary" (click)="goToDashboard()">Go to Homepage</button>
-          <button class="btn btn-secondary" (click)="logout()">Logout</button>
+      <div class="unauthorized-card">
+        <div class="icon-bubble">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <span class="error-badge">Access Restricted</span>
+        <h1 class="card-title">Authorization Required</h1>
+        <p class="card-desc">You do not have the required permissions to view this portal. Please return to your account dashboard or contact platform support.</p>
+        
+        <div class="actions-group">
+          <button class="btn btn-home" (click)="goToDashboard()">
+            <i class="fas fa-home me-2"></i>Return Home
+          </button>
+          <button class="btn btn-logout-outline" (click)="logout()">
+            <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+          </button>
         </div>
       </div>
     </div>
@@ -27,69 +34,97 @@ import { AuthService } from '../../../services/auth.service';
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
+      background: linear-gradient(135deg, #0f2a07 0%, #1b4010 50%, #2d5016 100%);
+      padding: 24px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
-    .unauthorized-content {
-      background: white;
-      padding: 60px 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    .unauthorized-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      padding: 48px 36px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
       text-align: center;
-      max-width: 500px;
+      max-width: 480px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    .icon {
-      font-size: 80px;
-      margin-bottom: 20px;
-    }
-    h1 {
-      color: #333;
-      margin-bottom: 15px;
-      font-size: 32px;
-    }
-    p {
-      color: #666;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    .sub-text {
-      font-size: 14px;
-      color: #999;
-      margin-bottom: 30px;
-    }
-    .actions {
+    .icon-bubble {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #dc2626;
       display: flex;
-      gap: 15px;
+      align-items: center;
       justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 8px 16px rgba(220, 38, 38, 0.15);
+    }
+    .error-badge {
+      display: inline-block;
+      background: #fef2f2;
+      color: #b91c1c;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      color: #0f172a;
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+    }
+    .card-desc {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .actions-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     .btn {
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 16px;
-      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s ease;
+      border: 1.5px solid transparent;
     }
-    .btn-primary {
-      background: #28a745;
-      color: white;
+    .btn-home {
+      background: #2d5016;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(45, 80, 22, 0.25);
     }
-    .btn-primary:hover {
-      background: #218838;
-      transform: translateY(-2px);
+    .btn-home:hover {
+      background: #1b4010;
+      transform: translateY(-1px);
     }
-    .btn-secondary {
-      background: #6c757d;
-      color: white;
+    .btn-logout-outline {
+      background: transparent;
+      border-color: #cbd5e1;
+      color: #475569;
     }
-    .btn-secondary:hover {
-      background: #5a6268;
-      transform: translateY(-2px);
+    .btn-logout-outline:hover {
+      background: #f1f5f9;
+      color: #0f172a;
     }
   `]
 })
 export class UnauthorizedComponent {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private readonly router: Router, private readonly authService: AuthService) {}
 
   goToDashboard() {
     this.router.navigate(['/homepage']);

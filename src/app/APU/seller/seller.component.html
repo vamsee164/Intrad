@@ -18,13 +18,9 @@
         <i class="bi bi-person-circle"></i>
         <span class="d-none d-sm-inline">Profile</span>
       </button>
-      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-apu" (click)="backToAPU()">
-        <i class="bi bi-arrow-left"></i>
-        <span class="d-none d-sm-inline">APU</span>
-      </button>
-      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-control" (click)="goToControl()">
+      <button *ngIf="currentUser?.role === 'admin'" class="tb-btn tb-control" (click)="goToControl()" title="Back to Control Panel">
         <i class="bi bi-speedometer2"></i>
-        <span class="d-none d-sm-inline">Control</span>
+        <span class="d-none d-sm-inline">Control Panel</span>
       </button>
       <button class="tb-btn tb-logout" (click)="logout()" title="Logout">
         <i class="bi bi-box-arrow-right"></i>
@@ -169,10 +165,11 @@
           <label for="quantity" class="form-label fw-semibold">Quantity Available: <span class="text-danger">*</span></label>
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-box2"></i></span>
-            <input type="text" class="form-control form-control-custom shadow-sm"
+            <input type="number" class="form-control form-control-custom shadow-sm"
                    [class.is-invalid]="(sellerForm.submitted || quantity.touched) && quantity.invalid"
                    id="quantity" #quantity="ngModel"
-                   [(ngModel)]="formData.quantity" name="quantity" placeholder="e.g., 1000 kg, 50 quintals, 5 MT" required>
+                   [(ngModel)]="formData.quantity" name="quantity" placeholder="e.g., 25"
+                   min="25" step="10" required>
           </div>
           <div class="invalid-feedback d-block" *ngIf="(sellerForm.submitted || quantity.touched) && quantity.invalid">
             Quantity is required
@@ -200,7 +197,7 @@
             <div class="input-group">
               <span class="input-group-text">₹</span>
               <input type="number" class="form-control form-control-custom shadow-sm" id="pricePerUnit"
-                     [(ngModel)]="formData.pricePerUnit" name="pricePerUnit" placeholder="e.g., 45" min="0" step="0.01">
+                     [(ngModel)]="formData.pricePerUnit" name="pricePerUnit" placeholder="e.g., 50" min="50" step="5">
             </div>
           </div>
           <div class="col-md-6 mb-4">

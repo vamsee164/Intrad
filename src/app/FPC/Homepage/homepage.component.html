@@ -1,8 +1,7 @@
 <!-- src/app/homepage/homepage.component.html -->
 <!-- Main Container for Homepage Content -->
 <div class="homepage-content-wrapper">
-  <!-- Pre-Login Content -->
-  <div *ngIf="!isLoggedIn">
+  <div>
     <!-- Category Quick Access Cards -->
     <div
       id="category-buttons-section"
@@ -548,11 +547,6 @@
       </div>
     </section>
     <!-- ===== END ROADMAP ===== -->
-  </div>
-
-  <!-- Post-Login Content -->
-  <div *ngIf="isLoggedIn && currentUser?.role !== 'farmer'">
-    <app-service-info></app-service-info>
   </div>
 </div>
 

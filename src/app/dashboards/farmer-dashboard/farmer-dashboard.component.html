@@ -38,34 +38,8 @@
 
   <!-- Dashboard View -->
   <div class="dashboard-content" *ngIf="currentView === 'dashboard'">
-    <!-- Services & Packages -->
-    <div class="section-card mb-4">
-      <h2 class="section-title">Services & Packages 📦</h2>
-      <p class="text-muted mb-4">Choose from our range of services designed to help you succeed</p>
-      <div class="row g-4">
-        <div class="col-md-6 col-lg-4" *ngFor="let package of servicePackages; trackBy: trackByFn">
-          <div class="service-package-card" [class.popular]="package.popular">
-            <div class="package-badge" *ngIf="package.popular">
-              <span>⭐ Popular</span>
-            </div>
-            <div class="package-icon">{{ package.icon }}</div>
-            <h3 class="package-name">{{ package.name }}</h3>
-            <p class="package-description">{{ package.description }}</p>
-            <div class="package-price">{{ package.price }}</div>
-            <ul class="package-features">
-              <li *ngFor="let feature of package.features; trackBy: trackByFn">
-                <i class="bi bi-check-circle-fill"></i> {{ feature }}
-              </li>
-            </ul>
-            <button class="btn btn-primary w-100 mt-3" (click)="selectPackage(package.id)">
-              Select Package
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Dashboard Cards -->
+    <!-- KPI Dashboard Cards (Top) -->
     <div class="row g-4 mb-4">
       <div class="col-md-6 col-lg-3" *ngFor="let card of dashboardCards; trackBy: trackByFn">
         <div class="dashboard-card" [style.border-left-color]="card.color">
@@ -79,11 +53,16 @@
       </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- Quick Operations & Services Hub -->
     <div class="section-card mb-4">
-      <h2 class="section-title">Quick Actions</h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 class="section-title mb-1">Quick Farm Operations</h2>
+          <p class="text-muted small mb-0">Direct access to agriculture services, machinery booking, and soil analysis</p>
+        </div>
+      </div>
       <div class="row g-3">
-        <div class="col-md-4 col-lg-2" *ngFor="let action of quickActions; trackBy: trackByFn">
+        <div class="col-md-4 col-lg-2 col-6" *ngFor="let action of quickActions; trackBy: trackByFn">
           <div class="quick-action-card" (click)="navigateTo(action.route)">
             <div class="action-icon">{{ action.icon }}</div>
             <h4>{{ action.title }}</h4>
@@ -93,47 +72,104 @@
       </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="section-card">
-      <h2 class="section-title">Recent Activity</h2>
-      <div class="activity-list">
-        <div class="activity-item" *ngFor="let activity of recentActivities; trackBy: trackByFn">
-          <span class="activity-icon">{{ activity.icon }}</span>
-          <div class="activity-content">
-            <p class="mb-0">{{ activity.action }}</p>
-            <small class="text-muted">{{ activity.time }}</small>
+    <!-- Farm Profile & Land Details -->
+    <div class="section-card mb-4" *ngIf="currentUser?.profileData">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title mb-0">Farm &amp; Cultivation Profile 🌱</h2>
+        <button class="btn btn-sm btn-outline-success rounded-pill px-3" (click)="goToProfile()">
+          <i class="bi bi-pencil me-1"></i>Edit Farm Info
+        </button>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Village:</span>
+            <span class="info-value">{{ currentUser?.profileData?.village || currentUser?.location || '—' }}</span>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Mandal:</span>
+            <span class="info-value">{{ currentUser?.profileData?.mandal || '—' }}</span>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Total Land:</span>
+            <span class="info-value text-success fw-bold">{{ currentUser?.profileData?.acreOfLand ? (currentUser?.profileData?.acreOfLand + ' Acres') : '—' }}</span>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Soil Type:</span>
+            <span class="info-value"><span class="badge bg-light text-dark border">{{ currentUser?.profileData?.soilType || 'Standard Soil' | titlecase }}</span></span>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Water / Irrigation:</span>
+            <span class="info-value"><span class="badge bg-info-subtle text-info border">{{ currentUser?.profileData?.waterSource || 'Rainfed' | titlecase }}</span></span>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="info-item">
+            <span class="info-label">Fertilizers:</span>
+            <span class="info-value">{{ currentUser?.profileData?.fertilizers || 'Organic / Standard' }}</span>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="currentUser?.profileData?.typicalCrops">
+          <div class="info-item">
+            <span class="info-label">Cultivated Crops:</span>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              <span class="badge bg-success-subtle text-success border px-2 py-1" *ngFor="let crop of (currentUser?.profileData?.typicalCrops || '').split(',')">
+                🌾 {{ crop.trim() }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Farmer Information -->
-    <div class="section-card mt-4" *ngIf="currentUser?.profileData">
-      <h2 class="section-title">Farm Details</h2>
-      <div class="row g-3">
-        <div class="col-md-6">
-          <div class="info-item">
-            <strong>Village:</strong> {{ currentUser?.profileData?.village || 'N/A' }}
+    <!-- Agriculture Service Packages -->
+    <div class="section-card mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 class="section-title mb-1">Available Support Packages 📦</h2>
+          <p class="text-muted small mb-0">Select a specialized farming package to boost yield and optimize soil nutrition</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3" *ngFor="let package of servicePackages; trackBy: trackByFn">
+          <div class="service-package-card h-100 d-flex flex-column" [class.popular]="package.popular">
+            <div class="package-badge" *ngIf="package.popular">
+              <span>⭐ Recommended</span>
+            </div>
+            <div class="package-icon">{{ package.icon }}</div>
+            <h3 class="package-name">{{ package.name }}</h3>
+            <p class="package-description small text-muted flex-grow-1">{{ package.description }}</p>
+            <div class="package-price">{{ package.price }}</div>
+            <ul class="package-features my-3">
+              <li *ngFor="let feature of package.features; trackBy: trackByFn" class="small">
+                <i class="bi bi-check-circle-fill text-success"></i> {{ feature }}
+              </li>
+            </ul>
+            <button class="btn btn-outline-success w-100 mt-auto rounded-pill fw-semibold" (click)="selectPackage(package.id)">
+              Request Service
+            </button>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="info-item">
-            <strong>Mandal:</strong> {{ currentUser?.profileData?.mandal || 'N/A' }}
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="info-item">
-            <strong>Soil Type:</strong> {{ currentUser?.profileData?.soilType || 'N/A' }}
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="info-item">
-            <strong>Fertilizers:</strong> {{ currentUser?.profileData?.fertilizers || 'N/A' }}
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="info-item">
-            <strong>Typical Crops:</strong> {{ currentUser?.profileData?.typicalCrops || 'N/A' }}
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-card">
+      <h2 class="section-title mb-3">Recent Farm Activity</h2>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities; trackBy: trackByFn">
+          <span class="activity-icon">{{ activity.icon }}</span>
+          <div class="activity-content">
+            <p class="mb-0 fw-medium">{{ activity.action }}</p>
+            <small class="text-muted">{{ activity.time }}</small>
           </div>
         </div>
       </div>

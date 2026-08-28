@@ -1,8 +1,30 @@
-<main class="overflow-hidden p-0 container">
-    <app-navbar></app-navbar>
+<main class="p-0 main-viewport" [class.container]="!isInsideDashboard" [class.w-100]="isInsideDashboard">
+    <app-navbar *ngIf="!isInsideDashboard"></app-navbar>
     <router-outlet></router-outlet>
-    <app-footer></app-footer>
+    <app-footer *ngIf="!isInsideDashboard"></app-footer>
 </main>
+
+<!-- Global Not Found Modal -->
+<div class="modal-backdrop-blur" *ngIf="showNotFoundModal">
+    <div class="not-found-modal-card">
+        <div class="modal-icon-wrap">
+            <span class="modal-badge-404">404</span>
+            <div class="modal-emoji">🌾</div>
+        </div>
+        <h3 class="modal-title">Page Not Found</h3>
+        <p class="modal-text">
+            The requested page or resource could not be found. Let's get you back to the fertile grounds of Intra-D.
+        </p>
+        <div class="modal-action-btns">
+            <button class="btn btn-modal-primary" (click)="closeNotFoundAndNavigate()">
+                <i class="fas fa-home me-2"></i>{{ isAuthenticated ? 'Go to My Dashboard' : 'Go to Homepage' }}
+            </button>
+            <button class="btn btn-modal-secondary" (click)="closeNotFoundModal()">
+                <i class="fas fa-arrow-left me-2"></i>Go Back
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Global Back Navigation Confirmation Modal -->
 <div class="modal fade" id="backNavModal" tabindex="-1" aria-labelledby="backNavModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">

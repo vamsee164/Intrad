@@ -10,8 +10,8 @@
         <button class="btn-back ml-2" (click)="goBack()" title="Go Back">
             <i class="bi bi-arrow-left"></i> Back
         </button>
-        <button class="btn-dashboard" (click)="goToFarmerDashboard()" title="Go to Farmer Dashboard">
-            <i class="bi bi-speedometer2"></i> Dashboard
+        <button class="btn-dashboard" *ngIf="isAuthenticated" (click)="goToDashboard()" title="Go to Dashboard">
+            <i class="bi bi-speedometer2"></i> {{ currentUserRole === 'admin' ? 'Control Panel' : 'My Dashboard' }}
         </button>
     </div>
 

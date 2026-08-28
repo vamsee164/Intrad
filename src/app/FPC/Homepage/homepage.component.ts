@@ -8,7 +8,6 @@ import { catchError, timeout, retry, takeUntil } from 'rxjs/operators';
 
 import { of, Subject } from 'rxjs';
 
-import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
@@ -56,7 +55,6 @@ interface WeatherData {
     CommonModule,
     FormsModule,
     RouterModule,
-    ServiceInfoComponent,
     LoginComponent,
     TranslatePipe,
     OtpVerificationComponent,
