@@ -409,3 +409,73 @@
     top: 0;
   }
 }
+
+/* ── Soil Test Success Card ──────────────────────── */
+.soil-success-card {
+  text-align: center;
+  padding: 36px 24px;
+  background: linear-gradient(135deg, #f0faf0, #e8f5e8);
+  border: 1.5px solid #c6e8c6;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  animation: fadeInUp .4s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.soil-success-icon {
+  font-size: 52px;
+  color: #2d6a4f;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.soil-success-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1b4010;
+  margin-bottom: 10px;
+}
+
+.soil-success-msg {
+  font-size: 14px;
+  color: #3d6b1f;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.soil-success-detail {
+  font-size: 13px;
+  color: #4a7c59;
+  font-weight: 600;
+  background: rgba(45, 106, 79, 0.1);
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.soil-success-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Soil Test Error Banner ──────────────────────── */
+.soil-error-banner {
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+

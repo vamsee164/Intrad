@@ -173,6 +173,7 @@ export class BuyerComponent implements OnInit, OnDestroy {
 
   // View management: 'form' | 'confirmation' | 'history'
   currentView: 'form' | 'confirmation' | 'history' = 'form';
+  previousView: 'form' | 'confirmation' = 'form';
   submittedData: any = null;
 
   // Order history
@@ -329,7 +330,7 @@ export class BuyerComponent implements OnInit, OnDestroy {
   }
 
   backToFormFromHistory(): void {
-    this.currentView = 'form';
+    this.currentView = this.previousView;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -499,6 +500,10 @@ export class BuyerComponent implements OnInit, OnDestroy {
    * Navigate to the order history view and load orders from Firebase.
    */
   viewHistory(): void {
+    // Track where the user is navigating from so back button returns correctly
+    if (this.currentView !== 'history') {
+      this.previousView = this.currentView as 'form' | 'confirmation';
+    }
     this.currentView = 'history';
     this.isLoadingHistory = true;
     this.historyError = null;

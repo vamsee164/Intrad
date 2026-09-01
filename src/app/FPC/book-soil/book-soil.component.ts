@@ -51,6 +51,10 @@ export class BookSoilComponent implements OnInit, OnDestroy {
 
   isAuthenticated = false;
   currentUserRole: string | undefined;
+  isSubmitting = false;
+  submitSuccess = false;
+  submitSuccessRef: string = '';
+  submitError: string = '';
 
   ngOnInit(): void {
     this.authService.currentUser$
@@ -159,6 +163,8 @@ export class BookSoilComponent implements OnInit, OnDestroy {
       this.soilForm.form.markAllAsTouched();
       return;
     }
+    this.isSubmitting = true;
+    this.submitError = '';
     try {
       const location = await this.geoService.getCurrentLocation();
       const payload = {
@@ -169,13 +175,19 @@ export class BookSoilComponent implements OnInit, OnDestroy {
       };
       this.http.post(this.dbUrl, payload).subscribe({
         next: () => {
-          alert('Soil Test Request Submitted with Location');
-          this.resetForm();
+          this.isSubmitting = false;
+          this.submitSuccessRef = this.soilTestForm.farmerName || 'Farmer';
+          this.submitSuccess = true;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         },
-        error: () => alert('Unable to submit request. Please try again.')
+        error: () => {
+          this.isSubmitting = false;
+          this.submitError = 'Unable to submit request. Please check your connection and try again.';
+        }
       });
     } catch {
-      alert('Unable to get location. Please enable GPS.');
+      this.isSubmitting = false;
+      this.submitError = 'Unable to get your location. Please enable GPS and try again.';
     }
   }
 
@@ -184,6 +196,9 @@ export class BookSoilComponent implements OnInit, OnDestroy {
    */
   resetForm(): void {
     this.currentStep = 1;
+    this.submitSuccess = false;
+    this.submitError = '';
+    this.submitSuccessRef = '';
     this.soilTestForm = {
       farmerName: '',
       mobileNumber: '',

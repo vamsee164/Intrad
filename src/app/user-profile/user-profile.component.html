@@ -230,7 +230,14 @@
         <label class="form-label" for="edit-phone">Phone Number</label>
         <input id="edit-phone" class="form-input" type="tel"
                [(ngModel)]="editForm.phone" name="phone"
-               placeholder="Enter phone number">
+               placeholder="Enter 10-digit mobile number"
+               (input)="onPhoneInput($event)"
+               pattern="[0-9]{10}" maxlength="10" minlength="10"
+               [class.input-error]="phoneError"
+               title="Please enter exactly 10 digits">
+        <div class="field-error-msg" *ngIf="phoneError">
+          <span>⚠️ {{ phoneError }}</span>
+        </div>
       </div>
 
       <!-- Buyer-specific fields -->
@@ -359,7 +366,7 @@
       <!-- Action Buttons -->
       <div class="drawer-actions">
         <button type="button" class="btn-cancel" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
-        <button type="submit" class="btn-save" [disabled]="isSaving">
+        <button type="submit" class="btn-save" [disabled]="isSaving || !isPhoneValid">
           <span *ngIf="!isSaving">Update Profile</span>
           <span *ngIf="isSaving" class="saving-state">
             <span class="spinner"></span> Saving…

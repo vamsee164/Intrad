@@ -31,10 +31,12 @@ const GMAIL_USER = process.env["GMAIL_USER"] || "";
 const GMAIL_APP_PASSWORD = process.env["GMAIL_APP_PASSWORD"] || "";
 const IS_DEV_MODE = process.env["EMAIL_DEV_MODE"] === "true";
 
-// cors: true is safe for onCall functions — the callable protocol validates
-// Firebase App tokens on every request; this only controls which browsers
-// can initiate the preflight (OPTIONS) request.
-const CALLABLE_CORS = true as const;
+// cors: ["*"] explicitly allows all origins for onCall v2 functions.
+// Using `true` can be unreliable with the Cloud Run layer underneath —
+// an explicit wildcard guarantees the CORS middleware always responds
+// to OPTIONS preflight requests from any origin.
+// The callable protocol still validates Firebase App tokens on every request.
+const CALLABLE_CORS: (string | RegExp)[] = ["*"];
 
 interface SendLoginEmailPayload {
   email: string;

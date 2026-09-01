@@ -47,6 +47,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   isSaving = false;
   saveError: string | null = null;
   saveSuccess = false;
+  phoneError: string | null = null;
 
   editForm: EditForm = {
     name: '',
@@ -223,11 +224,42 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.isEditing = false;
     this.saveError = null;
     this.saveSuccess = false;
+    this.phoneError = null;
+  }
+
+  /** Strip non-digit chars and enforce 10-digit max on phone input */
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let cleaned = input.value.replace(/[^0-9]/g, '');
+    if (cleaned.length > 10) {
+      cleaned = cleaned.slice(0, 10);
+    }
+    input.value = cleaned;
+    this.editForm.phone = cleaned;
+    // Live validation feedback
+    if (cleaned.length > 0 && cleaned.length < 10) {
+      this.phoneError = 'Phone number must be exactly 10 digits';
+    } else {
+      this.phoneError = null;
+    }
+  }
+
+  /** Returns true only when phone is empty (optional) or exactly 10 digits */
+  get isPhoneValid(): boolean {
+    const p = (this.editForm.phone || '').trim();
+    return p.length === 0 || /^[0-9]{10}$/.test(p);
   }
 
   /** Save profile to Firebase Realtime Database and refresh UI */
   saveProfile(): void {
     if (!this.currentUser) return;
+
+    // Guard: phone must be empty or exactly 10 digits
+    if (!this.isPhoneValid) {
+      this.phoneError = 'Phone number must be exactly 10 digits';
+      return;
+    }
+
     this.isSaving = true;
     this.saveError = null;
     this.saveSuccess = false;

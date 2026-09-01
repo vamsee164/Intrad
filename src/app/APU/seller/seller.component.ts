@@ -88,7 +88,8 @@ export class SellerComponent implements OnInit, OnDestroy {
     }
 
     if (!this.formData.contactNo) {
-      this.formData.contactNo = user.phone || profile.mobileNo || profile.phone || '';
+      // Strip non-digits so the 10-digit pattern validator doesn't block the submit button
+      this.formData.contactNo = this.sanitizePhone(user.phone || profile.mobileNo || profile.phone || '');
     }
 
     if (!this.formData.location) {
@@ -102,6 +103,12 @@ export class SellerComponent implements OnInit, OnDestroy {
       const crops = profile.typicalCrops;
       this.formData.rawMaterialType = Array.isArray(crops) ? (crops[0] || '') : String(crops);
     }
+  }
+
+  /** Strip non-digit characters and clamp to 10 digits */
+  private sanitizePhone(value: string): string {
+    const digits = (value || '').replace(/[^0-9]/g, '');
+    return digits.slice(0, 10);
   }
 
   /**
@@ -160,7 +167,7 @@ export class SellerComponent implements OnInit, OnDestroy {
                 this.formData.sellerName = dbUser.name || '';
               }
               if (!this.formData.contactNo) {
-                this.formData.contactNo = dbUser.mobileNo || dbUser.phone || '';
+                this.formData.contactNo = this.sanitizePhone(dbUser.mobileNo || dbUser.phone || '');
               }
               if (!this.formData.location) {
                 this.formData.location = dbUser.village
@@ -323,7 +330,7 @@ export class SellerComponent implements OnInit, OnDestroy {
 
     this.formData = {
       sellerName: user?.name || profile.name || '',
-      contactNo: user?.phone || profile.mobileNo || profile.phone || '',
+      contactNo: this.sanitizePhone(user?.phone || profile.mobileNo || profile.phone || ''),
       email: user?.email || profile.personalEmail || profile.email || '',
       rawMaterialType: typicalCrop || '',
       quantity: '',
