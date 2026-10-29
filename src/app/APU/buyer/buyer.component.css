@@ -34,12 +34,12 @@
 }
 
 /* ── Wrapper ──────────────────────────────────────────────── */
-.buyer-wrapper {
+/* .buyer-wrapper {
   max-width: 720px;
   margin: 0 auto;
   padding: 0 16px 48px;
   min-height: 100vh;
-}
+} */
 
 /* ── View Animation ───────────────────────────────────────── */
 .view-animate {
