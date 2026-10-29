@@ -34,13 +34,15 @@
 
 /* Main container styling for the contact form */
 .contact-form-container {
-  max-width: 800px;
+   /* max-width: 800px;
   margin-inline: auto;
-  padding: 2.5rem 2.5rem 3rem; /* generous top, sides and bottom */
-  background-color: var(--contact-form-bg);
+ 
+ background-color: var(--contact-form-bg);
   border-radius: var(--border-radius-container);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--contact-form-border);
+   */
+    padding: 2.5rem 2.5rem 3rem; 
+   border: 1px solid var(--contact-form-border);
 }
 
 /* Page-level vertical spacing so the card never touches navbar/footer */
